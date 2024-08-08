@@ -4,8 +4,8 @@ import sqlalchemy as sa
 from urllib.parse import urlsplit
 
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.forms import CreateAnimalForm, LoginForm, RegistrationForm
+from app.models import Animal, AnimalType, User
 
 @app.route('/')
 @app.route('/index')
@@ -51,3 +51,16 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/create-animal', methods=['GET', 'POST'])
+@login_required
+def create_animal():
+    form = CreateAnimalForm()
+    form.animal_type.choices = [(at.id, at.name) for at in AnimalType.query.order_by('name')]
+    if form.validate_on_submit():
+        animal = Animal(name=form.name.data, animal_type_id=form.animal_type.data, user_id=current_user.id)
+        db.session.add(animal)
+        db.session.commit()
+        flash('Added new pet')
+        return redirect(url_for('index'))
+    return render_template('create_animal.html', title='Add new pet', form=form)

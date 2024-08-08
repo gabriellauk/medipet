@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import SelectField, StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 import sqlalchemy as sa
 from app import db
@@ -30,3 +30,8 @@ class RegistrationForm(FlaskForm):
             User.email == email.data))
         if user is not None:
             raise ValidationError('Please use a different email address.')
+        
+class CreateAnimalForm(FlaskForm):    
+    animal_type = SelectField('Type of Animal', coerce=int)
+    name = StringField('Name', validators=[DataRequired()])
+    submit = SubmitField('Create')
