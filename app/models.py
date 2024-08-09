@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as so
@@ -35,4 +36,11 @@ class Animal(db.Model):
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id),
                                                index=True)
     animal_type_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(AnimalType.id),
+                                               index=True)
+    
+class Symptom(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    description: so.Mapped[str] = so.mapped_column(sa.String(240), index=True)
+    date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, index=True)
+    animal_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Animal.id),
                                                index=True)
