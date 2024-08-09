@@ -7,60 +7,70 @@ from app import app, db
 from app.forms import CreateAnimalForm, LoginForm, RegistrationForm
 from app.models import Animal, AnimalType, User
 
-@app.route('/')
-@app.route('/index')
+
+@app.route("/")
+@app.route("/index")
 @login_required
 def index():
-    user = {'username': 'ExampleUser'}
-    return render_template('index.html', title='Home')
+    return render_template("index.html", title="Home")
 
-@app.route('/register', methods=['GET', 'POST'])
+
+@app.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for("index"))
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('login'))
-    return render_template('register.html', title='Register', form=form)
+        flash("Congratulations, you are now a registered user!")
+        return redirect(url_for("login"))
+    return render_template("register.html", title="Register", form=form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for("index"))
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(
-            sa.select(User).where(User.username == form.username.data))
+            sa.select(User).where(User.username == form.username.data)
+        )
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
-            return redirect(url_for('login'))
+            flash("Invalid username or password")
+            return redirect(url_for("login"))
         login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        if not next_page or urlsplit(next_page).netloc != '':
-            next_page = url_for('index')
+        next_page = request.args.get("next")
+        if not next_page or urlsplit(next_page).netloc != "":
+            next_page = url_for("index")
         return redirect(next_page)
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template("login.html", title="Sign In", form=form)
 
-@app.route('/logout')
+
+@app.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for("index"))
 
-@app.route('/create-animal', methods=['GET', 'POST'])
+
+@app.route("/create-animal", methods=["GET", "POST"])
 @login_required
 def create_animal():
     form = CreateAnimalForm()
-    form.animal_type.choices = [(at.id, at.name) for at in AnimalType.query.order_by('name')]
+    form.animal_type.choices = [
+        (at.id, at.name) for at in AnimalType.query.order_by("name")
+    ]
     if form.validate_on_submit():
-        animal = Animal(name=form.name.data, animal_type_id=form.animal_type.data, user_id=current_user.id)
+        animal = Animal(
+            name=form.name.data,
+            animal_type_id=form.animal_type.data,
+            user_id=current_user.id,
+        )
         db.session.add(animal)
         db.session.commit()
-        flash('Added new pet')
-        return redirect(url_for('index'))
-    return render_template('create_animal.html', title='Add new pet', form=form)
+        flash("Added new pet")
+        return redirect(url_for("index"))
+    return render_template("create_animal.html", title="Add new pet", form=form)
