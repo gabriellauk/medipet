@@ -36,9 +36,7 @@ def login():
         return redirect(url_for("index"))
     form = LoginForm()
     if form.validate_on_submit():
-        user = db.session.scalar(
-            sa.select(User).where(User.username == form.username.data)
-        )
+        user = db.session.scalar(sa.select(User).where(User.username == form.username.data))
         if user is None or not user.check_password(form.password.data):
             flash("Invalid username or password")
             return redirect(url_for("login"))
@@ -60,9 +58,7 @@ def logout():
 @login_required
 def create_animal():
     form = CreateAnimalForm()
-    form.animal_type.choices = [
-        (at.id, at.name) for at in AnimalType.query.order_by("name")
-    ]
+    form.animal_type.choices = [(at.id, at.name) for at in AnimalType.query.order_by("name")]
     if form.validate_on_submit():
         animal = Animal(
             name=form.name.data,
