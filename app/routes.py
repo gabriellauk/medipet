@@ -1,61 +1,48 @@
-from flask import render_template, flash, redirect, url_for, request
-from flask_login import current_user, login_user, logout_user, login_required
+from flask import render_template, flash, redirect, url_for, session
+from flask_login import current_user
 import sqlalchemy as sa
-from urllib.parse import urlsplit
 
-from app import app, db
-from app.forms import CreateAnimalForm, LoginForm, RegistrationForm
+from app import app, db, oauth
+from app.decorators import requires_auth
+from app.forms import CreateAnimalForm
 from app.models import Animal, AnimalType, User
 
 
 @app.route("/")
 @app.route("/index")
-@login_required
 def index():
-    return render_template("index.html", title="Home")
+    user = session.get("user")
+    return render_template("index.html", user=user)
 
 
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for("index"))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash("Congratulations, you are now a registered user!")
-        return redirect(url_for("login"))
-    return render_template("register.html", title="Register", form=form)
-
-
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login")
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for("index"))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = db.session.scalar(sa.select(User).where(User.username == form.username.data))
-        if user is None or not user.check_password(form.password.data):
-            flash("Invalid username or password")
-            return redirect(url_for("login"))
-        login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get("next")
-        if not next_page or urlsplit(next_page).netloc != "":
-            next_page = url_for("index")
-        return redirect(next_page)
-    return render_template("login.html", title="Sign In", form=form)
+    redirect_uri = url_for("auth", _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
+
+@app.route("/auth")
+def auth():
+    token = oauth.google.authorize_access_token()
+    session["user"] = token["userinfo"]
+    user = session.get("user")
+    email = user["email"]
+    user_exists = db.session.scalar(sa.select(User).where(User.email == email))
+    if not user_exists:
+        new_user = User(email=email)
+        db.session.add(new_user)
+        db.session.commit()
+    return redirect("/")
 
 
 @app.route("/logout")
 def logout():
-    logout_user()
-    return redirect(url_for("index"))
+    session.pop("user", None)
+    return redirect("/")
 
 
 @app.route("/create-animal", methods=["GET", "POST"])
-@login_required
+@requires_auth
 def create_animal():
     form = CreateAnimalForm()
     form.animal_type.choices = [(at.id, at.name) for at in AnimalType.query.order_by("name")]

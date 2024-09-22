@@ -11,8 +11,8 @@
         <div>
             Purrfect Health:
             <a href="{{ url_for('index') }}">Home</a>
-            {% if current_user.is_anonymous %}
-            <a href="{{ url_for('login') }}">Login</a>
+            {% if not session.user %}
+            <a href="{{ url_for('login') }}">Sign in with Google</a>
             {% else %}
             <a href="{{ url_for('create_animal') }}">Add a pet</a>
             <a href="{{ url_for('logout') }}">Logout</a>
