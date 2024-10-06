@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, session
+from flask import render_template, flash, redirect, url_for, session, jsonify
 from flask_login import current_user
 import sqlalchemy as sa
 
@@ -7,6 +7,9 @@ from app.decorators import requires_auth
 from app.forms import CreateAnimalForm
 from app.models import Animal, AnimalType, User
 
+@app.route("/api/test")
+def test():
+    return jsonify(name="testing", numbers=[1, 2, 3])
 
 @app.route("/")
 @app.route("/index")
