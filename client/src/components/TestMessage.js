@@ -1,23 +1,22 @@
 import { useState, useEffect } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
-
-const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
+import { useApi } from '../contexts/ApiProvider';
 
 export default function TestMessage() {
   const [testData, setTestData] = useState();
+  const api = useApi()
 
   useEffect(() => {
     (async () => {
-        const response = await fetch(BASE_API_URL + '/test');
+        const response = await api.get('/test');
         if (response.ok) {
-        const results = await response.json();
-        setTestData(results.name);
+            setTestData(response.body.name);
         }
         else {
-        setTestData(null);
+            setTestData(null);
         }
     })();
-    }, []);
+    }, [api]);
 
   return (
     <>
