@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, session, jsonify
+from flask import render_template, flash, redirect, url_for, session, jsonify, request
 from flask_login import current_user
 import sqlalchemy as sa
 
@@ -16,15 +16,15 @@ def test():
 def index():
     user = session.get("user")
     return render_template("index.html", user=user)
+    
 
-
-@app.route("/login")
+@app.route("/api/login", methods=["POST"])
 def login():
     redirect_uri = url_for("auth", _external=True)
     return oauth.google.authorize_redirect(redirect_uri)
 
 
-@app.route("/auth")
+@app.route("/api/auth")
 def auth():
     token = oauth.google.authorize_access_token()
     session["user"] = token["userinfo"]
@@ -35,13 +35,26 @@ def auth():
         new_user = User(email=email)
         db.session.add(new_user)
         db.session.commit()
-    return redirect("/")
+
+    redirect_url = "http://localhost:3000/test"
+    return redirect(redirect_url)
 
 
-@app.route("/logout")
+@app.route("/api/logout", methods=["POST"])
 def logout():
     session.pop("user", None)
-    return redirect("/")
+
+    redirect_url = "http://localhost:3000/test"
+    return redirect(redirect_url)
+
+
+@app.route("/api/user", methods=["GET"])
+def get_user():
+    user = session.get('user')
+    if user:
+        return jsonify({'isLoggedIn': True})
+    else:
+        return jsonify({'isLoggedIn': False})
 
 
 @app.route("/create-animal", methods=["GET", "POST"])

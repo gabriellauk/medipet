@@ -20,6 +20,7 @@ export default class ApiClient {
           ...options.headers,
         },
         body: options.body ? JSON.stringify(options.body) : null,
+        credentials: 'include'
       });
     }
     catch (error) {

@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-CORS(app, resources={r"/api/*": {"origins": app.config['CORS_ORIGINS']}})
+CORS(app, resources={r"/api/*": {"origins": app.config['CORS_ORIGINS'], "supports_credentials": True}})
 
 oauth = OAuth(app)
 oauth.register(
