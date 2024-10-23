@@ -10,12 +10,6 @@ from app.models import Animal, AnimalType, User
 @app.route("/api/test")
 def test():
     return jsonify(name="testing", numbers=[1, 2, 3])
-
-@app.route("/")
-@app.route("/index")
-def index():
-    user = session.get("user")
-    return render_template("index.html", user=user)
     
 
 @app.route("/api/login", methods=["POST"])
@@ -55,21 +49,3 @@ def get_user():
         return jsonify({'isLoggedIn': True})
     else:
         return jsonify({'isLoggedIn': False})
-
-
-@app.route("/create-animal", methods=["GET", "POST"])
-@requires_auth
-def create_animal():
-    form = CreateAnimalForm()
-    form.animal_type.choices = [(at.id, at.name) for at in AnimalType.query.order_by("name")]
-    if form.validate_on_submit():
-        animal = Animal(
-            name=form.name.data,
-            animal_type_id=form.animal_type.data,
-            user_id=current_user.id,
-        )
-        db.session.add(animal)
-        db.session.commit()
-        flash("Added new pet")
-        return redirect(url_for("index"))
-    return render_template("create_animal.html", title="Add new pet", form=form)
