@@ -4,7 +4,6 @@ import sqlalchemy as sa
 
 from app import app, db, oauth
 from app.decorators import requires_auth
-from app.forms import CreateAnimalForm
 from app.models import Animal, AnimalType, User
 
 @app.route("/api/test")
@@ -30,7 +29,7 @@ def auth():
         db.session.add(new_user)
         db.session.commit()
 
-    redirect_url = "http://localhost:3000/test"
+    redirect_url = app.config["CORS_ORIGINS"] + "/test"
     return redirect(redirect_url)
 
 
@@ -38,7 +37,7 @@ def auth():
 def logout():
     session.pop("user", None)
 
-    redirect_url = "http://localhost:3000/test"
+    redirect_url = app.config["CORS_ORIGINS"] + "/test"
     return redirect(redirect_url)
 
 
