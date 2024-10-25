@@ -4,7 +4,6 @@ from functools import wraps
 from werkzeug.exceptions import Forbidden
 
 
-
 class AuthError(Exception):
     def __init__(self, error, status_code):
         self.error = error
