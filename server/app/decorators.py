@@ -1,5 +1,8 @@
-from flask import redirect, session, url_for
+from flask import session
 from functools import wraps
+
+from werkzeug.exceptions import Forbidden
+
 
 
 class AuthError(Exception):
@@ -11,9 +14,10 @@ class AuthError(Exception):
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if session.get("user") is None:
-            return redirect(url_for("login"))
+        user = session.get("user")
+        if user is None:
+            raise Forbidden()
 
-        return f(*args, **kwargs)
+        return f(user, *args, **kwargs)
 
     return decorated

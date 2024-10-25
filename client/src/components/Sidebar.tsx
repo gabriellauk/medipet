@@ -11,6 +11,9 @@ export default function Sidebar() {
       <Nav.Item>
         <Nav.Link as={NavLink} to="/test">Test Page</Nav.Link>
       </Nav.Item>
+      <Nav.Item>
+        <Nav.Link as={NavLink} to="/test-protected">Test Protected</Nav.Link>
+      </Nav.Item>
     </Navbar>
   );
 }

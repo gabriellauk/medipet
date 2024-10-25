@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import HomePage from './pages/HomePage.tsx';
 import TestPage from './pages/TestPage.tsx';
+import TestProtectedPage from './pages/TestProtectedPage.tsx';
 import ApiProvider from './contexts/ApiProvider';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/test" element={<TestPage />} />
+            <Route path="/test-protected" element={<TestProtectedPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </ApiProvider>
