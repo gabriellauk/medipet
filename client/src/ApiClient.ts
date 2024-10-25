@@ -1,11 +1,7 @@
-const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
+const BASE_API_URL = import.meta.env.VITE_REACT_APP_BASE_API_URL;
 
 export default class ApiClient {
-  constructor() {
-    this.base_url =  BASE_API_URL;
-  }
-
-  async request(options) {
+  async request(options: any) {
     let query = new URLSearchParams(options.query || {}).toString();
     if (query !== '') {
       query = '?' + query;
@@ -13,7 +9,7 @@ export default class ApiClient {
 
     let response;
     try {
-      response = await fetch(this.base_url + options.url + query, {
+      response = await fetch(BASE_API_URL + options.url + query, {
         method: options.method,
         headers: {
           'Content-Type': 'application/json',
@@ -23,7 +19,7 @@ export default class ApiClient {
         credentials: 'include'
       });
     }
-    catch (error) {
+    catch (error: any) {
       response = {
         ok: false,
         status: 500,
@@ -42,19 +38,19 @@ export default class ApiClient {
     };
   }
 
-  async get(url, query, options) {
+  async get(url: string, query?: string, options?: any) {
     return this.request({method: 'GET', url, query, ...options});
   }
 
-  async post(url, body, options) {
+  async post(url: string, body?: object | null | undefined, options?: any) {
     return this.request({method: 'POST', url, body, ...options});
   }
 
-  async put(url, body, options) {
+  async put(url: string, body?: object | null | undefined, options?: any) {
     return this.request({method: 'PUT', url, body, ...options});
   }
 
-  async delete(url, options) {
+  async delete(url: string, options?: any) {
     return this.request({method: 'DELETE', url, ...options});
   }
 }

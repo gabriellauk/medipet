@@ -1,12 +1,11 @@
 import Container from 'react-bootstrap/Container';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
-import HomePage from './pages/HomePage';
-import TestPage from './pages/TestPage';
+import HomePage from './pages/HomePage.tsx';
+import TestPage from './pages/TestPage.tsx';
 import ApiProvider from './contexts/ApiProvider';
 
-export default function App() {
-
+function App() {
   return (
     <Container fluid className="App">
       <BrowserRouter>
@@ -22,3 +21,5 @@ export default function App() {
     </Container>
   );
 }
+
+export default App

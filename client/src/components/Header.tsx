@@ -1,7 +1,7 @@
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import { useState, useEffect } from 'react';
-import { useApi } from '../contexts/ApiProvider';
+import { useApi } from '../contexts/ApiProvider.tsx';
 
 export default function Header() {
     const [userIsLoggedIn, setUserIsLoggedIn] = useState(null);
@@ -20,8 +20,8 @@ export default function Header() {
       }
     };
 
-    const fullUrlToLoginEndpoint = process.env.REACT_APP_BASE_API_URL + '/login'
-    const fullUrlToLogoutEndpoint = process.env.REACT_APP_BASE_API_URL + '/logout'
+    const fullUrlToLoginEndpoint = import.meta.env.VITE_REACT_APP_BASE_API_URL + '/login'
+    const fullUrlToLogoutEndpoint = import.meta.env.VITE_REACT_APP_BASE_API_URL + '/logout'
 
     return (
     <Navbar bg="light" sticky="top" className="Header">
