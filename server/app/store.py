@@ -1,3 +1,5 @@
+from typing import List
+
 from app import db
 from app.models import User, AnimalType
 
@@ -14,5 +16,5 @@ def create_user(email):
     db.session.commit()
 
 
-def get_animal_types():
-    return AnimalType.query.order_by("name")
+def get_animal_types() -> List[AnimalType]:
+    return AnimalType.query.order_by("name").all()

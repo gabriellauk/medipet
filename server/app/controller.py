@@ -1,7 +1,7 @@
 from flask import session
 
 from app.decorators import requires_auth
-from app import oauth, store
+from app import oauth, store, schemas
 
 
 @requires_auth
@@ -29,7 +29,7 @@ def get_user_login_status():
     return is_logged_in
 
 
-def get_animal_types():
+def get_animal_types() -> list[schemas.AnimalType]:
     animal_types = store.get_animal_types()
 
-    return [{"id": animal_type.id, "name": animal_type.name} for animal_type in animal_types]
+    return [schemas.AnimalType.model_validate(animal_type) for animal_type in animal_types]

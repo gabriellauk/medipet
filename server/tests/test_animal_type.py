@@ -1,4 +1,4 @@
-def test_get_animal_type(client):
+def test_get_animal_types(client):
     response = client.get("api/animal-type")
     assert response.status_code == 200
 

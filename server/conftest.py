@@ -24,9 +24,7 @@ def app():
 @pytest.fixture()
 def client(app):
     with app.app_context():
-        db.session.add_all(
-            [AnimalType(name="Cat"), AnimalType(name="Dog"), AnimalType(name="Rabbit")]
-        )
+        db.session.add_all([AnimalType(name="Cat"), AnimalType(name="Dog"), AnimalType(name="Rabbit")])
         db.session.commit()
 
     client = app.test_client()

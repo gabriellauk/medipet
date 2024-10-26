@@ -2,6 +2,8 @@ from flask import redirect, session, jsonify, url_for
 
 from app import app, oauth, controller
 
+from app.schemas import AnimalTypes
+
 REDIRECT_URL = app.config["CORS_ORIGINS"] + "/test"
 
 
@@ -43,4 +45,5 @@ def get_user():
 @app.route("/api/animal-type", methods=["GET"])
 def get_animal_types():
     animal_types = controller.get_animal_types()
-    return jsonify(data=animal_types)
+
+    return jsonify(AnimalTypes(data=[animal_type for animal_type in animal_types]).model_dump())

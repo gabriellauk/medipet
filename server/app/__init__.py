@@ -18,4 +18,4 @@ oauth.register(
     client_kwargs={"scope": "openid email profile"},
 )
 
-from app import routes, models
+from app import routes, models, schemas
