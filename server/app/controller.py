@@ -27,3 +27,9 @@ def get_user_login_status():
         is_logged_in = True
 
     return is_logged_in
+
+
+def get_animal_types():
+    animal_types = store.get_animal_types()
+
+    return [{"id": animal_type.id, "name": animal_type.name} for animal_type in animal_types]

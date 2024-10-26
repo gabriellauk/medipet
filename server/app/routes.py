@@ -38,3 +38,9 @@ def logout():
 def get_user():
     is_logged_in = controller.get_user_login_status()
     return jsonify({"isLoggedIn": is_logged_in})
+
+
+@app.route("/api/animal-type", methods=["GET"])
+def get_animal_types():
+    animal_types = controller.get_animal_types()
+    return jsonify(data=animal_types)
