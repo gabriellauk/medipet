@@ -15,7 +15,7 @@ def requires_auth(f):
     def decorated(*args, **kwargs):
         user = session.get("user")
         if user is None:
-            raise Forbidden()
+            raise Forbidden("No user logged in")
 
         return f(user, *args, **kwargs)
 

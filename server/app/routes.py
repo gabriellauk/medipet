@@ -1,8 +1,10 @@
-from flask import redirect, session, jsonify, url_for
+from flask import redirect, session, jsonify, url_for, request
 
 from app import app, oauth, controller
 
-from app.schemas import AnimalTypes
+from app.schemas import AnimalTypes, CreateAnimal
+
+from pydantic import ValidationError
 
 REDIRECT_URL = app.config["CORS_ORIGINS"] + "/test"
 
@@ -47,3 +49,13 @@ def get_animal_types():
     animal_types = controller.get_animal_types()
 
     return jsonify(AnimalTypes(data=[animal_type for animal_type in animal_types]).model_dump())
+
+
+@app.route("/api/animal", methods=["POST"])
+def create_animal():
+    try:
+        data = CreateAnimal.model_validate(request.json)
+        animal = controller.create_animal(data)
+        return jsonify(animal.model_dump(by_alias=True)), 201
+    except ValidationError as e:
+        return jsonify({"error": e.errors()}), 422

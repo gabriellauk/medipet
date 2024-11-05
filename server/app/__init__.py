@@ -1,9 +1,10 @@
-from flask import Flask
+from flask import Flask, jsonify
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from authlib.integrations.flask_client import OAuth
 from flask_cors import CORS
+from werkzeug.exceptions import BadRequest, Forbidden
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -17,5 +18,16 @@ oauth.register(
     server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
     client_kwargs={"scope": "openid email profile"},
 )
+
+
+@app.errorhandler(BadRequest)
+def handle_bad_request(e):
+    return jsonify(error=str(e)), 400
+
+
+@app.errorhandler(Forbidden)
+def handle_forbidden(e):
+    return jsonify(error=str(e)), 403
+
 
 from app import routes, models, schemas

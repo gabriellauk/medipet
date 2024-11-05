@@ -1,6 +1,7 @@
 from datetime import datetime
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 
 from app import db
@@ -24,6 +25,9 @@ class Animal(db.Model):
     name: so.Mapped[str] = so.mapped_column(sa.String(30), index=True)
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
     animal_type_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(AnimalType.id), index=True)
+
+    user = relationship("User")
+    animal_type = relationship("AnimalType")
 
 
 class Symptom(db.Model):
