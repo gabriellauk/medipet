@@ -43,7 +43,7 @@ def create_animal(user, data: schemas.CreateAnimal) -> schemas.Animal:
         raise BadRequest("Animal type not found")
 
     if (user_record := store.get_user_by_email(user["email"])) is None:
-        raise BadRequest("User not found")
+        raise BadRequest("User record not found")
 
     animal = store.create_animal(data.name, animal_type, user_record)
 

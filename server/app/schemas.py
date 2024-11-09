@@ -1,7 +1,7 @@
 from typing import List
 
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 from pydantic.alias_generators import to_camel
 
 
@@ -31,3 +31,10 @@ class Animal(BaseSchema):
 class CreateAnimal(BaseSchema):
     name: str
     animal_type_id: int
+
+    @field_validator("name", mode="before")
+    @classmethod
+    def empty_str_to_none(cls, v: str) -> str | None:
+        if v == "":
+            return None
+        return v

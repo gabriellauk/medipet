@@ -30,7 +30,7 @@ def test_create_animal_fails_animal_type_not_found(logged_in_client):
     response = logged_in_client.post("api/animal", json=data)
 
     assert response.status_code == 400
-    assert response.json["error"] == "Animal type not found"
+    assert response.json["error"] == "400 Bad Request: Animal type not found"
 
 
 def test_create_animal_fails_user_record_not_found(logged_in_client):
@@ -39,7 +39,7 @@ def test_create_animal_fails_user_record_not_found(logged_in_client):
     response = logged_in_client.post("api/animal", json=data)
 
     assert response.status_code == 400
-    assert response.json["error"] == "User record not found"
+    assert response.json["error"] == "400 Bad Request: User record not found"
 
 
 def test_create_animal_fails_user_not_logged_in(client):
@@ -48,11 +48,11 @@ def test_create_animal_fails_user_not_logged_in(client):
     response = client.post("api/animal", json=data)
 
     assert response.status_code == 403
-    assert response.json["error"] == "No user logged in"
+    assert response.json["error"] == "403 Forbidden: No user logged in"
 
 
 def test_create_animal_fails_field_missing(logged_in_client):
-    data = {"animalTypeId": 2}
+    data = {"name": "", "animalTypeId": 2}
 
     response = logged_in_client.post("api/animal", json=data)
 
