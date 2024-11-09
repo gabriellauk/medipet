@@ -1,4 +1,7 @@
-def test_get_animal_types(client):
+from flask.testing import FlaskClient
+
+
+def test_get_animal_types(client: FlaskClient) -> None:
     response = client.get("api/animal-type")
     assert response.status_code == 200
 

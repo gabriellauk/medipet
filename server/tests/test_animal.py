@@ -1,7 +1,13 @@
+import pytest
+
 from app import models, db, app as flask_app
 
+from typing import Literal
 
-def test_create_animal(logged_in_client):
+from flask.testing import FlaskClient
+
+
+def test_create_animal(logged_in_client: FlaskClient) -> None:
     with logged_in_client.session_transaction() as session:
         user = session.get("user")
         email = user["email"]
@@ -24,7 +30,7 @@ def test_create_animal(logged_in_client):
     }
 
 
-def test_create_animal_fails_animal_type_not_found(logged_in_client):
+def test_create_animal_fails_animal_type_not_found(logged_in_client: FlaskClient) -> None:
     data = {"name": "Fluffy", "animalTypeId": 999}
 
     response = logged_in_client.post("api/animal", json=data)
@@ -33,7 +39,7 @@ def test_create_animal_fails_animal_type_not_found(logged_in_client):
     assert response.json["error"] == "400 Bad Request: Animal type not found"
 
 
-def test_create_animal_fails_user_record_not_found(logged_in_client):
+def test_create_animal_fails_user_record_not_found(logged_in_client: FlaskClient) -> None:
     data = {"name": "Fluffy", "animalTypeId": 2}
 
     response = logged_in_client.post("api/animal", json=data)
@@ -42,7 +48,7 @@ def test_create_animal_fails_user_record_not_found(logged_in_client):
     assert response.json["error"] == "400 Bad Request: User record not found"
 
 
-def test_create_animal_fails_user_not_logged_in(client):
+def test_create_animal_fails_user_not_logged_in(client: FlaskClient) -> None:
     data = {"name": "Fluffy", "animalTypeId": 2}
 
     response = client.post("api/animal", json=data)
@@ -51,8 +57,19 @@ def test_create_animal_fails_user_not_logged_in(client):
     assert response.json["error"] == "403 Forbidden: No user logged in"
 
 
-def test_create_animal_fails_field_missing(logged_in_client):
-    data = {"name": "", "animalTypeId": 2}
+@pytest.mark.parametrize("missing_field", ["name", "animalTypeId"])
+def test_create_animal_fails_field_missing(
+    logged_in_client: FlaskClient, missing_field: Literal["name"] | Literal["animalTypeId"]
+) -> None:
+    data = {"animalTypeId": 2} if missing_field == "name" else {"name": "Fluffy"}
+
+    response = logged_in_client.post("api/animal", json=data)
+
+    assert response.status_code == 422
+
+
+def test_create_animal_fails_empty_string(logged_in_client: FlaskClient) -> None:
+    data = {"animal": "", "animalTypeId": 2}
 
     response = logged_in_client.post("api/animal", json=data)
 
