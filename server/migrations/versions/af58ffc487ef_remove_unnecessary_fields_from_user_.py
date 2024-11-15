@@ -15,7 +15,6 @@ down_revision = 'eab857ac4e5e'
 branch_labels = None
 depends_on = None
 
-
 def upgrade():
     with op.batch_alter_table('user', schema=None) as batch_op:
         batch_op.drop_index('ix_user_username')

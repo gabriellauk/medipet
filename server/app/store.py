@@ -1,9 +1,10 @@
 from typing import List
 
-from app import db
 from app import models
 
 import sqlalchemy as sa
+
+from app.extensions import db
 
 
 def check_user_exists(email):

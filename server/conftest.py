@@ -1,29 +1,27 @@
+import os
 import pytest
-from app import app as flask_app, db
+from app import create_app
+from app.extensions import db
 from app.models import AnimalType
 
 
 @pytest.fixture(scope="session")
 def app():
-    flask_app.config.update(
-        {
-            "TESTING": True,
-            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
-        }
-    )
+    basedir = os.path.abspath(os.path.dirname(__file__))
 
-    with flask_app.app_context():
-        db.create_all()
+    test_config = {
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///" + os.path.join(basedir, "test.db")
+    }
+    app = create_app(test_config)
 
-    yield flask_app
-
-    with flask_app.app_context():
-        db.drop_all()
+    with app.app_context():
+        yield app
 
 
-@pytest.fixture()
+@pytest.fixture
 def client(app):
     with app.app_context():
+        db.create_all()
         db.session.add_all([AnimalType(name="Cat"), AnimalType(name="Dog"), AnimalType(name="Rabbit")])
         db.session.commit()
 
@@ -32,9 +30,7 @@ def client(app):
     yield client
 
     with app.app_context():
-        db.session.remove()
         db.drop_all()
-        db.create_all()
 
 
 @pytest.fixture

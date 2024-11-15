@@ -1,6 +1,10 @@
 import pytest
 
-from app import models, db, app as flask_app
+from flask import current_app
+
+from app import models
+
+from app.extensions import db
 
 from typing import Literal
 
@@ -12,7 +16,7 @@ def test_create_animal(logged_in_client: FlaskClient) -> None:
         user = session.get("user")
         email = user["email"]
 
-    with flask_app.app_context():
+    with current_app.app_context():
         new_user = models.User(email=email)
         db.session.add(new_user)
         db.session.commit()
