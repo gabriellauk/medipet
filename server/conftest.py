@@ -9,9 +9,7 @@ from app.models import AnimalType
 def app():
     basedir = os.path.abspath(os.path.dirname(__file__))
 
-    test_config = {
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///" + os.path.join(basedir, "test.db")
-    }
+    test_config = {"SQLALCHEMY_DATABASE_URI": "sqlite:///" + os.path.join(basedir, "test.db")}
     app = create_app(test_config)
 
     with app.app_context():

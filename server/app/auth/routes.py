@@ -4,11 +4,13 @@ from . import controller
 
 from . import auth
 
+from app.extensions import oauth
+
 
 @auth.route("/api/login", methods=["POST"])
 def login():
-    redirect_uri = url_for("auth", _external=True)
-    return current_app.oauth.google.authorize_redirect(redirect_uri)
+    redirect_uri = url_for("auth.authenticate", _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
 
 
 @auth.route("/api/auth")
