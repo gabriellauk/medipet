@@ -17,8 +17,8 @@ def test_create_animal(logged_in_client: FlaskClient) -> None:
         email = user["email"]
 
     with current_app.app_context():
-        new_user = models.User(email=email)
-        db.session.add(new_user)
+        user = models.User(email=email)
+        db.session.add(user)
         db.session.commit()
 
     data = {"name": "Fluffy", "animalTypeId": 2}
@@ -78,3 +78,67 @@ def test_create_animal_fails_empty_string(logged_in_client: FlaskClient) -> None
     response = logged_in_client.post("api/animal", json=data)
 
     assert response.status_code == 422
+
+
+def test_get_animal(logged_in_client: FlaskClient) -> None:
+    with logged_in_client.session_transaction() as session:
+        user = session.get("user")
+        email = user["email"]
+
+    user = models.User(email=email)
+    db.session.add(user)
+    db.session.commit()
+    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one_or_none()
+    assert animal_type
+    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    db.session.add(animal)
+    db.session.commit()
+
+    response = logged_in_client.get(f"api/animal/{animal.id}")
+
+    assert response.status_code == 200
+
+    assert response.json == {
+        "id": 1,
+        "name": "Fluffy",
+        "animalTypeId": 2,
+    }
+
+
+def test_get_animal_fails_animal_doesnt_exist(logged_in_client: FlaskClient) -> None:
+    with logged_in_client.session_transaction() as session:
+        user = session.get("user")
+        email = user["email"]
+
+    user = models.User(email=email)
+    db.session.add(user)
+    db.session.commit()
+
+    response = logged_in_client.get("api/animal/1")
+
+    assert response.status_code == 400
+
+    assert response.json["error"] == "400 Bad Request: Animal not found"
+
+
+def test_get_animal_fails_user_doesnt_have_permission(logged_in_client: FlaskClient) -> None:
+    with logged_in_client.session_transaction() as session:
+        user = session.get("user")
+        email = user["email"]
+
+    logged_in_user_record = models.User(email=email)
+    db.session.add(logged_in_user_record)
+
+    user_record = models.User(email="some.other@user.com")
+    db.session.add(user_record)
+    db.session.commit()
+    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one_or_none()
+    assert animal_type
+    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user_record)
+    db.session.add(animal)
+    db.session.commit()
+
+    response = logged_in_client.get(f"api/animal/{animal.id}")
+
+    assert response.status_code == 403
+    assert response.json["error"] == "403 Forbidden: User cannot access this animal"

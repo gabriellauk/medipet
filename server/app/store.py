@@ -35,3 +35,7 @@ def create_animal(name: str, animal_type: models.AnimalType, user: models.User) 
     db.session.commit()
 
     return new_animal
+
+
+def get_animal(animal_id: int) -> models.Animal | None:
+    return models.Animal.query.filter(models.Animal.id == animal_id).one_or_none()

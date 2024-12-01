@@ -32,6 +32,13 @@ def create_animal():
     try:
         data = CreateAnimal.model_validate(request.json)
         animal = controller.create_animal(data)
-        return jsonify(animal.model_dump(by_alias=True)), 201
+        return jsonify(animal.model_dump()), 201
     except ValidationError as e:
         return jsonify({"error": e.errors()}), 422
+
+
+@general.route("/api/animal/<animal_id>", methods=["GET"])
+def get_animal(animal_id: int):
+    animal = controller.get_animal(animal_id)
+
+    return jsonify(animal.model_dump())

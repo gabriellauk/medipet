@@ -12,6 +12,10 @@ class BaseSchema(BaseModel):
         from_attributes=True,
     )
 
+    def model_dump(self, **kwargs):
+        kwargs.setdefault("by_alias", True)
+        return super().model_dump(**kwargs)
+
 
 class AnimalType(BaseSchema):
     id: int
