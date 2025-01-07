@@ -35,3 +35,5 @@ class Symptom(db.Model):
     description: so.Mapped[str] = so.mapped_column(sa.String(240), index=True)
     date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, index=True)
     animal_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Animal.id), index=True)
+
+    animal = relationship("Animal")

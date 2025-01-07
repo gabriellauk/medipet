@@ -1,6 +1,6 @@
 from typing import List
 
-from app import models
+from app import models, schemas
 
 import sqlalchemy as sa
 
@@ -30,12 +30,20 @@ def get_user_by_email(email: str) -> models.User | None:
 
 
 def create_animal(name: str, animal_type: models.AnimalType, user: models.User) -> models.Animal:
-    new_animal = models.Animal(name=name, animal_type=animal_type, user=user)
-    db.session.add(new_animal)
+    animal = models.Animal(name=name, animal_type=animal_type, user=user)
+    db.session.add(animal)
     db.session.commit()
 
-    return new_animal
+    return animal
 
 
 def get_animal(animal_id: int) -> models.Animal | None:
     return models.Animal.query.filter(models.Animal.id == animal_id).one_or_none()
+
+
+def create_symptom(data: schemas.CreateSymptom, animal: models.Animal) -> models.Symptom:
+    symptom = models.Symptom(description=data.description, date=data.date, animal=animal)
+    db.session.add(symptom)
+    db.session.commit()
+
+    return symptom

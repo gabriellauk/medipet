@@ -1,7 +1,8 @@
+from datetime import date as date_type
 from typing import List
 
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator, field_serializer
 from pydantic.alias_generators import to_camel
 
 
@@ -42,3 +43,26 @@ class CreateAnimal(BaseSchema):
         if v == "":
             return None
         return v
+
+
+class SymptomFields(BaseSchema):
+    description: str
+    date: date_type
+
+    @field_validator("description", mode="before")
+    @classmethod
+    def empty_str_to_none(cls, v: str) -> str | None:
+        if v == "":
+            return None
+        return v
+
+    @field_serializer("date")
+    def serialize_date(self, dt: date_type, _info):
+        return dt.strftime("%Y-%m-%d")
+
+
+class Symptom(SymptomFields):
+    id: int
+
+
+class CreateSymptom(SymptomFields): ...
