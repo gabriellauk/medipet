@@ -14,6 +14,9 @@ export default function Sidebar() {
       <Nav.Item>
         <Nav.Link as={NavLink} to="/test-protected">Test Protected</Nav.Link>
       </Nav.Item>
+      <Nav.Item>
+        <Nav.Link as={NavLink} to="/add-a-pet">Add a pet</Nav.Link>
+      </Nav.Item>
     </Navbar>
   );
 }

@@ -34,3 +34,8 @@
 .Sidebar .nav-item .active {
   background-color: #def;
 }
+
+.InputField {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
