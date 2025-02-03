@@ -6,9 +6,13 @@ import TestPage from './pages/TestPage.tsx';
 import TestProtectedPage from './pages/TestProtectedPage.tsx';
 import CreateAnimal from './pages/CreateAnimal.tsx';
 import ApiProvider from './contexts/ApiProvider';
+import '@mantine/core/styles.css';
+
+import { MantineProvider } from '@mantine/core';
 
 function App() {
   return (
+    <MantineProvider>
     <Container fluid className="App">
       <BrowserRouter>
         <ApiProvider>
@@ -23,6 +27,7 @@ function App() {
         </ApiProvider>
       </BrowserRouter>
     </Container>
+    </MantineProvider>
   );
 }
 
