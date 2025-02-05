@@ -4,35 +4,34 @@ import { Loader } from '@mantine/core';
 
 export default function TestProtectedMessage() {
   const [testProtectedData, setTestProtectedData] = useState();
-  const api = useApi()
+  const api = useApi();
 
   useEffect(() => {
     (async () => {
-        const response = await api.get('/test-protected');
-        if (response.ok) {
-            setTestProtectedData(response.body.name);
-        }
-        else {
-            setTestProtectedData(null);
-        }
+      const response = await api.get('/test-protected');
+      if (response.ok) {
+        setTestProtectedData(response.body.name);
+      } else {
+        setTestProtectedData(null);
+      }
     })();
-    }, [api]);
+  }, [api]);
 
   return (
     <>
-        {testProtectedData === undefined ? 
-            <Loader color="blue" />
-            :
-                <>
-                {testProtectedData === null ?
-                    <p>Could not retrieve test data</p>
-                :
-                <>
-                    <h1>Test data: {testProtectedData}</h1>
-                </>
-            }
+      {testProtectedData === undefined ? (
+        <Loader color="blue" />
+      ) : (
+        <>
+          {testProtectedData === null ? (
+            <p>Could not retrieve test data</p>
+          ) : (
+            <>
+              <h1>Test data: {testProtectedData}</h1>
+            </>
+          )}
         </>
-        }
+      )}
     </>
   );
 }

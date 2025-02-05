@@ -6,9 +6,9 @@ import '@mantine/core/styles.css';
 function App() {
   return (
     <BrowserRouter>
-    <MantineProvider>
-      <MainContent />
-    </MantineProvider>
+      <MantineProvider>
+        <MainContent />
+      </MantineProvider>
     </BrowserRouter>
   );
 }

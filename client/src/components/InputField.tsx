@@ -26,7 +26,7 @@ const InputField: React.FC<InputFieldProps> = ({
       placeholder={placeholder}
       ref={fieldRef}
       error={error}
-      />
+    />
   );
 };
 
