@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import Body from "../components/Body"
-import Form from 'react-bootstrap/Form';
 import InputField from '../components/InputField';
-import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../contexts/ApiProvider';
 import ErrorArea from '../components/ErrorArea';
+import { Button } from '@mantine/core';
 
 export default function CreateAnimal() {
 
@@ -73,9 +71,9 @@ export default function CreateAnimal() {
   };
 
     return (
-        <Body sidebar>
+        <>
             <h1>Add a pet</h1>
-            <Form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit}>
             <ErrorArea error={submissionError} />
         <InputField
           name="name" label="Your pet's name"
@@ -83,8 +81,8 @@ export default function CreateAnimal() {
         <InputField
           name="animalType" label="Species - change to dropdown later"
           error={formErrors?.animalType} fieldRef={animalTypeField} />
-        <Button variant="primary" type="submit">Add</Button>
-      </Form>
-        </Body>
+        <Button variant="filled" type="submit">Add</Button>
+      </form>
+        </>
     )
 }

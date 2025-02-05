@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Spinner from 'react-bootstrap/Spinner';
+import { Loader } from '@mantine/core';
 import { useApi } from '../contexts/ApiProvider';
 
 export default function TestMessage() {
@@ -21,7 +21,7 @@ export default function TestMessage() {
   return (
     <>
         {testData === undefined ? 
-            <Spinner animation="border" />
+            <Loader color="blue" />
             :
                 <>
                 {testData === null ?

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import Spinner from 'react-bootstrap/Spinner';
 import { useApi } from '../contexts/ApiProvider';
+import { Loader } from '@mantine/core';
 
 export default function TestProtectedMessage() {
   const [testProtectedData, setTestProtectedData] = useState();
@@ -21,7 +21,7 @@ export default function TestProtectedMessage() {
   return (
     <>
         {testProtectedData === undefined ? 
-            <Spinner animation="border" />
+            <Loader color="blue" />
             :
                 <>
                 {testProtectedData === null ?

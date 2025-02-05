@@ -1,5 +1,5 @@
+import { TextInput } from '@mantine/core';
 import React from 'react';
-import Form from 'react-bootstrap/Form';
 interface InputFieldProps {
   name: string;
   label?: string;
@@ -18,15 +18,15 @@ const InputField: React.FC<InputFieldProps> = ({
   fieldRef,
 }) => {
   return (
-    <Form.Group controlId={name} className="InputField">
-      {label && <Form.Label>{label}</Form.Label>}
-      <Form.Control
-        type={type}
-        placeholder={placeholder}
-        ref={fieldRef}
+    <TextInput
+      mt="md"
+      id={name}
+      label={label}
+      type={type}
+      placeholder={placeholder}
+      ref={fieldRef}
+      error={error}
       />
-      {error && <Form.Text className="text-danger">{error}</Form.Text>}
-    </Form.Group>
   );
 };
 

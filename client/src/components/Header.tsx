@@ -1,7 +1,6 @@
-import Navbar from 'react-bootstrap/Navbar';
-import Container from 'react-bootstrap/Container';
 import { useState, useEffect } from 'react';
 import { useApi } from '../contexts/ApiProvider.tsx';
+import { Title } from '@mantine/core';
 
 export default function Header() {
     const [userIsLoggedIn, setUserIsLoggedIn] = useState(null);
@@ -24,10 +23,8 @@ export default function Header() {
     const fullUrlToLogoutEndpoint = import.meta.env.VITE_REACT_APP_BASE_API_URL + '/logout'
 
     return (
-    <Navbar bg="light" sticky="top" className="Header">
-      <Container>
-        <Navbar.Brand>Pet Health Log</Navbar.Brand>
-          <div>
+    <>
+    <Title order={1}>Pet Health Log</Title>
             {userIsLoggedIn ? (
               <form action={fullUrlToLogoutEndpoint} method="POST">
                 <button type="submit">Logout</button>
@@ -37,8 +34,6 @@ export default function Header() {
                 <button type="submit">Login with Google</button>
               </form>
             )}
-          </div>
-      </Container>
-    </Navbar>
+      </>
   );
 }
