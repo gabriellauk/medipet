@@ -3,7 +3,7 @@ import { Loader } from '@mantine/core';
 import { useApi } from '../contexts/ApiProvider';
 
 export default function TestMessage() {
-  const [testData, setTestData] = useState();
+  const [testData, setTestData] = useState<string | null>();
   const api = useApi();
 
   useEffect(() => {
