@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useApi } from './contexts/ApiProvider.tsx';
-import MainContent from './MainContent.tsx';
 import SplashPage from './pages/SplashPage.tsx';
+import { CreateAnimal2 } from './pages/CreateAnimal2.tsx';
 
 export default function EntryPoint() {
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(null);
@@ -20,5 +20,5 @@ export default function EntryPoint() {
     }
   };
 
-  return <>{userIsLoggedIn ? <MainContent /> : <SplashPage />}</>;
+  return <>{userIsLoggedIn ? <CreateAnimal2 /> : <SplashPage />}</>;
 }
