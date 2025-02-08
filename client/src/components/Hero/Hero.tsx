@@ -12,6 +12,8 @@ import {
 import image from './image.jpg';
 import classes from './Hero.module.css';
 
+const loginUrl = import.meta.env.VITE_REACT_APP_BASE_API_URL + '/login';
+
 export function Hero() {
   return (
     <Container size="md">
@@ -51,9 +53,16 @@ export function Hero() {
           </List>
 
           <Group mt={30}>
-            <Button radius="xl" size="md" className={classes.control}>
-              Sign in with Google
-            </Button>
+            <form action={loginUrl} method="POST">
+              <Button
+                radius="xl"
+                size="md"
+                className={classes.control}
+                type="submit"
+              >
+                Sign in with Google
+              </Button>
+            </form>
             <Button
               variant="default"
               radius="xl"
