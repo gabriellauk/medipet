@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useApi } from '../contexts/ApiProvider.tsx';
-import { Title } from '@mantine/core';
+import { Title, ThemeIcon } from '@mantine/core';
+import { IconPawFilled } from '@tabler/icons-react';
 
 export default function Header() {
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(null);
@@ -26,7 +27,12 @@ export default function Header() {
 
   return (
     <>
-      <Title order={1}>Pet Health Log</Title>
+      <Title order={1}>
+        <ThemeIcon>
+          <IconPawFilled></IconPawFilled>
+        </ThemeIcon>{' '}
+        MediPet
+      </Title>
       {userIsLoggedIn ? (
         <form action={fullUrlToLogoutEndpoint} method="POST">
           <button type="submit">Logout</button>

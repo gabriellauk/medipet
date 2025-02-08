@@ -1,13 +1,13 @@
 import { BrowserRouter } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
-import MainContent from './MainContent.tsx';
 import '@mantine/core/styles.css';
+import SplashPage from './pages/SplashPage.tsx';
 
 function App() {
   return (
     <BrowserRouter>
       <MantineProvider>
-        <MainContent />
+        <SplashPage />
       </MantineProvider>
     </BrowserRouter>
   );
