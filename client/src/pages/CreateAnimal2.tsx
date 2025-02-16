@@ -78,9 +78,7 @@ export function CreateAnimal2() {
           } else {
             setSubmissionError(undefined);
             setFormErrors({});
-            console.log("Just before test line")
             navigate('/test');
-            console.log("Just after test line")
           }
         }
       };

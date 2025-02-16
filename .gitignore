@@ -163,3 +163,4 @@ cython_debug/
 
 # General
 *.db
+_plan/

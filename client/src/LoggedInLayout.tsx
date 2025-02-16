@@ -1,16 +1,10 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import CreateAnimal from './pages/CreateAnimal.tsx';
-import ApiProvider from './contexts/ApiProvider';
-
+import { Outlet } from 'react-router-dom';
 import { AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import Welcome from './components/Welcome.tsx';
 import NavMenu from './components/NavMenu.tsx';
-import TestMessage from './components/TestMessage.tsx';
-import TestProtectedMessage from './components/TestProtectedMessage.tsx';
 import Header from './components/Header.tsx';
 
-function MainContent() {
+function LoggedInLayout() {
   const [opened, { toggle }] = useDisclosure();
 
   return (
@@ -23,7 +17,6 @@ function MainContent() {
       }}
       padding="md"
     >
-      <ApiProvider>
         <AppShell.Header>
           <Group h="100%" px="md">
             <Burger
@@ -41,17 +34,10 @@ function MainContent() {
         </AppShell.Navbar>
 
         <AppShell.Main>
-          <Routes>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/test" element={<TestMessage />} />
-            <Route path="/test-protected" element={<TestProtectedMessage />} />
-            <Route path="/add-a-pet" element={<CreateAnimal />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+          <Outlet />
         </AppShell.Main>
-      </ApiProvider>
     </AppShell>
   );
 }
 
-export default MainContent;
+export default LoggedInLayout;
