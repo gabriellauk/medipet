@@ -38,6 +38,10 @@ class Animal(BaseSchema):
     animal_type_id: int
 
 
+class Animals(BaseSchema):
+    data: List[Animal]
+
+
 class CreateAnimal(BaseSchema):
     name: str
     animal_type_id: int

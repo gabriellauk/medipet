@@ -41,6 +41,10 @@ def get_animal(animal_id: int) -> models.Animal | None:
     return models.Animal.query.filter(models.Animal.id == animal_id).one_or_none()
 
 
+def get_animals_for_user(user: models.User) -> List[models.Animal]:
+    return models.Animal.query.filter(models.Animal.user == user).all()
+
+
 def create_symptom(data: schemas.CreateSymptom, animal: models.Animal) -> models.Symptom:
     symptom = models.Symptom(description=data.description, date=data.date, animal=animal)
     db.session.add(symptom)

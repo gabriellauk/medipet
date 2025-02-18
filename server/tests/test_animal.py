@@ -142,3 +142,41 @@ def test_get_animal_fails_user_doesnt_have_permission(logged_in_client: FlaskCli
 
     assert response.status_code == 403
     assert response.json["error"] == "403 Forbidden: User cannot access this animal"
+
+
+def test_get_animals(logged_in_client: FlaskClient) -> None:
+    with logged_in_client.session_transaction() as session:
+        user = session.get("user")
+        email = user["email"]
+
+    user = models.User(email=email)
+    other_user = models.User(email="somebody@else.com")
+    db.session.add_all([user, other_user])
+    db.session.commit()
+    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one_or_none()
+    assert animal_type
+    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    other_user_animal = models.Animal(name="Bert", animal_type=animal_type, user=other_user)
+    db.session.add_all([animal, other_user_animal])
+    db.session.commit()
+
+    response = logged_in_client.get("api/animal")
+
+    assert response.status_code == 200
+
+    assert response.json == {"data": [{"id": 1, "name": "Fluffy", "animalTypeId": 2}]}
+
+
+def test_get_animals_empty_list(logged_in_client: FlaskClient) -> None:
+    with logged_in_client.session_transaction() as session:
+        user = session.get("user")
+        email = user["email"]
+
+    user = models.User(email=email)
+    db.session.add(user)
+    db.session.commit()
+
+    response = logged_in_client.get("api/animal")
+
+    assert response.status_code == 200
+    assert response.json == {"data": []}

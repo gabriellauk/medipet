@@ -44,6 +44,16 @@ def get_animal(user, animal_id: id) -> schemas.Animal:
 
 
 @requires_auth
+def get_animals(user) -> schemas.Animal:
+    if (user_record := store.get_user_by_email(user["email"])) is None:
+        raise BadRequest("User record not found")
+
+    animals = store.get_animals_for_user(user_record)
+
+    return [schemas.Animal.model_validate(animal) for animal in animals]
+
+
+@requires_auth
 def create_symptom(user, animal_id: int, data: schemas.CreateSymptom) -> schemas.Symptom:
     if (animal := store.get_animal(animal_id)) is None:
         raise BadRequest("Animal not found")
