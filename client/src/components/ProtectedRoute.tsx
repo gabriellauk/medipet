@@ -1,36 +1,36 @@
-import { useEffect, useState } from "react";
-import { useApi } from "../contexts/ApiProvider";
-import { Navigate, Outlet } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useApi } from '../contexts/ApiProvider';
+import { Navigate, Outlet } from 'react-router-dom';
 
 export default function ProtectedRoute() {
-    const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+  const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-    const api = useApi();
-    
-      useEffect(() => {
-        checkUserStatus();
-      }, []);
-    
-      const checkUserStatus = async () => {
-        try {
-          const response = await api.get('/user');
-          setUserIsLoggedIn(response.body.isLoggedIn);
-        } catch (error) {
-          console.error('Error checking user status:', error);
-          setUserIsLoggedIn(false)
-        }
-        finally {
-          setIsLoading(false)
-        }
+  const api = useApi();
 
-      };
+  useEffect(() => {
+    checkUserStatus();
+  }, []);
 
-    if (isLoading) {
-      return <div>Loading...</div>;
+  const checkUserStatus = async () => {
+    try {
+      const response = await api.get('/user');
+      setUserIsLoggedIn(response.body.isLoggedIn);
+    } catch (error) {
+      console.error('Error checking user status:', error);
+      setUserIsLoggedIn(false);
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    if (!userIsLoggedIn) { return <Navigate to="/login" replace />; }
-    
-    return <Outlet />;
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!userIsLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
 }

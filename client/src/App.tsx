@@ -14,20 +14,23 @@ function App() {
   return (
     <BrowserRouter>
       <MantineProvider>
-      <ApiProvider>
-      <Routes>
-        <Route path="/" element={<AuthRedirect />} />
-        <Route path="/login" element={<SplashPage />} />
-        <Route path="*" element={<Navigate to="/" />} />
-        <Route element={<ProtectedRoute />}>
-        <Route element={<LoggedInLayout />}>
-        <Route path="/test" element={<TestMessage />} />
-        <Route path="/test-protected" element={<TestProtectedMessage />} />
-        <Route path="/add-a-pet" element={<CreateAnimal />} />
-        </Route>
-        </Route>
-      </Routes>
-  </ApiProvider>
+        <ApiProvider>
+          <Routes>
+            <Route path="/" element={<AuthRedirect />} />
+            <Route path="/login" element={<SplashPage />} />
+            <Route path="*" element={<Navigate to="/" />} />
+            <Route element={<ProtectedRoute />}>
+              <Route element={<LoggedInLayout />}>
+                <Route path="/test" element={<TestMessage />} />
+                <Route
+                  path="/test-protected"
+                  element={<TestProtectedMessage />}
+                />
+                <Route path="/add-a-pet" element={<CreateAnimal />} />
+              </Route>
+            </Route>
+          </Routes>
+        </ApiProvider>
       </MantineProvider>
     </BrowserRouter>
   );
