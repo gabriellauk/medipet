@@ -34,5 +34,5 @@ def client(app):
 @pytest.fixture
 def logged_in_client(client):
     with client.session_transaction() as session:
-        session["user"] = {"given_name": "First name", "email": "test@test.com"}
+        session["user"] = {"given_name": "First name", "family_name": "Second name", "email": "test@test.com"}
     return client

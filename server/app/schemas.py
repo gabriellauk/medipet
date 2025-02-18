@@ -18,6 +18,11 @@ class BaseSchema(BaseModel):
         return super().model_dump(**kwargs)
 
 
+class User(BaseSchema):
+    first_name: str
+    last_name: str
+
+
 class AnimalType(BaseSchema):
     id: int
     name: str

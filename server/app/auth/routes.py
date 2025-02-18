@@ -22,8 +22,8 @@ def authenticate():
 
 @auth.route("/api/user", methods=["GET"])
 def get_user():
-    is_logged_in = controller.get_user_login_status()
-    return jsonify({"isLoggedIn": is_logged_in})
+    user = controller.get_user()
+    return jsonify(user.model_dump())
 
 
 @auth.route("/api/logout", methods=["POST"])

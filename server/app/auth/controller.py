@@ -3,6 +3,9 @@ from flask import session
 from app import store
 
 from app.extensions import oauth
+from app import schemas
+
+from werkzeug.exceptions import Unauthorized
 
 
 def authenticate():
@@ -15,10 +18,11 @@ def authenticate():
         store.create_user(email)
 
 
-def get_user_login_status():
+def get_user() -> schemas.User:
     user = session.get("user")
-    is_logged_in = False
-    if user:
-        is_logged_in = True
+    if user is None:
+        raise Unauthorized("Authentication required")
+    first_name = user.get("given_name", None)
+    last_name = user.get("family_name", None)
 
-    return is_logged_in
+    return schemas.User(first_name=first_name, last_name=last_name)
