@@ -6,6 +6,8 @@ from . import auth
 
 from app.extensions import oauth
 
+from werkzeug.exceptions import Unauthorized
+
 
 @auth.route("/api/login", methods=["POST"])
 def login():
@@ -22,8 +24,11 @@ def authenticate():
 
 @auth.route("/api/user", methods=["GET"])
 def get_user():
-    user = controller.get_user()
-    return jsonify(user.model_dump())
+    try:
+        user = controller.get_user()
+        return jsonify(user.model_dump())
+    except Unauthorized:
+        return "", 401
 
 
 @auth.route("/api/logout", methods=["POST"])

@@ -74,4 +74,8 @@ class Symptom(SymptomFields):
     id: int
 
 
+class Symptoms(BaseSchema):
+    data: List[Symptom]
+
+
 class CreateSymptom(SymptomFields): ...

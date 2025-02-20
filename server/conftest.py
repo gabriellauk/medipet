@@ -1,4 +1,5 @@
 import os
+
 import pytest
 from app import create_app
 from app.extensions import db
@@ -16,19 +17,28 @@ def app():
         yield app
 
 
-@pytest.fixture
-def client(app):
+@pytest.fixture(scope="function")
+def session(app):
     with app.app_context():
         db.create_all()
-        db.session.add_all([AnimalType(name="Cat"), AnimalType(name="Dog"), AnimalType(name="Rabbit")])
-        db.session.commit()
+        yield db.session
+        db.session.remove()
+        db.drop_all()
+
+
+@pytest.fixture(scope="function")
+def client(app, session):
+    with app.app_context():
+        try:
+            session.add_all([AnimalType(name="Cat"), AnimalType(name="Dog"), AnimalType(name="Rabbit")])
+            session.commit()
+        except Exception:
+            session.rollback()
+            raise
 
     client = app.test_client()
 
     yield client
-
-    with app.app_context():
-        db.drop_all()
 
 
 @pytest.fixture

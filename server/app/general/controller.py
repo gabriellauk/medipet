@@ -1,3 +1,4 @@
+from typing import List
 from app.decorators import requires_auth
 from app import store, schemas
 
@@ -67,3 +68,19 @@ def create_symptom(user, animal_id: int, data: schemas.CreateSymptom) -> schemas
     symptom = store.create_symptom(data, animal)
 
     return schemas.Symptom.model_validate(symptom)
+
+
+@requires_auth
+def get_symptoms_for_animal(user, animal_id: int) -> List[schemas.Symptom]:
+    if (animal := store.get_animal(animal_id)) is None:
+        raise BadRequest("Animal not found")
+
+    if (user_record := store.get_user_by_email(user["email"])) is None:
+        raise BadRequest("User record not found")
+
+    if animal.user != user_record:
+        raise Forbidden("User cannot access this animal")
+
+    symptoms = store.get_symptoms_for_animal(animal)
+
+    return [schemas.Symptom.model_validate(symptom) for symptom in symptoms]

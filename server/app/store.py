@@ -51,3 +51,7 @@ def create_symptom(data: schemas.CreateSymptom, animal: models.Animal) -> models
     db.session.commit()
 
     return symptom
+
+
+def get_symptoms_for_animal(animal: models.Animal) -> List[models.Symptom]:
+    return models.Symptom.query.filter(models.Symptom.animal == animal).order_by(models.Symptom.date.desc()).all()
