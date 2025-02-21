@@ -1,13 +1,18 @@
 from typing import List
+
+from flask import session
 from app.decorators import requires_auth
 from app import store, schemas
 
 from werkzeug.exceptions import BadRequest, Forbidden
 
+from app import models
+
 
 @requires_auth
 def test_protected(user):
-    name = user.get("given_name")
+    user_session = session.get("user")
+    name = user_session.get("given_name")
     return name
 
 
@@ -18,51 +23,39 @@ def get_animal_types() -> list[schemas.AnimalType]:
 
 
 @requires_auth
-def create_animal(user, data: schemas.CreateAnimal) -> schemas.Animal:
+def create_animal(user: models.User, data: schemas.CreateAnimal) -> schemas.Animal:
     if (animal_type := store.get_animal_type_by_id(data.animal_type_id)) is None:
         raise BadRequest("Animal type not found")
 
-    if (user_record := store.get_user_by_email(user["email"])) is None:
-        raise BadRequest("User record not found")
-
-    animal = store.create_animal(data.name, animal_type, user_record)
+    animal = store.create_animal(data.name, animal_type, user)
 
     return schemas.Animal.model_validate(animal)
 
 
 @requires_auth
-def get_animal(user, animal_id: id) -> schemas.Animal:
+def get_animal(user: models.User, animal_id: id) -> schemas.Animal:
     if (animal := store.get_animal(animal_id)) is None:
         raise BadRequest("Animal not found")
 
-    if (user_record := store.get_user_by_email(user["email"])) is None:
-        raise BadRequest("User record not found")
-
-    if animal.user != user_record:
+    if animal.user != user:
         raise Forbidden("User cannot access this animal")
 
     return schemas.Animal.model_validate(animal)
 
 
 @requires_auth
-def get_animals(user) -> schemas.Animal:
-    if (user_record := store.get_user_by_email(user["email"])) is None:
-        raise BadRequest("User record not found")
-
-    animals = store.get_animals_for_user(user_record)
+def get_animals(user: models.User) -> schemas.Animal:
+    animals = store.get_animals_for_user(user)
 
     return [schemas.Animal.model_validate(animal) for animal in animals]
 
 
 @requires_auth
-def create_symptom(user, animal_id: int, data: schemas.CreateSymptom) -> schemas.Symptom:
+def create_symptom(user: models.User, animal_id: int, data: schemas.CreateSymptom) -> schemas.Symptom:
     if (animal := store.get_animal(animal_id)) is None:
         raise BadRequest("Animal not found")
 
-    if (user_record := store.get_user_by_email(user["email"])) is None:
-        raise BadRequest("User record not found")
-
-    if animal.user != user_record:
+    if animal.user != user:
         raise Forbidden("User cannot access this animal")
 
     symptom = store.create_symptom(data, animal)
@@ -71,14 +64,11 @@ def create_symptom(user, animal_id: int, data: schemas.CreateSymptom) -> schemas
 
 
 @requires_auth
-def get_symptoms_for_animal(user, animal_id: int) -> List[schemas.Symptom]:
+def get_symptoms_for_animal(user: models.User, animal_id: int) -> List[schemas.Symptom]:
     if (animal := store.get_animal(animal_id)) is None:
         raise BadRequest("Animal not found")
 
-    if (user_record := store.get_user_by_email(user["email"])) is None:
-        raise BadRequest("User record not found")
-
-    if animal.user != user_record:
+    if animal.user != user:
         raise Forbidden("User cannot access this animal")
 
     symptoms = store.get_symptoms_for_animal(animal)

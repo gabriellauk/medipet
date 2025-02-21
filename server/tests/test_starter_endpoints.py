@@ -12,4 +12,4 @@ def test_test_protected_logged_in(logged_in_client):
 
 def test_test_protected_not_logged_in(client):
     response = client.get("api/test-protected")
-    assert response.status_code == 403
+    assert response.status_code == 401

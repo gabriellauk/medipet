@@ -3,7 +3,7 @@ import os
 import pytest
 from app import create_app
 from app.extensions import db
-from app.models import AnimalType
+from app.models import AnimalType, User
 
 
 @pytest.fixture(scope="session")
@@ -30,7 +30,9 @@ def session(app):
 def client(app, session):
     with app.app_context():
         try:
-            session.add_all([AnimalType(name="Cat"), AnimalType(name="Dog"), AnimalType(name="Rabbit")])
+            session.add_all(
+                [AnimalType(name="Cat"), AnimalType(name="Dog"), AnimalType(name="Rabbit"), User(email="test@test.com")]
+            )
             session.commit()
         except Exception:
             session.rollback()
