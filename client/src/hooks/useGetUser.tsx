@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useApi } from '../contexts/ApiProvider';
+import { useApi } from '../contexts/ApiContext';
 
 export function useGetUser() {
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
@@ -14,7 +14,7 @@ export function useGetUser() {
     };
 
     checkUserStatus();
-  }, []);
+  });
 
   return { userIsLoggedIn, isLoading: isCheckingLoginStatus };
 }

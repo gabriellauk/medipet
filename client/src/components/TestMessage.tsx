@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Loader } from '@mantine/core';
-import { useApi } from '../contexts/ApiProvider';
+import { useApi } from '../contexts/ApiContext';
 
 export default function TestMessage() {
   const [testData, setTestData] = useState<string | null>();

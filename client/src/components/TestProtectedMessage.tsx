@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useApi } from '../contexts/ApiProvider';
+import { useApi } from '../contexts/ApiContext';
 import { Loader } from '@mantine/core';
 
 export default function TestProtectedMessage() {

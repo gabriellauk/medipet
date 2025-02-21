@@ -14,7 +14,7 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import InputField from '../components/InputField';
 import { useNavigate } from 'react-router-dom';
-import { useApi } from '../contexts/ApiProvider';
+import { useApi } from '../contexts/ApiContext';
 import ErrorArea from '../components/ErrorArea';
 
 const logoutUrl = import.meta.env.VITE_REACT_APP_BASE_API_URL + '/logout';
