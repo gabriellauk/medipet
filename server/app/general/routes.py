@@ -61,6 +61,13 @@ def create_symptom(animal_id: int):
         return jsonify({"error": e.errors()}), 422
 
 
+@general.route("/api/animal/<animal_id>/symptom/<symptom_id>", methods=["DELETE"])
+def delete_symptom(animal_id: int, symptom_id: int):
+    controller.delete_symptom(animal_id, symptom_id)
+
+    return "", 204
+
+
 @general.route("/api/animal/<animal_id>/symptom", methods=["GET"])
 def get_symptoms_for_animal(animal_id: int):
     symptoms = controller.get_symptoms_for_animal(animal_id)

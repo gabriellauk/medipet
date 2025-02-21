@@ -110,3 +110,54 @@ def test_get_symptoms_for_animal_fails_user_cant_access_animal(logged_in_client:
 
     assert response.status_code == 403
     assert response.json["error"] == "403 Forbidden: User cannot access this animal"
+
+
+def test_delete_symptom(logged_in_client: FlaskClient) -> None:
+    user = db.session.query(models.User).one()
+    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
+    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    symptom = models.Symptom(description="Some observed behaviour 1", date=date(2024, 12, 10), animal=animal)
+    db.session.add(symptom)
+    db.session.commit()
+
+    response = logged_in_client.delete(f"api/animal/{animal.id}/symptom/{symptom.id}")
+
+    assert response.status_code == 204
+
+
+def test_delete_symptom_fails_animal_not_found(logged_in_client: FlaskClient) -> None:
+    response = logged_in_client.delete("api/animal/4/symptom/1")
+
+    assert response.status_code == 400
+    assert response.json["error"] == "400 Bad Request: Animal not found"
+
+
+def test_delete_symptom_fails_user_cant_access_animal(logged_in_client: FlaskClient) -> None:
+    user = models.User(email="some_other@user.com")
+    db.session.add(user)
+    db.session.commit()
+
+    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
+    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    symptom = models.Symptom(description="Some observed behaviour 1", date=date(2024, 12, 10), animal=animal)
+    db.session.add(symptom)
+    db.session.commit()
+
+    response = logged_in_client.delete(f"api/animal/{animal.id}/symptom/{symptom.id}")
+
+    assert response.status_code == 403
+    assert response.json["error"] == "403 Forbidden: User cannot access this animal"
+
+
+def test_delete_symptom_fails_symptom_not_found(logged_in_client: FlaskClient) -> None:
+    user = db.session.query(models.User).one()
+
+    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
+    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    db.session.add(animal)
+    db.session.commit()
+
+    response = logged_in_client.delete(f"api/animal/{animal.id}/symptom/4")
+
+    assert response.status_code == 400
+    assert response.json["error"] == f"400 Bad Request: Symptom 4 not found for animal {animal.id}"

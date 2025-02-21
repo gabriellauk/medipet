@@ -53,5 +53,14 @@ def create_symptom(data: schemas.CreateSymptom, animal: models.Animal) -> models
     return symptom
 
 
+def get_symptom(symptom_id) -> models.Symptom | None:
+    return models.Symptom.query.filter(models.Symptom.id == symptom_id).one_or_none()
+
+
+def delete_symptom(symptom: models.Symptom) -> None:
+    db.session.delete(symptom)
+    db.session.commit()
+
+
 def get_symptoms_for_animal(animal: models.Animal) -> List[models.Symptom]:
     return models.Symptom.query.filter(models.Symptom.animal == animal).order_by(models.Symptom.date.desc()).all()
