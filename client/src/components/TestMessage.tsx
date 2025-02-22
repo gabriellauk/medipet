@@ -18,7 +18,7 @@ export default function TestMessage() {
     })();
   }, [api]);
 
-  const { state } = useAuth();
+  const { userInfo } = useAuth();
 
   return (
     <>
@@ -33,7 +33,7 @@ export default function TestMessage() {
               <h1>Test data: {testData}</h1>
               <h2>
                 <p>
-                  Hello {state.user?.firstName} {state.user?.lastName}
+                  Hello {userInfo?.firstName} {userInfo?.lastName}
                 </p>
               </h2>
             </>

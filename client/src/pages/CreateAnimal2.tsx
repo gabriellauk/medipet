@@ -16,10 +16,12 @@ import InputField from '../components/InputField';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../contexts/ApiContext';
 import ErrorArea from '../components/ErrorArea';
-
-const logoutUrl = import.meta.env.VITE_REACT_APP_BASE_API_URL + '/logout';
+import { useAnimals } from '../contexts/AnimalsContext';
+import { useAuth } from '../contexts/AuthContext';
 
 export function CreateAnimal2() {
+  const { logout } = useAuth();
+  const { refreshAnimals } = useAnimals();
   interface CreateAnimalFormErrors {
     name?: string;
     animalType?: string;
@@ -76,6 +78,7 @@ export function CreateAnimal2() {
       } else {
         setSubmissionError(undefined);
         setFormErrors({});
+        refreshAnimals();
         navigate('/test');
       }
     }
@@ -122,7 +125,7 @@ export function CreateAnimal2() {
           <Center inline mt="lg">
             <IconArrowLeft size={12} stroke={1.5} />
             <Box ml={5}>
-              <form action={logoutUrl} method="POST">
+              <form onSubmit={logout}>
                 <UnstyledButton type="submit">Log out</UnstyledButton>
               </form>
             </Box>

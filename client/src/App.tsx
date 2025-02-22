@@ -10,6 +10,8 @@ import TestProtectedMessage from './components/TestProtectedMessage.tsx';
 import CreateAnimal from './pages/CreateAnimal.tsx';
 import ApiContextProvider from './contexts/ApiContextProvider.tsx';
 import AuthContextProvider from './contexts/AuthContextProvider.tsx';
+import { CreateAnimal2 } from './pages/CreateAnimal2.tsx';
+import AnimalsContextProvider from './contexts/AnimalsContextProvider.tsx';
 
 function App() {
   return (
@@ -17,21 +19,24 @@ function App() {
       <MantineProvider>
         <ApiContextProvider>
           <AuthContextProvider>
-            <Routes>
-              <Route path="/" element={<AuthRedirect />} />
-              <Route path="/login" element={<SplashPage />} />
-              <Route path="*" element={<Navigate to="/" />} />
-              <Route element={<ProtectedRoute />}>
-                <Route element={<LoggedInLayout />}>
-                  <Route path="/test" element={<TestMessage />} />
-                  <Route
-                    path="/test-protected"
-                    element={<TestProtectedMessage />}
-                  />
-                  <Route path="/add-a-pet" element={<CreateAnimal />} />
+            <AnimalsContextProvider>
+              <Routes>
+                <Route path="/" element={<AuthRedirect />} />
+                <Route path="/login" element={<SplashPage />} />
+                <Route path="/complete-signup" element={<CreateAnimal2 />} />
+                <Route path="*" element={<Navigate to="/" />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route element={<LoggedInLayout />}>
+                    <Route path="/test" element={<TestMessage />} />
+                    <Route
+                      path="/test-protected"
+                      element={<TestProtectedMessage />}
+                    />
+                    <Route path="/add-a-pet" element={<CreateAnimal />} />
+                  </Route>
                 </Route>
-              </Route>
-            </Routes>
+              </Routes>
+            </AnimalsContextProvider>
           </AuthContextProvider>
         </ApiContextProvider>
       </MantineProvider>

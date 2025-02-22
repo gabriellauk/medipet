@@ -1,25 +1,29 @@
 import { useEffect, useState } from 'react';
 import { useApi } from './ApiContext';
-import { AuthContext, AuthState } from './AuthContext';
+import { AuthContext, User } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function AuthContextProvider({
   children,
 }: {
   children?: React.ReactNode;
 }) {
-  const [state, setState] = useState<AuthState>({
-    authenticated: false,
-    user: null,
-    loading: true,
-  });
+  const [userInfo, setUserInfo] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authenticationStateIsLoading, setAuthenticationStateIsLoading] =
+    useState(true);
 
   const api = useApi();
+  const navigate = useNavigate();
 
   const logout = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const response = await api.post('/logout');
     if (response.status === 200) {
-      setState({ authenticated: false, user: null, loading: false });
+      setIsAuthenticated(false);
+      setUserInfo(null);
+      setAuthenticationStateIsLoading(false);
+      navigate('/login');
     }
   };
 
@@ -28,28 +32,31 @@ export default function AuthContextProvider({
     const checkLoginStatus = async () => {
       const response = await api.get('/user');
       if (response.status === 200) {
-        setState({
-          authenticated: true,
-          user: {
-            firstName: response.body.firstName,
-            lastName: response.body.lastName,
-          },
-          loading: false,
+        setIsAuthenticated(true);
+        setUserInfo({
+          firstName: response.body.firstName,
+          lastName: response.body.lastName,
         });
+        setAuthenticationStateIsLoading(false);
       } else {
-        setState({
-          authenticated: false,
-          user: null,
-          loading: false,
-        });
+        setIsAuthenticated(false);
+        setUserInfo(null);
+        setAuthenticationStateIsLoading(false);
       }
     };
 
     checkLoginStatus();
-  });
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ state, logout }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        userInfo,
+        authenticationStateIsLoading,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
