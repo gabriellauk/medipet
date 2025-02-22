@@ -34,5 +34,4 @@ def get_user():
 @auth.route("/api/logout", methods=["POST"])
 def logout():
     session.pop("user", None)
-    REDIRECT_URL = current_app.config["CORS_ORIGINS"] + "/test"
-    return redirect(REDIRECT_URL)
+    return jsonify({"message": "Logged out successfully"})

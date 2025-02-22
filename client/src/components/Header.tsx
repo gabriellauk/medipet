@@ -1,14 +1,12 @@
 import { Title, ThemeIcon } from '@mantine/core';
 import { IconPawFilled } from '@tabler/icons-react';
-import { useGetUser } from '../hooks/useGetUser.tsx';
+import { useAuth } from '../contexts/AuthContext.ts';
 
 export default function Header() {
-  const { userIsLoggedIn } = useGetUser();
+  const { state, logout } = useAuth();
 
   const fullUrlToLoginEndpoint =
     import.meta.env.VITE_REACT_APP_BASE_API_URL + '/login';
-  const fullUrlToLogoutEndpoint =
-    import.meta.env.VITE_REACT_APP_BASE_API_URL + '/logout';
 
   return (
     <>
@@ -18,8 +16,8 @@ export default function Header() {
         </ThemeIcon>{' '}
         MediPet
       </Title>
-      {userIsLoggedIn ? (
-        <form action={fullUrlToLogoutEndpoint} method="POST">
+      {state.authenticated ? (
+        <form onSubmit={logout}>
           <button type="submit">Logout</button>
         </form>
       ) : (

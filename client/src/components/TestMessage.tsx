@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Loader } from '@mantine/core';
 import { useApi } from '../contexts/ApiContext';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function TestMessage() {
   const [testData, setTestData] = useState<string | null>();
@@ -17,6 +18,8 @@ export default function TestMessage() {
     })();
   }, [api]);
 
+  const { state } = useAuth();
+
   return (
     <>
       {testData === undefined ? (
@@ -28,6 +31,11 @@ export default function TestMessage() {
           ) : (
             <>
               <h1>Test data: {testData}</h1>
+              <h2>
+                <p>
+                  Hello {state.user?.firstName} {state.user?.lastName}
+                </p>
+              </h2>
             </>
           )}
         </>

@@ -1,14 +1,14 @@
 import { Navigate } from 'react-router-dom';
-import { useGetUser } from '../hooks/useGetUser';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function AuthRedirect() {
-  const { userIsLoggedIn, isLoading } = useGetUser();
+  const { state } = useAuth();
 
-  if (isLoading) {
+  if (state.loading) {
     return <div>Loading...</div>;
   }
 
-  if (userIsLoggedIn) {
+  if (state.authenticated) {
     return <Navigate to="/test" replace />;
   }
 
