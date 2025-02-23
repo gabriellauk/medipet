@@ -2,7 +2,8 @@ import { Outlet } from 'react-router-dom';
 import { AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import NavMenu from './components/NavMenu.tsx';
-import Header from './components/Header.tsx';
+import classes from './LoggedInLayout.module.css';
+import Logo from './components/Logo.tsx';
 
 function LoggedInLayout() {
   const [opened, { toggle }] = useDisclosure();
@@ -17,10 +18,10 @@ function LoggedInLayout() {
       }}
       padding="md"
     >
-      <AppShell.Header>
+      <AppShell.Header className={classes.header}>
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <Header />
+          <Logo />
         </Group>
       </AppShell.Header>
 
