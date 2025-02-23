@@ -32,6 +32,13 @@ export default function NavMenu() {
         label="Add a Pet"
         leftSection={<IconHome2 size={16} stroke={1.5} />}
       />
+
+      <MantineNavLink
+        component={RouterNavLink}
+        to="/observation-diary"
+        label="Observation Diary"
+        leftSection={<IconHome2 size={16} stroke={1.5} />}
+      />
     </>
   );
 }

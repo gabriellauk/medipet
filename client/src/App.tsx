@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 import AuthRedirect from './components/AuthRedirect.tsx';
 import SplashPage from './pages/SplashPage.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
@@ -12,6 +13,7 @@ import ApiContextProvider from './contexts/ApiContextProvider.tsx';
 import AuthContextProvider from './contexts/AuthContextProvider.tsx';
 import { CreateAnimal2 } from './pages/CreateAnimal2.tsx';
 import AnimalsContextProvider from './contexts/AnimalsContextProvider.tsx';
+import ObservationDiary from './pages/ObservationDiary.tsx';
 
 function App() {
   return (
@@ -33,6 +35,10 @@ function App() {
                       element={<TestProtectedMessage />}
                     />
                     <Route path="/add-a-pet" element={<CreateAnimal />} />
+                    <Route
+                      path="/observation-diary"
+                      element={<ObservationDiary />}
+                    />
                   </Route>
                 </Route>
               </Routes>
