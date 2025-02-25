@@ -2,7 +2,7 @@ from flask import jsonify, request
 
 from . import controller
 
-from app.schemas import AnimalTypes, Animals, CreateAnimal, CreateSymptom, Symptoms
+from app.schemas import AnimalTypes, Animals, CreateAnimal, CreateSymptom, Symptoms, UpdateSymptom
 
 from pydantic import ValidationError
 
@@ -66,6 +66,16 @@ def delete_symptom(animal_id: int, symptom_id: int):
     controller.delete_symptom(animal_id, symptom_id)
 
     return "", 204
+
+
+@general.route("/api/animal/<animal_id>/symptom/<symptom_id>", methods=["PATCH"])
+def update_symptom(animal_id: int, symptom_id: int):
+    try:
+        data = UpdateSymptom.model_validate(request.json)
+        symptom = controller.update_symptom(animal_id, symptom_id, data)
+        return jsonify(symptom.model_dump()), 200
+    except ValidationError as e:
+        return jsonify({"error": e.errors()}), 422
 
 
 @general.route("/api/animal/<animal_id>/symptom", methods=["GET"])

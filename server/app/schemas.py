@@ -79,3 +79,8 @@ class Symptoms(BaseSchema):
 
 
 class CreateSymptom(SymptomFields): ...
+
+
+class UpdateSymptom(BaseSchema):
+    description: str | None = None
+    date: date_type | None = None

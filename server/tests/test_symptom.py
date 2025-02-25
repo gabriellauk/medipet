@@ -5,6 +5,8 @@ from app.extensions import db
 
 from flask.testing import FlaskClient
 
+import pytest
+
 
 def test_create_symptom(logged_in_client: FlaskClient) -> None:
     user = db.session.query(models.User).one()
@@ -161,3 +163,46 @@ def test_delete_symptom_fails_symptom_not_found(logged_in_client: FlaskClient) -
 
     assert response.status_code == 400
     assert response.json["error"] == f"400 Bad Request: Symptom 4 not found for animal {animal.id}"
+
+
+def test_update_symptom(logged_in_client: FlaskClient) -> None:
+    user = db.session.query(models.User).one()
+    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
+    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    symptom = models.Symptom(description="Some observed behaviour 1", date=date(2024, 12, 10), animal=animal)
+    db.session.add(symptom)
+    db.session.commit()
+
+    request_data = {"description": "New description", "date": "2025-01-06"}
+
+    response = logged_in_client.patch(f"api/animal/{animal.id}/symptom/{symptom.id}", json=request_data)
+
+    assert response.status_code == 200
+    assert response.json["description"] == request_data["description"]
+    assert response.json["date"] == request_data["date"]
+
+
+@pytest.mark.parametrize("field_to_update", ["description", "date"])
+def test_update_symptom_partially(logged_in_client: FlaskClient, field_to_update: str) -> None:
+    user = db.session.query(models.User).one()
+    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
+    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    symptom = models.Symptom(description="Some observed behaviour 1", date=date(2024, 12, 10), animal=animal)
+    db.session.add(symptom)
+    db.session.commit()
+
+    if field_to_update == "description":
+        request_data = {"description": "New description"}
+    elif field_to_update == "date":
+        request_data = {"date": "2025-01-06"}
+
+    response = logged_in_client.patch(f"api/animal/{animal.id}/symptom/{symptom.id}", json=request_data)
+
+    assert response.status_code == 200
+
+    if field_to_update == "description":
+        assert response.json["description"] == request_data["description"]
+        assert response.json["date"] == str(symptom.date)
+    else:
+        assert response.json["description"] == symptom.description
+        assert response.json["date"] == request_data["date"]

@@ -62,5 +62,16 @@ def delete_symptom(symptom: models.Symptom) -> None:
     db.session.commit()
 
 
+def update_symptom(symptom: models.Symptom, data: schemas.UpdateSymptom) -> models.Symptom:
+    if data.description:
+        symptom.description = data.description
+    if data.date:
+        symptom.date = data.date
+
+    db.session.commit()
+
+    return symptom
+
+
 def get_symptoms_for_animal(animal: models.Animal) -> List[models.Symptom]:
     return models.Symptom.query.filter(models.Symptom.animal == animal).order_by(models.Symptom.date.desc()).all()
