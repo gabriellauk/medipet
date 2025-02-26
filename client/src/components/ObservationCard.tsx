@@ -7,19 +7,21 @@ export default function ObservationCard({
   description,
   animalId,
   deleteObservation,
+  onEditClick,
 }: {
   symptomId: number;
   date: string;
   description: string;
   animalId: number;
   deleteObservation: (animalId: number, symptomId: number) => void;
+  onEditClick: any;
 }) {
   return (
     <Card shadow="sm" padding="xl" radius="md" withBorder mb="lg">
       <Group justify="space-between" mt="xs" mb="xs">
         <Text fw={500}>{date}</Text>
         <Group>
-          <IconPencil />
+          <IconPencil onClick={onEditClick} />
           <IconTrash onClick={() => deleteObservation(animalId, symptomId)} />
         </Group>
       </Group>

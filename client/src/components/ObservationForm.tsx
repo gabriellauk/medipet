@@ -9,9 +9,11 @@ import dayjs from 'dayjs';
 
 type Props = {
   close: () => void;
+  mode: string;
+  itemId: number | null;
 };
 
-export function AddObservation({ close }: Props) {
+export function ObservationForm({ close, mode, itemId }: Props) {
   type CreateSymptomFormErrors = {
     date?: string;
     description?: string;
@@ -83,7 +85,9 @@ export function AddObservation({ close }: Props) {
 
   return (
     <>
-      <Title ta="center">Add an observation</Title>
+      <Title ta="center">
+        {mode == 'create' ? '!Add an observation' : 'Edit mode' + itemId}{' '}
+      </Title>
       <form onSubmit={onSubmit}>
         <ErrorArea error={submissionError} />
         <InputField

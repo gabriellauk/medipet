@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button, Drawer, Container } from '@mantine/core';
 import { useApi } from '../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
-import { AddObservation } from '../components/AddObservation';
+import { ObservationForm } from '../components/ObservationForm';
 import { useAnimals } from '../contexts/AnimalsContext';
 import ObservationCard from '../components/ObservationCard';
 
@@ -13,10 +13,14 @@ export default function ObservationDiary() {
     date: string;
   };
 
+  type DrawerMode = "create" | "update"
+
   const api = useApi();
   const { animals } = useAnimals();
   const animal = animals[0];
   const [opened, { open, close }] = useDisclosure(false);
+  const [drawerMode, setDrawerMode] = useState<DrawerMode | null>();
+  const [itemToEdit, setItemToEdit] = useState<number | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -47,6 +51,17 @@ export default function ObservationDiary() {
     );
   }
 
+  async function handleOpenDrawerCreate() {
+    setDrawerMode('create');
+    open();
+  }
+
+  async function handleOpenDrawerEdit(item: number) {
+    setDrawerMode('update');
+    setItemToEdit(item);
+    open();
+  }
+
   return (
     <Container>
       <h1>Observation diary</h1>
@@ -67,9 +82,13 @@ export default function ObservationDiary() {
         position="right"
         closeButtonProps={{ 'aria-label': 'Close drawer' }}
       >
-        <AddObservation close={close} />
+        {drawerMode == 'create' ? (
+          <ObservationForm close={close} mode={'create'} itemId={itemToEdit} />
+        ) : (
+          <ObservationForm close={close} mode={'update'} itemId={itemToEdit} />
+        )}
       </Drawer>
-      <Button onClick={open} radius="xl" mb="xl" size="md">
+      <Button onClick={handleOpenDrawerCreate} radius="xl" mb="xl" size="md">
         Add observation
       </Button>
       {observationsData.length > 0 &&
@@ -81,9 +100,9 @@ export default function ObservationDiary() {
             description={item.description}
             animalId={animal.id}
             deleteObservation={deleteObservation}
+            onEditClick={() => handleOpenDrawerEdit(item.id)}
           />
         ))}
-      ;
     </Container>
   );
 }
