@@ -104,3 +104,17 @@ def get_symptoms_for_animal(user: models.User, animal_id: int) -> List[schemas.S
     symptoms = store.get_symptoms_for_animal(animal)
 
     return [schemas.Symptom.model_validate(symptom) for symptom in symptoms]
+
+
+@requires_auth
+def get_symptom(user: models.User, animal_id: int, symptom_id: int) -> None:
+    if (animal := store.get_animal(animal_id)) is None:
+        raise BadRequest("Animal not found")
+
+    if animal.user != user:
+        raise Forbidden("User cannot access this animal")
+
+    if (symptom := store.get_symptom(symptom_id)) is None or symptom.animal != animal:
+        raise BadRequest(f"Symptom {symptom_id} not found for animal {animal_id}")
+
+    return schemas.Symptom.model_validate(symptom)

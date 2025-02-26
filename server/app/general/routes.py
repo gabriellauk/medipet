@@ -83,3 +83,10 @@ def get_symptoms_for_animal(animal_id: int):
     symptoms = controller.get_symptoms_for_animal(animal_id)
 
     return jsonify(Symptoms(data=[symptom for symptom in symptoms]).model_dump())
+
+
+@general.route("/api/animal/<animal_id>/symptom/<symptom_id>", methods=["GET"])
+def get_symptom(animal_id: int, symptom_id: int):
+    symptom = controller.get_symptom(animal_id, symptom_id)
+
+    return jsonify(symptom.model_dump()), 200

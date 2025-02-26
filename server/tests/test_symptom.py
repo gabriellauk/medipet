@@ -114,6 +114,21 @@ def test_get_symptoms_for_animal_fails_user_cant_access_animal(logged_in_client:
     assert response.json["error"] == "403 Forbidden: User cannot access this animal"
 
 
+def test_get_symptom(logged_in_client: FlaskClient) -> None:
+    user = db.session.query(models.User).one()
+    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
+    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    symptom = models.Symptom(description="Some observed behaviour 1", date=date(2024, 12, 10), animal=animal)
+    db.session.add(symptom)
+    db.session.commit()
+
+    response = logged_in_client.get(f"api/animal/{animal.id}/symptom/{symptom.id}")
+
+    assert response.status_code == 200
+    assert response.json["description"] == symptom.description
+    assert response.json["date"] == str(symptom.date)
+
+
 def test_delete_symptom(logged_in_client: FlaskClient) -> None:
     user = db.session.query(models.User).one()
     animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
