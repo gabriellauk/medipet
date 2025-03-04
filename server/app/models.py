@@ -37,3 +37,12 @@ class Symptom(db.Model):
     animal_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Animal.id), index=True)
 
     animal = relationship("Animal")
+
+
+class Weight(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    weight: so.Mapped[str] = so.mapped_column(sa.Integer, index=True)
+    date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, index=True)
+    animal_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Animal.id), index=True)
+
+    animal = relationship("Animal")
