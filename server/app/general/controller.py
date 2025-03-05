@@ -131,3 +131,17 @@ def create_weight(user: models.User, animal_id: int, data: schemas.CreateWeight)
     weight = store.create_weight(data, animal)
 
     return schemas.Weight.model_validate(weight)
+
+
+@requires_auth
+def delete_weight(user: models.User, animal_id: int, weight_id: int) -> None:
+    if (animal := store.get_animal(animal_id)) is None:
+        raise BadRequest("Animal not found")
+
+    if animal.user != user:
+        raise Forbidden("User cannot access this animal")
+
+    if (weight := store.get_weight(weight_id)) is None or weight.animal != animal:
+        raise BadRequest(f"Weight {weight_id} not found for animal {animal_id}")
+
+    store.delete_weight(weight)

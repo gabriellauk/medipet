@@ -83,3 +83,12 @@ def create_weight(data: schemas.CreateWeight, animal: models.Animal) -> models.W
     db.session.commit()
 
     return weight
+
+
+def get_weight(weight_id) -> models.Weight | None:
+    return models.Weight.query.filter(models.Weight.id == weight_id).one_or_none()
+
+
+def delete_weight(weight: models.Weight) -> None:
+    db.session.delete(weight)
+    db.session.commit()

@@ -100,3 +100,10 @@ def create_weight(animal_id: int):
         return jsonify(weight.model_dump()), 201
     except ValidationError as e:
         return jsonify({"error": e.errors()}), 422
+
+
+@general.route("/api/animal/<animal_id>/weight/<weight_id>", methods=["DELETE"])
+def delete_weight(animal_id: int, weight_id: int):
+    controller.delete_weight(animal_id, weight_id)
+
+    return "", 204
