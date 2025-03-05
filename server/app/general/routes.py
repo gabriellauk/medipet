@@ -2,7 +2,7 @@ from flask import jsonify, request
 
 from . import controller
 
-from app.schemas import AnimalTypes, Animals, CreateAnimal, CreateSymptom, Symptoms, UpdateSymptom
+from app.schemas import AnimalTypes, Animals, CreateAnimal, CreateSymptom, CreateWeight, Symptoms, UpdateSymptom
 
 from pydantic import ValidationError
 
@@ -90,3 +90,13 @@ def get_symptom(animal_id: int, symptom_id: int):
     symptom = controller.get_symptom(animal_id, symptom_id)
 
     return jsonify(symptom.model_dump()), 200
+
+
+@general.route("/api/animal/<animal_id>/weight", methods=["POST"])
+def create_weight(animal_id: int):
+    try:
+        data = CreateWeight.model_validate(request.json)
+        weight = controller.create_weight(animal_id, data)
+        return jsonify(weight.model_dump()), 201
+    except ValidationError as e:
+        return jsonify({"error": e.errors()}), 422

@@ -75,3 +75,11 @@ def update_symptom(symptom: models.Symptom, data: schemas.UpdateSymptom) -> mode
 
 def get_symptoms_for_animal(animal: models.Animal) -> List[models.Symptom]:
     return models.Symptom.query.filter(models.Symptom.animal == animal).order_by(models.Symptom.date.desc()).all()
+
+
+def create_weight(data: schemas.CreateWeight, animal: models.Animal) -> models.Weight:
+    weight = models.Weight(weight=data.weight, date=data.date, animal=animal)
+    db.session.add(weight)
+    db.session.commit()
+
+    return weight

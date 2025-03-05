@@ -84,3 +84,19 @@ class CreateSymptom(SymptomFields): ...
 class UpdateSymptom(BaseSchema):
     description: str | None = None
     date: date_type | None = None
+
+
+class WeightFields(BaseSchema):
+    weight: int
+    date: date_type
+
+    @field_serializer("date")
+    def serialize_date(self, dt: date_type, _info):
+        return dt.strftime("%Y-%m-%d")
+
+
+class Weight(WeightFields):
+    id: int
+
+
+class CreateWeight(WeightFields): ...

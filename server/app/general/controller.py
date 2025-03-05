@@ -118,3 +118,16 @@ def get_symptom(user: models.User, animal_id: int, symptom_id: int) -> None:
         raise BadRequest(f"Symptom {symptom_id} not found for animal {animal_id}")
 
     return schemas.Symptom.model_validate(symptom)
+
+
+@requires_auth
+def create_weight(user: models.User, animal_id: int, data: schemas.CreateWeight) -> schemas.Weight:
+    if (animal := store.get_animal(animal_id)) is None:
+        raise BadRequest("Animal not found")
+
+    if animal.user != user:
+        raise Forbidden("User cannot access this animal")
+
+    weight = store.create_weight(data, animal)
+
+    return schemas.Weight.model_validate(weight)
