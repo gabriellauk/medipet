@@ -89,6 +89,21 @@ def get_weight(weight_id) -> models.Weight | None:
     return models.Weight.query.filter(models.Weight.id == weight_id).one_or_none()
 
 
+def get_weights_for_animal(animal: models.Animal) -> List[models.Weight]:
+    return models.Weight.query.filter(models.Weight.animal == animal).order_by(models.Weight.date.desc()).all()
+
+
 def delete_weight(weight: models.Weight) -> None:
     db.session.delete(weight)
     db.session.commit()
+
+
+def update_weight(weight: models.Weight, data: schemas.UpdateWeight) -> models.Weight:
+    if data.weight:
+        weight.weight = data.weight
+    if data.date:
+        weight.date = data.date
+
+    db.session.commit()
+
+    return weight

@@ -2,7 +2,17 @@ from flask import jsonify, request
 
 from . import controller
 
-from app.schemas import AnimalTypes, Animals, CreateAnimal, CreateSymptom, CreateWeight, Symptoms, UpdateSymptom
+from app.schemas import (
+    AnimalTypes,
+    Animals,
+    CreateAnimal,
+    CreateSymptom,
+    CreateWeight,
+    Symptoms,
+    UpdateSymptom,
+    UpdateWeight,
+    Weights,
+)
 
 from pydantic import ValidationError
 
@@ -107,3 +117,27 @@ def delete_weight(animal_id: int, weight_id: int):
     controller.delete_weight(animal_id, weight_id)
 
     return "", 204
+
+
+@general.route("/api/animal/<animal_id>/weight/<weight_id>", methods=["GET"])
+def get_weight(animal_id: int, weight_id: int):
+    weight = controller.get_weight(animal_id, weight_id)
+
+    return jsonify(weight.model_dump()), 200
+
+
+@general.route("/api/animal/<animal_id>/weight/<weight_id>", methods=["PATCH"])
+def update_weight(animal_id: int, weight_id: int):
+    try:
+        data = UpdateWeight.model_validate(request.json)
+        weight = controller.update_weight(animal_id, weight_id, data)
+        return jsonify(weight.model_dump()), 200
+    except ValidationError as e:
+        return jsonify({"error": e.errors()}), 422
+
+
+@general.route("/api/animal/<animal_id>/weight", methods=["GET"])
+def get_weights_for_animal(animal_id: int):
+    weights = controller.get_weights_for_animal(animal_id)
+
+    return jsonify(Weights(data=[weight for weight in weights]).model_dump())

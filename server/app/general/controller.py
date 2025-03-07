@@ -145,3 +145,46 @@ def delete_weight(user: models.User, animal_id: int, weight_id: int) -> None:
         raise BadRequest(f"Weight {weight_id} not found for animal {animal_id}")
 
     store.delete_weight(weight)
+
+
+@requires_auth
+def get_weight(user: models.User, animal_id: int, weight_id: int) -> None:
+    if (animal := store.get_animal(animal_id)) is None:
+        raise BadRequest("Animal not found")
+
+    if animal.user != user:
+        raise Forbidden("User cannot access this animal")
+
+    if (weight := store.get_weight(weight_id)) is None or weight.animal != animal:
+        raise BadRequest(f"Weight {weight_id} not found for animal {animal_id}")
+
+    return schemas.Weight.model_validate(weight)
+
+
+@requires_auth
+def update_weight(user: models.User, animal_id: int, weight_id: int, data: schemas.UpdateWeight) -> schemas.Weight:
+    if (animal := store.get_animal(animal_id)) is None:
+        raise BadRequest("Animal not found")
+
+    if animal.user != user:
+        raise Forbidden("User cannot access this animal")
+
+    if (weight := store.get_weight(weight_id)) is None or weight.animal != animal:
+        raise BadRequest(f"Weight {weight_id} not found for animal {animal_id}")
+
+    weight = store.update_weight(weight, data)
+
+    return schemas.Weight.model_validate(weight)
+
+
+@requires_auth
+def get_weights_for_animal(user: models.User, animal_id: int) -> List[schemas.Weight]:
+    if (animal := store.get_animal(animal_id)) is None:
+        raise BadRequest("Animal not found")
+
+    if animal.user != user:
+        raise Forbidden("User cannot access this animal")
+
+    weights = store.get_weights_for_animal(animal)
+
+    return [schemas.Weight.model_validate(weight) for weight in weights]

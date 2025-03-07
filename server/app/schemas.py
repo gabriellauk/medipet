@@ -99,4 +99,13 @@ class Weight(WeightFields):
     id: int
 
 
+class Weights(BaseSchema):
+    data: List[Weight]
+
+
 class CreateWeight(WeightFields): ...
+
+
+class UpdateWeight(BaseSchema):
+    weight: int | None = None
+    date: date_type | None = None
