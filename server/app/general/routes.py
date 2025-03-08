@@ -19,17 +19,6 @@ from pydantic import ValidationError
 from . import general
 
 
-@general.route("/api/test")
-def test():
-    return jsonify(name="testing", numbers=[1, 2, 3])
-
-
-@general.route("/api/test-protected")
-def test_protected():
-    name = controller.test_protected()
-    return jsonify(name=name, numbers=[1, 2, 3])
-
-
 @general.route("/api/animal-type", methods=["GET"])
 def get_animal_types():
     animal_types = controller.get_animal_types()
