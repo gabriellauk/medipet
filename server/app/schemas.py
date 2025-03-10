@@ -109,3 +109,30 @@ class CreateWeight(WeightFields): ...
 class UpdateWeight(BaseSchema):
     weight: int | None = None
     date: date_type | None = None
+
+
+class AppointmentFields(BaseSchema):
+    description: str
+    date: date_type
+    notes: str | None = None
+
+    @field_serializer("date")
+    def serialize_date(self, dt: date_type, _info):
+        return dt.strftime("%Y-%m-%d")
+
+
+class Appointment(AppointmentFields):
+    id: int
+
+
+class Appointments(BaseSchema):
+    data: List[Appointment]
+
+
+class CreateAppointment(AppointmentFields): ...
+
+
+class UpdateAppointment(BaseSchema):
+    description: str | None = None
+    date: date_type | None = None
+    notes: str | None = None

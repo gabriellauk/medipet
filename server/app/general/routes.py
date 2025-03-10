@@ -5,10 +5,13 @@ from . import controller
 from app.schemas import (
     AnimalTypes,
     Animals,
+    Appointments,
     CreateAnimal,
+    CreateAppointment,
     CreateSymptom,
     CreateWeight,
     Symptoms,
+    UpdateAppointment,
     UpdateSymptom,
     UpdateWeight,
     Weights,
@@ -130,3 +133,44 @@ def get_weights_for_animal(animal_id: int):
     weights = controller.get_weights_for_animal(animal_id)
 
     return jsonify(Weights(data=[weight for weight in weights]).model_dump())
+
+
+@general.route("/api/animal/<animal_id>/appointment", methods=["POST"])
+def create_appointment(animal_id: int):
+    try:
+        data = CreateAppointment.model_validate(request.json)
+        appointment = controller.create_appointment(animal_id, data)
+        return jsonify(appointment.model_dump()), 201
+    except ValidationError as e:
+        return jsonify({"error": e.errors()}), 422
+
+
+@general.route("/api/animal/<animal_id>/appointment/<appointment_id>", methods=["DELETE"])
+def delete_appointment(animal_id: int, appointment_id: int):
+    controller.delete_appointment(animal_id, appointment_id)
+
+    return "", 204
+
+
+@general.route("/api/animal/<animal_id>/appointment/<appointment_id>", methods=["GET"])
+def get_appointment(animal_id: int, appointment_id: int):
+    appointment = controller.get_appointment(animal_id, appointment_id)
+
+    return jsonify(appointment.model_dump()), 200
+
+
+@general.route("/api/animal/<animal_id>/appointment/<appointment_id>", methods=["PATCH"])
+def update_appointment(animal_id: int, appointment_id: int):
+    try:
+        data = UpdateAppointment.model_validate(request.json)
+        appointment = controller.update_appointment(animal_id, appointment_id, data)
+        return jsonify(appointment.model_dump()), 200
+    except ValidationError as e:
+        return jsonify({"error": e.errors()}), 422
+
+
+@general.route("/api/animal/<animal_id>/appointment", methods=["GET"])
+def get_appointments_for_animal(animal_id: int):
+    appointments = controller.get_appointments_for_animal(animal_id)
+
+    return jsonify(Appointments(data=[appointment for appointment in appointments]).model_dump())

@@ -129,3 +129,47 @@ def get_weights_for_animal(user: models.User, animal: models.Animal, animal_id: 
     weights = store.get_weights_for_animal(animal)
 
     return [schemas.Weight.model_validate(weight) for weight in weights]
+
+
+@requires_animal_permission
+def create_appointment(
+    user: models.User, animal: models.Animal, animal_id: int, data: schemas.CreateAppointment
+) -> schemas.Weight:
+    appointment = store.create_appointment(data, animal)
+
+    return schemas.Appointment.model_validate(appointment)
+
+
+@requires_animal_permission
+def delete_appointment(user: models.User, animal: models.Animal, animal_id: int, appointment_id: int) -> None:
+    if (appointment := store.get_appointment(appointment_id)) is None or appointment.animal != animal:
+        raise BadRequest(f"Appointment {appointment_id} not found for animal {animal_id}")
+
+    store.delete_appointment(appointment)
+
+
+@requires_animal_permission
+def get_appointment(user: models.User, animal: models.Animal, animal_id: int, apppointment_id: int) -> None:
+    if (appointment := store.get_appointment(apppointment_id)) is None or appointment.animal != animal:
+        raise BadRequest(f"Appointment {apppointment_id} not found for animal {animal_id}")
+
+    return schemas.Appointment.model_validate(appointment)
+
+
+@requires_animal_permission
+def update_appointment(
+    user: models.User, animal: models.Animal, animal_id: int, appointment_id: int, data: schemas.UpdateAppointment
+) -> schemas.Weight:
+    if (appointment := store.get_appointment(appointment_id)) is None or appointment.animal != animal:
+        raise BadRequest(f"Appointment {appointment_id} not found for animal {animal_id}")
+
+    appointment = store.update_appointment(appointment, data)
+
+    return schemas.Appointment.model_validate(appointment)
+
+
+@requires_animal_permission
+def get_appointments_for_animal(user: models.User, animal: models.Animal, animal_id: int) -> List[schemas.Appointment]:
+    appointments = store.get_appointments_for_animal(animal)
+
+    return [schemas.Appointment.model_validate(appointment) for appointment in appointments]

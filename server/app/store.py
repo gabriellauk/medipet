@@ -107,3 +107,41 @@ def update_weight(weight: models.Weight, data: schemas.UpdateWeight) -> models.W
     db.session.commit()
 
     return weight
+
+
+def create_appointment(data: schemas.CreateAppointment, animal: models.Animal) -> models.Appointment:
+    appointment = models.Appointment(description=data.description, date=data.date, notes=data.notes, animal=animal)
+    db.session.add(appointment)
+    db.session.commit()
+
+    return appointment
+
+
+def get_appointment(appointment_id) -> models.Appointment | None:
+    return models.Appointment.query.filter(models.Appointment.id == appointment_id).one_or_none()
+
+
+def get_appointments_for_animal(animal: models.Animal) -> List[models.Appointment]:
+    return (
+        models.Appointment.query.filter(models.Appointment.animal == animal)
+        .order_by(models.Appointment.date.desc())
+        .all()
+    )
+
+
+def delete_appointment(appointment: models.Appointment) -> None:
+    db.session.delete(appointment)
+    db.session.commit()
+
+
+def update_appointment(appointment: models.Appointment, data: schemas.UpdateAppointment) -> models.Appointment:
+    if data.description:
+        appointment.description = data.description
+    if data.date:
+        appointment.date = data.date
+    if data.notes:
+        appointment.notes = data.notes
+
+    db.session.commit()
+
+    return appointment
