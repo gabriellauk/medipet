@@ -6,8 +6,7 @@ import AuthRedirect from './components/AuthRedirect.tsx';
 import SplashPage from './pages/SplashPage.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import LoggedInLayout from './LoggedInLayout.tsx';
-import TestMessage from './components/TestMessage.tsx';
-import TestProtectedMessage from './components/TestProtectedMessage.tsx';
+import ComingSoon from './components/ComingSoon.tsx';
 import CreateAnimal from './pages/CreateAnimal.tsx';
 import ApiContextProvider from './contexts/ApiContextProvider.tsx';
 import AuthContextProvider from './contexts/AuthContextProvider.tsx';
@@ -29,12 +28,23 @@ function App() {
                 <Route path="*" element={<Navigate to="/" />} />
                 <Route element={<ProtectedRoute />}>
                   <Route element={<LoggedInLayout />}>
-                    <Route path="/test" element={<TestMessage />} />
                     <Route
-                      path="/test-protected"
-                      element={<TestProtectedMessage />}
+                      path="/dashboard"
+                      element={<ComingSoon title="Dashboard" />}
                     />
                     <Route path="/add-a-pet" element={<CreateAnimal />} />
+                    <Route
+                      path="/weight-tracker"
+                      element={<ComingSoon title="Weight Tracker" />}
+                    />
+                    <Route
+                      path="/medication-schedule"
+                      element={<ComingSoon title="Medication Schedule" />}
+                    />
+                    <Route
+                      path="/appointments-calendar"
+                      element={<ComingSoon title="Appointments Calendar" />}
+                    />
                     <Route
                       path="/observation-diary"
                       element={<ObservationDiary />}

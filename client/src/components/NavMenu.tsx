@@ -15,9 +15,17 @@ import { useAnimals } from '../contexts/AnimalsContext';
 
 const options = [
   { link: '/', label: 'Home', icon: IconHome2 },
-  { link: '/test', label: 'Weight Tracker', icon: IconScaleOutline },
-  { link: '/test-protected', label: 'Medication Schedule', icon: IconPill },
-  { link: '/test', label: 'Appointments Calendar', icon: IconCalendar },
+  { link: '/weight-tracker', label: 'Weight Tracker', icon: IconScaleOutline },
+  {
+    link: '/medication-schedule',
+    label: 'Medication Schedule',
+    icon: IconPill,
+  },
+  {
+    link: '/appointments-calendar',
+    label: 'Appointments Calendar',
+    icon: IconCalendar,
+  },
   {
     link: '/observation-diary',
     label: 'Observations Diary',

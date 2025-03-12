@@ -18,5 +18,5 @@ export default function AuthRedirect() {
     return <Navigate to="/complete-signup" replace />;
   }
 
-  return <Navigate to="/test" replace />;
+  return <Navigate to="/dashboard" replace />;
 }
