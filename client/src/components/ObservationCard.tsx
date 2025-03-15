@@ -21,8 +21,11 @@ export default function ObservationCard({
       <Group justify="space-between" mt="xs" mb="xs">
         <Text fw={500}>{date}</Text>
         <Group>
-          <IconPencil onClick={onEditClick} />
-          <IconTrash onClick={() => deleteObservation(animalId, symptomId)} />
+          <IconPencil onClick={onEditClick} style={{ cursor: 'pointer' }} />
+          <IconTrash
+            onClick={() => deleteObservation(animalId, symptomId)}
+            style={{ cursor: 'pointer' }}
+          />
         </Group>
       </Group>
       <Text size="sm" c="dimmed">
