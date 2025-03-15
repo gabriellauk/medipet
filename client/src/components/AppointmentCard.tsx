@@ -7,7 +7,7 @@ export default function AppointmentCard({
   description,
   notes,
   animalId,
-  deleteObservation,
+  deleteAppointment,
   onEditClick,
 }: {
   appointmentId: number;
@@ -15,7 +15,7 @@ export default function AppointmentCard({
   description: string;
   notes: string | null;
   animalId: number;
-  deleteObservation: (animalId: number, symptomId: number) => void;
+  deleteAppointment: (animalId: number, appointmentId: number) => void;
   onEditClick: () => void;
 }) {
   return (
@@ -25,7 +25,7 @@ export default function AppointmentCard({
         <Group>
           <IconPencil onClick={onEditClick} style={{ cursor: 'pointer' }} />
           <IconTrash
-            onClick={() => deleteObservation(animalId, appointmentId)}
+            onClick={() => deleteAppointment(animalId, appointmentId)}
             style={{ cursor: 'pointer' }}
           />
         </Group>

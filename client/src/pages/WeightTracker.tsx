@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { Button, Drawer, Container } from '@mantine/core';
 import { useApi } from '../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
-import { ObservationForm } from '../components/ObservationForm';
 import { useAnimals } from '../contexts/AnimalsContext';
-import ObservationCard from '../components/ObservationCard';
+import { WeightForm } from '../components/WeightForm';
+import WeightCard from '../components/WeightCard';
 
-export type Observation = {
+export type Weight = {
   id: number;
-  description: string;
+  weight: number;
   date: string;
 };
 
@@ -19,24 +19,24 @@ export default function ObservationDiary() {
   const { animal } = useAnimals();
   const [opened, { open, close }] = useDisclosure(false);
   const [drawerMode, setDrawerMode] = useState<DrawerMode | null>();
-  const [itemToEdit, setItemToEdit] = useState<Observation | null>(null);
-  const [observationsData, setObservationsData] = useState<Observation[]>([]);
+  const [itemToEdit, setItemToEdit] = useState<Weight | null>(null);
+  const [weightsData, setWeightsData] = useState<Weight[]>([]);
 
   useEffect(() => {
     (async () => {
-      const response = await api.get('/animal/' + animal!.id + '/symptom');
+      const response = await api.get('/animal/' + animal!.id + '/weight');
       if (response.ok) {
-        setObservationsData(response.body.data as Observation[]);
+        setWeightsData(response.body.data as Weight[]);
       } else {
-        setObservationsData([]);
+        setWeightsData([]);
       }
     })();
   }, [opened, animal, api]);
 
-  async function deleteObservation(animalId: number, symptomId: number) {
-    await api.delete('/animal/' + animalId + '/symptom/' + symptomId);
-    setObservationsData((prevList) =>
-      prevList.filter((item) => item.id !== symptomId)
+  async function deleteWeight(animalId: number, weightId: number) {
+    await api.delete('/animal/' + animalId + '/weight/' + weightId);
+    setWeightsData((prevList) =>
+      prevList.filter((item) => item.id !== weightId)
     );
   }
 
@@ -47,10 +47,10 @@ export default function ObservationDiary() {
 
   async function handleOpenDrawerEdit(itemId: number) {
     const response = await api.get(
-      '/animal/' + animal!.id + '/symptom/' + itemId
+      '/animal/' + animal!.id + '/weight/' + itemId
     );
     if (response.ok) {
-      setItemToEdit(response.body as Observation);
+      setItemToEdit(response.body as Weight);
       setDrawerMode('update');
       open();
     } else {
@@ -60,15 +60,11 @@ export default function ObservationDiary() {
 
   return (
     <Container>
-      <h1>Observation diary</h1>
-      <p>
-        Here's where you can keep track of any changes to behaviour or anything
-        else you may want to make a note of ahead of {animal!.name}'s next
-        appointment.
-      </p>
-      {observationsData.length === 0 && (
+      <h1>Weight tracker</h1>
+      <p>Monitor any fluctuations in {animal!.name}'s weight here.</p>
+      {weightsData.length === 0 && (
         <p>
-          <i>No observations noted for {animal!.name} yet.</i>
+          <i>{animal!.name} doesn't have any weights listed yet.</i>
         </p>
       )}
       <Drawer
@@ -78,23 +74,23 @@ export default function ObservationDiary() {
         closeButtonProps={{ 'aria-label': 'Close drawer' }}
       >
         {drawerMode == 'create' ? (
-          <ObservationForm close={close} mode={'create'} item={null} />
+          <WeightForm close={close} mode={'create'} item={null} />
         ) : (
-          <ObservationForm close={close} mode={'update'} item={itemToEdit!} />
+          <WeightForm close={close} mode={'update'} item={itemToEdit!} />
         )}
       </Drawer>
       <Button onClick={handleOpenDrawerCreate} radius="xl" mb="xl" size="md">
-        Add observation
+        Add weight
       </Button>
-      {observationsData.length > 0 &&
-        observationsData.map((item) => (
-          <ObservationCard
+      {weightsData.length > 0 &&
+        weightsData.map((item) => (
+          <WeightCard
             key={item.id}
-            observationId={item.id}
+            weightId={item.id}
             date={item.date}
-            description={item.description}
+            weight={item.weight / 100}
             animalId={animal!.id}
-            deleteObservation={deleteObservation}
+            deleteWeight={deleteWeight}
             onEditClick={() => handleOpenDrawerEdit(item.id)}
           />
         ))}

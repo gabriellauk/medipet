@@ -13,6 +13,7 @@ import { CreateAnimal } from './pages/CreateAnimal.tsx';
 import AnimalsContextProvider from './contexts/AnimalsContextProvider.tsx';
 import ObservationDiary from './pages/ObservationDiary.tsx';
 import AppointmentsCalendar from './pages/AppointmentsCalendar.tsx';
+import WeightTracker from './pages/WeightTracker.tsx';
 
 function App() {
   return (
@@ -32,10 +33,7 @@ function App() {
                       path="/dashboard"
                       element={<ComingSoon title="Dashboard" />}
                     />
-                    <Route
-                      path="/weight-tracker"
-                      element={<ComingSoon title="Weight Tracker" />}
-                    />
+                    <Route path="/weight-tracker" element={<WeightTracker />} />
                     <Route
                       path="/medication-schedule"
                       element={<ComingSoon title="Medication Schedule" />}

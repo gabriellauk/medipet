@@ -1,19 +1,19 @@
 import { Card, Group, Text } from '@mantine/core';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
 
-export default function ObservationCard({
-  observationId,
+export default function WeightCard({
+  weightId,
   date,
-  description,
+  weight,
   animalId,
-  deleteObservation,
+  deleteWeight,
   onEditClick,
 }: {
-  observationId: number;
+  weightId: number;
   date: string;
-  description: string;
+  weight: number;
   animalId: number;
-  deleteObservation: (animalId: number, symptomId: number) => void;
+  deleteWeight: (animalId: number, weightId: number) => void;
   onEditClick: () => void;
 }) {
   return (
@@ -23,13 +23,13 @@ export default function ObservationCard({
         <Group>
           <IconPencil onClick={onEditClick} style={{ cursor: 'pointer' }} />
           <IconTrash
-            onClick={() => deleteObservation(animalId, observationId)}
+            onClick={() => deleteWeight(animalId, weightId)}
             style={{ cursor: 'pointer' }}
           />
         </Group>
       </Group>
       <Text size="sm" c="dimmed">
-        {description}
+        {weight} kg
       </Text>
     </Card>
   );
