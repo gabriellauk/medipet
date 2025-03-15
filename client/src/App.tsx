@@ -7,7 +7,6 @@ import SplashPage from './pages/SplashPage.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import LoggedInLayout from './LoggedInLayout.tsx';
 import ComingSoon from './components/ComingSoon.tsx';
-import CreateAnimal from './pages/CreateAnimal.tsx';
 import ApiContextProvider from './contexts/ApiContextProvider.tsx';
 import AuthContextProvider from './contexts/AuthContextProvider.tsx';
 import { CreateAnimal2 } from './pages/CreateAnimal2.tsx';
@@ -32,7 +31,6 @@ function App() {
                       path="/dashboard"
                       element={<ComingSoon title="Dashboard" />}
                     />
-                    <Route path="/add-a-pet" element={<CreateAnimal />} />
                     <Route
                       path="/weight-tracker"
                       element={<ComingSoon title="Weight Tracker" />}
