@@ -6,7 +6,7 @@ import { ObservationForm } from '../components/ObservationForm';
 import { useAnimals } from '../contexts/AnimalsContext';
 import ObservationCard from '../components/ObservationCard';
 
-export type Symptom = {
+export type Observation = {
   id: number;
   description: string;
   date: string;
@@ -19,20 +19,19 @@ export default function ObservationDiary() {
   const { animal } = useAnimals();
   const [opened, { open, close }] = useDisclosure(false);
   const [drawerMode, setDrawerMode] = useState<DrawerMode | null>();
-  const [itemToEdit, setItemToEdit] = useState<Symptom | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<Observation | null>(null);
+  const [observationsData, setObservationsData] = useState<Observation[]>([]);
 
   useEffect(() => {
     (async () => {
       const response = await api.get('/animal/' + animal!.id + '/symptom');
       if (response.ok) {
-        setObservationsData(response.body.data as Symptom[]);
+        setObservationsData(response.body.data as Observation[]);
       } else {
         setObservationsData([]);
       }
     })();
   }, [opened, animal, api]);
-
-  const [observationsData, setObservationsData] = useState<Symptom[]>([]);
 
   async function deleteObservation(animalId: number, symptomId: number) {
     await api.delete('/animal/' + animalId + '/symptom/' + symptomId);
@@ -51,7 +50,7 @@ export default function ObservationDiary() {
       '/animal/' + animal!.id + '/symptom/' + itemId
     );
     if (response.ok) {
-      setItemToEdit(response.body as Symptom);
+      setItemToEdit(response.body as Observation);
       setDrawerMode('update');
       open();
     } else {
@@ -81,7 +80,7 @@ export default function ObservationDiary() {
         {drawerMode == 'create' ? (
           <ObservationForm close={close} mode={'create'} item={null} />
         ) : (
-          <ObservationForm close={close} mode={'update'} item={itemToEdit} />
+          <ObservationForm close={close} mode={'update'} item={itemToEdit!} />
         )}
       </Drawer>
       <Button onClick={handleOpenDrawerCreate} radius="xl" mb="xl" size="md">

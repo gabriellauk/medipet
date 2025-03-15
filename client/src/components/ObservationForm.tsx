@@ -6,7 +6,7 @@ import ErrorArea from './ErrorArea';
 import { useAnimals } from '../contexts/AnimalsContext';
 import { DateInput } from '@mantine/dates';
 import dayjs from 'dayjs';
-import { Symptom } from '../pages/ObservationDiary';
+import { Observation } from '../pages/ObservationDiary';
 import { GenericApiResponse } from '../ApiClient';
 
 type Props =
@@ -18,23 +18,16 @@ type Props =
   | {
       close: () => void;
       mode: 'update';
-      item: Symptom;
+      item: Observation;
     };
 
-type CreateSymptomFormData = {
+type ObservationFormData = {
   date: string;
   description: string;
 };
-
-type UpdateSymptomFormData = {
-  date?: string;
-  description?: string;
-};
-
-type CreateOrUpdateSymptomFormErrors = {
-  date?: string;
-  description?: string;
-};
+type CreateObservationFormData = ObservationFormData;
+type UpdateObservationFormData = Partial<ObservationFormData>;
+type ObservationFormErrors = Partial<Record<keyof ObservationFormData, string>>;
 
 export function ObservationForm({ close, mode, item }: Props) {
   const api = useApi();
@@ -44,8 +37,7 @@ export function ObservationForm({ close, mode, item }: Props) {
   const dateField = useRef<HTMLInputElement | null>(null);
   const [dateValue, setDateValue] = useState<Date | null>(null);
 
-  const [formErrors, setFormErrors] =
-    useState<CreateOrUpdateSymptomFormErrors>();
+  const [formErrors, setFormErrors] = useState<ObservationFormErrors>();
   const [submissionError, setSubmissionError] = useState<string | undefined>();
 
   useEffect(() => {
@@ -68,7 +60,7 @@ export function ObservationForm({ close, mode, item }: Props) {
       ? dayjs(dateValue).format('YYYY-MM-DD')
       : '';
 
-    const formErrors: CreateOrUpdateSymptomFormErrors = {};
+    const formErrors: ObservationFormErrors = {};
     if (!description) {
       formErrors.description = 'Description must be provided.';
     }
@@ -78,7 +70,7 @@ export function ObservationForm({ close, mode, item }: Props) {
     setSubmissionError(undefined);
     setFormErrors(formErrors);
 
-    if (formErrors && Object.keys(formErrors).length > 0) {
+    if (Object.keys(formErrors).length > 0) {
       return;
     }
 
@@ -96,7 +88,7 @@ export function ObservationForm({ close, mode, item }: Props) {
     let apiResponse: GenericApiResponse;
     if (description && date) {
       if (mode === 'create') {
-        const formData: CreateSymptomFormData = {
+        const formData: CreateObservationFormData = {
           description: description,
           date: date,
         };
@@ -105,14 +97,14 @@ export function ObservationForm({ close, mode, item }: Props) {
           formData
         );
       } else {
-        const changedFields: UpdateSymptomFormData = {};
+        const changedFields: UpdateObservationFormData = {};
         if (description != item.description) {
           changedFields.description = description;
         }
         if (date != item.date) {
           changedFields.date = date;
         }
-        if (Object.keys(changedFields).length == 0) {
+        if (Object.keys(changedFields).length === 0) {
           setSubmissionError('No changes to submit');
           return;
         }
