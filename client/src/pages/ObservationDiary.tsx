@@ -6,21 +6,21 @@ import { ObservationForm } from '../components/ObservationForm';
 import { useAnimals } from '../contexts/AnimalsContext';
 import ObservationCard from '../components/ObservationCard';
 
+export type Symptom = {
+  id: number;
+  description: string;
+  date: string;
+};
+
+export type DrawerMode = 'create' | 'update';
+
 export default function ObservationDiary() {
-  type Symptom = {
-    id: number;
-    description: string;
-    date: string;
-  };
-
-  type DrawerMode = "create" | "update"
-
   const api = useApi();
   const { animals } = useAnimals();
   const animal = animals[0];
   const [opened, { open, close }] = useDisclosure(false);
   const [drawerMode, setDrawerMode] = useState<DrawerMode | null>();
-  const [itemToEdit, setItemToEdit] = useState<number | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<Symptom | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -31,7 +31,7 @@ export default function ObservationDiary() {
         setObservationsData([]);
       }
     })();
-  });
+  }, [opened, animal.id, api]);
 
   function capitaliseEachWord(str: string) {
     return str
@@ -56,10 +56,17 @@ export default function ObservationDiary() {
     open();
   }
 
-  async function handleOpenDrawerEdit(item: number) {
-    setDrawerMode('update');
-    setItemToEdit(item);
-    open();
+  async function handleOpenDrawerEdit(itemId: number) {
+    const response = await api.get(
+      '/animal/' + animal.id + '/symptom/' + itemId
+    );
+    if (response.ok) {
+      setItemToEdit(response.body as Symptom);
+      setDrawerMode('update');
+      open();
+    } else {
+      setItemToEdit(null);
+    }
   }
 
   return (
@@ -78,14 +85,13 @@ export default function ObservationDiary() {
       <Drawer
         opened={opened}
         onClose={close}
-        title="Add observation"
         position="right"
         closeButtonProps={{ 'aria-label': 'Close drawer' }}
       >
         {drawerMode == 'create' ? (
-          <ObservationForm close={close} mode={'create'} itemId={itemToEdit} />
+          <ObservationForm close={close} mode={'create'} item={null} />
         ) : (
-          <ObservationForm close={close} mode={'update'} itemId={itemToEdit} />
+          <ObservationForm close={close} mode={'update'} item={itemToEdit} />
         )}
       </Drawer>
       <Button onClick={handleOpenDrawerCreate} radius="xl" mb="xl" size="md">

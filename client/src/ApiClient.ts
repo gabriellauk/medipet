@@ -1,7 +1,13 @@
 const BASE_API_URL = import.meta.env.VITE_REACT_APP_BASE_API_URL;
 
+export type GenericApiResponse = {
+  ok: boolean;
+  status: number;
+  body: any;
+};
+
 export default class ApiClient {
-  async request(options: any) {
+  async request(options: any): Promise<GenericApiResponse> {
     let query = new URLSearchParams(options.query || {}).toString();
     if (query !== '') {
       query = '?' + query;
@@ -49,6 +55,10 @@ export default class ApiClient {
 
   async put(url: string, body?: object | null | undefined, options?: any) {
     return this.request({ method: 'PUT', url, body, ...options });
+  }
+
+  async patch(url: string, body?: object | null | undefined, options?: any) {
+    return this.request({ method: 'PATCH', url, body, ...options });
   }
 
   async delete(url: string, options?: any) {
