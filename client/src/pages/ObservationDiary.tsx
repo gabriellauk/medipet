@@ -16,31 +16,21 @@ export type DrawerMode = 'create' | 'update';
 
 export default function ObservationDiary() {
   const api = useApi();
-  const { animals } = useAnimals();
-  const animal = animals[0];
+  const { animal } = useAnimals();
   const [opened, { open, close }] = useDisclosure(false);
   const [drawerMode, setDrawerMode] = useState<DrawerMode | null>();
   const [itemToEdit, setItemToEdit] = useState<Symptom | null>(null);
 
   useEffect(() => {
     (async () => {
-      const response = await api.get('/animal/' + animal.id + '/symptom');
+      const response = await api.get('/animal/' + animal!.id + '/symptom');
       if (response.ok) {
         setObservationsData(response.body.data as Symptom[]);
       } else {
         setObservationsData([]);
       }
     })();
-  }, [opened, animal.id, api]);
-
-  function capitaliseEachWord(str: string) {
-    return str
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
-  }
-
-  const animalName = capitaliseEachWord(animal.name);
+  }, [opened, animal, api]);
 
   const [observationsData, setObservationsData] = useState<Symptom[]>([]);
 
@@ -58,7 +48,7 @@ export default function ObservationDiary() {
 
   async function handleOpenDrawerEdit(itemId: number) {
     const response = await api.get(
-      '/animal/' + animal.id + '/symptom/' + itemId
+      '/animal/' + animal!.id + '/symptom/' + itemId
     );
     if (response.ok) {
       setItemToEdit(response.body as Symptom);
@@ -74,12 +64,12 @@ export default function ObservationDiary() {
       <h1>Observation diary</h1>
       <p>
         Here's where you can keep track of any changes to behaviour or anything
-        else you may want to make a note of ahead of {animalName}'s next
+        else you may want to make a note of ahead of {animal!.name}'s next
         appointment.
       </p>
       {observationsData.length === 0 && (
         <p>
-          <i>No observations noted for {animalName} yet.</i>
+          <i>No observations noted for {animal!.name} yet.</i>
         </p>
       )}
       <Drawer
@@ -104,7 +94,7 @@ export default function ObservationDiary() {
             symptomId={item.id}
             date={item.date}
             description={item.description}
-            animalId={animal.id}
+            animalId={animal!.id}
             deleteObservation={deleteObservation}
             onEditClick={() => handleOpenDrawerEdit(item.id)}
           />

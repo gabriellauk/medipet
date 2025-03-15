@@ -9,7 +9,7 @@ import LoggedInLayout from './LoggedInLayout.tsx';
 import ComingSoon from './components/ComingSoon.tsx';
 import ApiContextProvider from './contexts/ApiContextProvider.tsx';
 import AuthContextProvider from './contexts/AuthContextProvider.tsx';
-import { CreateAnimal2 } from './pages/CreateAnimal2.tsx';
+import { CreateAnimal } from './pages/CreateAnimal.tsx';
 import AnimalsContextProvider from './contexts/AnimalsContextProvider.tsx';
 import ObservationDiary from './pages/ObservationDiary.tsx';
 
@@ -23,7 +23,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<AuthRedirect />} />
                 <Route path="/login" element={<SplashPage />} />
-                <Route path="/complete-signup" element={<CreateAnimal2 />} />
+                <Route path="/complete-signup" element={<CreateAnimal />} />
                 <Route path="*" element={<Navigate to="/" />} />
                 <Route element={<ProtectedRoute />}>
                   <Route element={<LoggedInLayout />}>

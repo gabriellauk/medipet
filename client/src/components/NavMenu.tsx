@@ -36,7 +36,7 @@ const options = [
 export default function NavMenu() {
   const [active, setActive] = useState('Home');
   const { logout } = useAuth();
-  const { animals } = useAnimals();
+  const { animal } = useAnimals();
 
   const links = options.map((item) => (
     <RouterNavLink
@@ -56,7 +56,7 @@ export default function NavMenu() {
   return (
     <>
       <Text fw={500} size="sm" className={classes.title} c="dimmed" mb="xs">
-        {animals[0].name}'s Medical Record
+        {animal!.name}'s Medical Record
       </Text>
       <div className={classes.navbarMain}>{links}</div>
       <div className={classes.footer}>

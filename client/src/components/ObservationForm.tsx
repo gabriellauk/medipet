@@ -38,8 +38,7 @@ type CreateOrUpdateSymptomFormErrors = {
 
 export function ObservationForm({ close, mode, item }: Props) {
   const api = useApi();
-  const { animals } = useAnimals();
-  const animal = animals[0];
+  const { animal } = useAnimals();
 
   const descriptionField = useRef<HTMLInputElement | null>(null);
   const dateField = useRef<HTMLInputElement | null>(null);
@@ -102,7 +101,7 @@ export function ObservationForm({ close, mode, item }: Props) {
           date: date,
         };
         apiResponse = await api.post(
-          '/animal/' + animal.id + '/symptom',
+          '/animal/' + animal!.id + '/symptom',
           formData
         );
       } else {
@@ -118,7 +117,7 @@ export function ObservationForm({ close, mode, item }: Props) {
           return;
         }
         apiResponse = await api.patch(
-          '/animal/' + animal.id + '/symptom/' + item.id,
+          '/animal/' + animal!.id + '/symptom/' + item.id,
           changedFields
         );
       }

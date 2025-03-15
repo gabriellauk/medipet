@@ -19,7 +19,7 @@ import ErrorArea from '../components/ErrorArea';
 import { useAnimals } from '../contexts/AnimalsContext';
 import { useAuth } from '../contexts/AuthContext';
 
-export function CreateAnimal2() {
+export function CreateAnimal() {
   const { logout } = useAuth();
   const { refreshAnimals } = useAnimals();
   interface CreateAnimalFormErrors {

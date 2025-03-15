@@ -7,12 +7,14 @@ export type Animal = {
 };
 
 type AnimalsContextType = {
+  animal: Animal | null;
   animals: Animal[];
   animalsLoading: boolean;
   refreshAnimals: () => void;
 };
 
 export const AnimalsContext = createContext<AnimalsContextType>({
+  animal: null,
   animals: [],
   animalsLoading: true,
   refreshAnimals: () => {},

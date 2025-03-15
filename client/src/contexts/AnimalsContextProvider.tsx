@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useApi } from './ApiContext';
 import { AnimalsContext, Animal } from './AnimalsContext';
 import { useNavigate } from 'react-router-dom';
@@ -14,11 +14,26 @@ export default function AnimalsContextProvider({
   const api = useApi();
   const navigate = useNavigate();
 
+  function capitaliseEachWord(str: string) {
+    return str
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  }
+
+  function updateAnimals(responseData: Animal[]) {
+    const animalsData = responseData;
+    animalsData.forEach((animal: Animal) => {
+      animal.name = capitaliseEachWord(animal.name);
+    });
+    setAnimals(animalsData);
+    setAnimalsLoading(false);
+  }
+
   const refreshAnimals = async () => {
     const response = await api.get('/animal');
     if (response.status === 200) {
-      setAnimals(response.body.data);
-      setAnimalsLoading(false);
+      updateAnimals(response.body.data);
       navigate('/');
     }
   };
@@ -27,8 +42,7 @@ export default function AnimalsContextProvider({
     const checkAnimals = async () => {
       const response = await api.get('/animal');
       if (response.status === 200) {
-        setAnimals(response.body.data);
-        setAnimalsLoading(false);
+        updateAnimals(response.body.data);
       } else {
         setAnimals([]);
         setAnimalsLoading(false);
@@ -38,9 +52,11 @@ export default function AnimalsContextProvider({
     checkAnimals();
   }, []);
 
+  const animal = useMemo(() => animals[0] || null, [animals]);
+
   return (
     <AnimalsContext.Provider
-      value={{ animals, animalsLoading, refreshAnimals }}
+      value={{ animal, animals, animalsLoading, refreshAnimals }}
     >
       {children}
     </AnimalsContext.Provider>
