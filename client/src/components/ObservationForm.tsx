@@ -27,8 +27,8 @@ type CreateSymptomFormData = {
 };
 
 type UpdateSymptomFormData = {
-  date: string | null;
-  description: string | null;
+  date?: string;
+  description?: string;
 };
 
 type CreateOrUpdateSymptomFormErrors = {
@@ -70,7 +70,6 @@ export function ObservationForm({ close, mode, item }: Props) {
       : '';
 
     const formErrors: CreateOrUpdateSymptomFormErrors = {};
-
     if (!description) {
       formErrors.description = 'Description must be provided.';
     }
@@ -102,19 +101,25 @@ export function ObservationForm({ close, mode, item }: Props) {
           description: description,
           date: date,
         };
-        apiResponse = await api.post('/animal/' + animal.id + '/symptom', {
-          ...formData,
-        });
+        apiResponse = await api.post(
+          '/animal/' + animal.id + '/symptom',
+          formData
+        );
       } else {
-        const formData: UpdateSymptomFormData = {
-          description: description,
-          date: date,
-        };
+        const changedFields: UpdateSymptomFormData = {};
+        if (description != item.description) {
+          changedFields.description = description;
+        }
+        if (date != item.date) {
+          changedFields.date = date;
+        }
+        if (Object.keys(changedFields).length == 0) {
+          setSubmissionError('No changes to submit');
+          return;
+        }
         apiResponse = await api.patch(
           '/animal/' + animal.id + '/symptom/' + item.id,
-          {
-            ...formData,
-          }
+          changedFields
         );
       }
       handleResponse(apiResponse);
