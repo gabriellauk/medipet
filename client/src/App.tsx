@@ -12,6 +12,7 @@ import AuthContextProvider from './contexts/AuthContextProvider.tsx';
 import { CreateAnimal } from './pages/CreateAnimal.tsx';
 import AnimalsContextProvider from './contexts/AnimalsContextProvider.tsx';
 import ObservationDiary from './pages/ObservationDiary.tsx';
+import AppointmentsCalendar from './pages/AppointmentsCalendar.tsx';
 
 function App() {
   return (
@@ -41,7 +42,7 @@ function App() {
                     />
                     <Route
                       path="/appointments-calendar"
-                      element={<ComingSoon title="Appointments Calendar" />}
+                      element={<AppointmentsCalendar />}
                     />
                     <Route
                       path="/observation-diary"

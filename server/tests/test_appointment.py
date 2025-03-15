@@ -238,3 +238,23 @@ def test_update_appointment_partially(logged_in_client: FlaskClient, field_to_up
         assert response.json["description"] == appointment.description
         assert response.json["notes"] == request_data["notes"]
         assert response.json["date"] == str(appointment.date)
+
+
+def test_update_appointment_no_notes(logged_in_client: FlaskClient) -> None:
+    user = db.session.query(models.User).one()
+    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
+    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    appointment = models.Appointment(
+        description="Appt description", notes="Some notes", date=date(2024, 12, 10), animal=animal
+    )
+    db.session.add(appointment)
+    db.session.commit()
+
+    request_data = {"description": "New description", "notes": "", "date": "2025-01-06"}
+
+    response = logged_in_client.patch(f"api/animal/{animal.id}/appointment/{appointment.id}", json=request_data)
+
+    assert response.status_code == 200
+    assert response.json["description"] == request_data["description"]
+    assert response.json["date"] == request_data["date"]
+    assert response.json["notes"] is None

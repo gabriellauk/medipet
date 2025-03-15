@@ -120,6 +120,13 @@ class AppointmentFields(BaseSchema):
     def serialize_date(self, dt: date_type, _info):
         return dt.strftime("%Y-%m-%d")
 
+    @field_validator("description", "notes", mode="before")
+    @classmethod
+    def empty_str_to_none(cls, v: str) -> str | None:
+        if v == "":
+            return None
+        return v
+
 
 class Appointment(AppointmentFields):
     id: int

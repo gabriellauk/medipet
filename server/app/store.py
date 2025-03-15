@@ -139,7 +139,7 @@ def update_appointment(appointment: models.Appointment, data: schemas.UpdateAppo
         appointment.description = data.description
     if data.date:
         appointment.date = data.date
-    if data.notes:
+    if "notes" in data.model_fields_set:
         appointment.notes = data.notes
 
     db.session.commit()
