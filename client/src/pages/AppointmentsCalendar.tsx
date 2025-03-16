@@ -95,7 +95,7 @@ export default function AppointmentsCalendar() {
             description={item.description}
             notes={item.notes}
             animalId={animal!.id}
-            deleteObservation={deleteAppointment}
+            deleteAppointment={deleteAppointment}
             onEditClick={() => handleOpenDrawerEdit(item.id)}
           />
         ))}
