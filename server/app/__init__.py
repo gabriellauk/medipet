@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from werkzeug.exceptions import BadRequest, Forbidden
+from werkzeug.middleware.proxy_fix import ProxyFix
 from dotenv import load_dotenv
 import os
 
@@ -18,6 +19,8 @@ def create_app(app_config=None):
 
     app = Flask(__name__)
 
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_port=1)
+    
     DATABASE_URI = os.getenv("DATABASE_URI") or "sqlite:///" + os.path.join(basedir, "app.db")
 
     if app_config:
