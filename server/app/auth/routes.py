@@ -9,6 +9,12 @@ from app.extensions import oauth
 from werkzeug.exceptions import Unauthorized
 
 
+@auth.route("/api/login-url", methods=["GET"])
+def login_url():
+    redirect_uri = url_for("auth.authenticate", _external=True)
+    return jsonify({"test": redirect_uri})
+
+
 @auth.route("/api/login", methods=["POST"])
 def login():
     redirect_uri = url_for("auth.authenticate", _external=True)
