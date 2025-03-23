@@ -169,3 +169,15 @@ def create_medication(data: schemas.CreateMedication, animal: models.Animal) -> 
     db.session.commit()
 
     return medication
+
+
+def get_medication(medication_id) -> models.Medication | None:
+    return models.Medication.query.filter(models.Medication.id == medication_id).one_or_none()
+
+
+def get_medications(animal: models.Animal) -> List[models.Medication]:
+    return (
+        models.Medication.query.filter(models.Medication.animal == animal)
+        .order_by(models.Medication.start_date.desc())
+        .all()
+    )

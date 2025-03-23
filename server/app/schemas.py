@@ -174,4 +174,8 @@ class Medication(MedicationFields):
         return dt.strftime("%Y-%m-%d")
 
 
+class Medications(BaseSchema):
+    data: List[Medication]
+
+
 class CreateMedication(MedicationFields): ...

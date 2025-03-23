@@ -11,6 +11,7 @@ from app.schemas import (
     CreateMedication,
     CreateSymptom,
     CreateWeight,
+    Medications,
     Symptoms,
     UpdateAppointment,
     UpdateSymptom,
@@ -185,3 +186,17 @@ def create_medication(animal_id: int):
         return jsonify(medication.model_dump()), 201
     except ValidationError as e:
         return jsonify({"error": e.errors()}), 422
+
+
+@general.route("/api/animal/<animal_id>/medication/<medication_id>", methods=["GET"])
+def get_medication(animal_id: int, medication_id: int):
+    medication = controller.get_medication(animal_id, medication_id)
+
+    return jsonify(medication.model_dump()), 200
+
+
+@general.route("/api/animal/<animal_id>/medication", methods=["GET"])
+def get_medications_for_animal(animal_id: int):
+    medications = controller.get_medications_for_animal(animal_id)
+
+    return jsonify(Medications(data=[medication for medication in medications]).model_dump())

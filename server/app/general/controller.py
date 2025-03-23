@@ -176,9 +176,24 @@ def get_appointments_for_animal(user: models.User, animal: models.Animal, animal
 
 
 @requires_animal_permission
+def get_medication(user: models.User, animal: models.Animal, animal_id: int, medication_id: int) -> schemas.Medication:
+    if (medication := store.get_medication(medication_id)) is None or medication.animal != animal:
+        raise BadRequest(f"Appointment {medication_id} not found for animal {animal_id}")
+
+    return schemas.Medication.model_validate(medication)
+
+
+@requires_animal_permission
 def create_medication(
     user: models.User, animal: models.Animal, animal_id: int, data: schemas.CreateMedication
 ) -> schemas.Medication:
     medication = store.create_medication(data, animal)
 
     return schemas.Medication.model_validate(medication)
+
+
+@requires_animal_permission
+def get_medications_for_animal(user: models.User, animal: models.Animal, animal_id: int) -> List[schemas.Medication]:
+    medications = store.get_medications(animal)
+
+    return [schemas.Medication.model_validate(appointment) for appointment in medications]
