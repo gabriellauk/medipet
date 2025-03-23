@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List
 
 from app import models, schemas
@@ -145,3 +146,26 @@ def update_appointment(appointment: models.Appointment, data: schemas.UpdateAppo
     db.session.commit()
 
     return appointment
+
+
+def create_medication(data: schemas.CreateMedication, animal: models.Animal) -> models.Medication:
+    # TODO: Replace with calculated end date
+    placeholder_end_date = date(2026, 12, 1)
+
+    medication = models.Medication(
+        name=data.name,
+        is_recurring=data.is_recurring,
+        times_per_day=data.times_per_day,
+        frequency_number=data.frequency_number,
+        frequency_unit=data.frequency_unit,
+        duration_number=data.duration_number,
+        duration_unit=data.duration_unit,
+        start_date=data.start_date,
+        end_date=placeholder_end_date,
+        notes=data.notes,
+        animal=animal,
+    )
+    db.session.add(medication)
+    db.session.commit()
+
+    return medication

@@ -8,6 +8,7 @@ from app.schemas import (
     Appointments,
     CreateAnimal,
     CreateAppointment,
+    CreateMedication,
     CreateSymptom,
     CreateWeight,
     Symptoms,
@@ -174,3 +175,13 @@ def get_appointments_for_animal(animal_id: int):
     appointments = controller.get_appointments_for_animal(animal_id)
 
     return jsonify(Appointments(data=[appointment for appointment in appointments]).model_dump())
+
+
+@general.route("/api/animal/<animal_id>/medication", methods=["POST"])
+def create_medication(animal_id: int):
+    try:
+        data = CreateMedication.model_validate(request.json)
+        medication = controller.create_medication(animal_id, data)
+        return jsonify(medication.model_dump()), 201
+    except ValidationError as e:
+        return jsonify({"error": e.errors()}), 422

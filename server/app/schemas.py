@@ -5,6 +5,8 @@ from typing import List
 from pydantic import BaseModel, ConfigDict, field_validator, field_serializer
 from pydantic.alias_generators import to_camel
 
+from app.models import TimeUnit
+
 
 class BaseSchema(BaseModel):
     model_config = ConfigDict(
@@ -143,3 +145,33 @@ class UpdateAppointment(BaseSchema):
     description: str | None = None
     date: date_type | None = None
     notes: str | None = None
+
+
+class MedicationFields(BaseSchema):
+    name: str
+    is_recurring: bool
+    times_per_day: int | None
+    frequency_number: int | None
+    frequency_unit: TimeUnit | None
+    duration_number: int | None
+    duration_unit: TimeUnit | None
+    start_date: date_type
+    notes: str | None
+
+    model_config = ConfigDict(use_enum_values=True)
+
+    @field_serializer("start_date")
+    def serialize_date(self, dt: date_type, _info):
+        return dt.strftime("%Y-%m-%d")
+
+
+class Medication(MedicationFields):
+    id: int
+    end_date: date_type
+
+    @field_serializer("start_date", "end_date")
+    def serialize_date(self, dt: date_type, _info):
+        return dt.strftime("%Y-%m-%d")
+
+
+class CreateMedication(MedicationFields): ...

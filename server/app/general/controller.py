@@ -173,3 +173,12 @@ def get_appointments_for_animal(user: models.User, animal: models.Animal, animal
     appointments = store.get_appointments_for_animal(animal)
 
     return [schemas.Appointment.model_validate(appointment) for appointment in appointments]
+
+
+@requires_animal_permission
+def create_medication(
+    user: models.User, animal: models.Animal, animal_id: int, data: schemas.CreateMedication
+) -> schemas.Medication:
+    medication = store.create_medication(data, animal)
+
+    return schemas.Medication.model_validate(medication)
