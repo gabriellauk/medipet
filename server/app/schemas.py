@@ -150,13 +150,13 @@ class UpdateAppointment(BaseSchema):
 class MedicationFields(BaseSchema):
     name: str
     is_recurring: bool
-    times_per_day: int | None
-    frequency_number: int | None
-    frequency_unit: TimeUnit | None
-    duration_number: int | None
-    duration_unit: TimeUnit | None
+    times_per_day: int | None = None
+    frequency_number: int | None = None
+    frequency_unit: TimeUnit | None = None
+    duration_number: int | None = None
+    duration_unit: TimeUnit | None = None
     start_date: date_type
-    notes: str | None
+    notes: str | None = None
 
     model_config = ConfigDict(use_enum_values=True)
 
