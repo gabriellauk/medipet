@@ -85,8 +85,7 @@ class Medication(db.Model):
         sa.Enum(TimeUnit, values_callable=get_enum_values), nullable=True
     )
     start_date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, nullable=False)
-    # TODO: Make end date nullable
-    end_date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, nullable=False)
+    end_date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, nullable=True)
     notes: so.Mapped[str | None] = so.mapped_column(sa.String(750), nullable=True)
     animal_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Animal.id), index=True, nullable=False)
 
