@@ -148,10 +148,7 @@ def update_appointment(appointment: models.Appointment, data: schemas.UpdateAppo
     return appointment
 
 
-def create_medication(data: schemas.CreateMedication, animal: models.Animal) -> models.Medication:
-    # TODO: Replace with calculated end date
-    placeholder_end_date = date(2026, 12, 1)
-
+def create_medication(data: schemas.CreateMedication, animal: models.Animal, end_date: date) -> models.Medication:
     medication = models.Medication(
         name=data.name,
         is_recurring=data.is_recurring,
@@ -161,7 +158,7 @@ def create_medication(data: schemas.CreateMedication, animal: models.Animal) -> 
         duration_number=data.duration_number,
         duration_unit=data.duration_unit,
         start_date=data.start_date,
-        end_date=placeholder_end_date,
+        end_date=end_date,
         notes=data.notes,
         animal=animal,
     )

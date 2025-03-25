@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List
 
 from flask import session
@@ -5,6 +6,8 @@ from app.decorators import requires_animal_permission
 from app import store, schemas
 
 from werkzeug.exceptions import BadRequest, Unauthorized
+
+from dateutil.relativedelta import relativedelta
 
 from app import models
 
@@ -187,9 +190,56 @@ def get_medication(user: models.User, animal: models.Animal, animal_id: int, med
 def create_medication(
     user: models.User, animal: models.Animal, animal_id: int, data: schemas.CreateMedication
 ) -> schemas.Medication:
-    medication = store.create_medication(data, animal)
+    if data.is_recurring:
+        end_date = _validate_data_for_recurring_medication(data)
+
+    else:
+        end_date = _validate_data_for_one_off_medication(data)
+
+    medication = store.create_medication(data, animal, end_date)
 
     return schemas.Medication.model_validate(medication)
+
+
+def _validate_data_for_recurring_medication(data: schemas.CreateMedication) -> date | None:
+    required_fields_if_recurring = [data.times_per_day, data.frequency_number, data.frequency_unit]
+    for field in required_fields_if_recurring:
+        if not field:
+            raise BadRequest("If a medication is recurring, times per day and frequency details must all be provided.")
+
+    match data.duration_unit:
+        case models.TimeUnit.DAY.value:
+            end_date = data.start_date + relativedelta(days=data.duration_number)
+        case models.TimeUnit.WEEK.value:
+            end_date = data.start_date + relativedelta(weeks=data.duration_number)
+        case models.TimeUnit.MONTH.value:
+            end_date = data.start_date + relativedelta(months=data.duration_number)
+        case models.TimeUnit.YEAR.value:
+            end_date = data.start_date + relativedelta(years=data.duration_number)
+        case None:
+            end_date = None
+
+    return end_date
+
+
+def _validate_data_for_one_off_medication(data: schemas.CreateMedication) -> date:
+    fields_not_required_if_not_recurring = [
+        data.times_per_day,
+        data.frequency_number,
+        data.frequency_unit,
+        data.duration_number,
+        data.duration_unit,
+    ]
+
+    for field in fields_not_required_if_not_recurring:
+        if field:
+            raise BadRequest(
+                "If a medication is not recurring, times per day, frequency details and duration info should not be provided."
+            )
+
+    end_date = data.start_date
+
+    return end_date
 
 
 @requires_animal_permission

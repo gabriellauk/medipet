@@ -167,11 +167,13 @@ class MedicationFields(BaseSchema):
 
 class Medication(MedicationFields):
     id: int
-    end_date: date_type
+    end_date: date_type | None
 
     @field_serializer("start_date", "end_date")
     def serialize_date(self, dt: date_type, _info):
-        return dt.strftime("%Y-%m-%d")
+        if dt:
+            return dt.strftime("%Y-%m-%d")
+        return dt
 
 
 class Medications(BaseSchema):
