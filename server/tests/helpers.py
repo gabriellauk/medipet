@@ -1,3 +1,4 @@
+from datetime import date
 from app.extensions import db
 from app import models
 
@@ -10,3 +11,38 @@ def create_animal() -> models.Animal:
     db.session.commit()
 
     return animal
+
+
+def create_medications(animal: models.Animal) -> list[models.Medication]:
+    medications = [
+        models.Medication(
+            name="Flea treatment",
+            animal=animal,
+            is_recurring=True,
+            times_per_day=1,
+            frequency_number=1,
+            frequency_unit="month",
+            duration_number=12,
+            duration_unit="month",
+            start_date=date(2025, 1, 6),
+            end_date=date(2026, 12, 1),
+            notes="Some notes",
+        ),
+        models.Medication(
+            name="Some one-off medication",
+            animal=animal,
+            is_recurring=False,
+            times_per_day=1,
+            frequency_number=None,
+            frequency_unit=None,
+            duration_number=None,
+            duration_unit=None,
+            start_date=date(2025, 1, 6),
+            end_date=date(2025, 1, 6),
+            notes="Some notes",
+        ),
+    ]
+    db.session.add_all(medications)
+    db.session.commit()
+
+    return medications

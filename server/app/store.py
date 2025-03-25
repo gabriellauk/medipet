@@ -178,3 +178,19 @@ def get_medications(animal: models.Animal) -> List[models.Medication]:
         .order_by(models.Medication.start_date.desc())
         .all()
     )
+
+
+def delete_medication(medication: models.Medication) -> None:
+    db.session.delete(medication)
+    db.session.commit()
+
+
+def update_medication(medication: models.Medication, data: schemas.UpdateMedication) -> models.Medication:
+    if data.name:
+        medication.name = data.name
+    if "notes" in data.model_fields_set:
+        medication.notes = data.notes
+
+    db.session.commit()
+
+    return medication

@@ -5,7 +5,9 @@ from app.extensions import db
 
 from flask.testing import FlaskClient
 
-from helpers import create_animal
+from helpers import create_animal, create_medications
+
+import pytest
 
 
 def test_create_medication_recurring_finite_period(logged_in_client: FlaskClient) -> None:
@@ -196,37 +198,7 @@ def test_get_medication(logged_in_client: FlaskClient) -> None:
 
 def test_get_medications_for_animal(logged_in_client: FlaskClient) -> None:
     animal = create_animal()
-
-    medications = [
-        models.Medication(
-            name="Flea treatment",
-            animal=animal,
-            is_recurring=True,
-            times_per_day=1,
-            frequency_number=1,
-            frequency_unit="month",
-            duration_number=12,
-            duration_unit="month",
-            start_date=date(2025, 1, 6),
-            end_date=date(2026, 12, 1),
-            notes="Some notes",
-        ),
-        models.Medication(
-            name="Some one-off medication",
-            animal=animal,
-            is_recurring=False,
-            times_per_day=1,
-            frequency_number=None,
-            frequency_unit=None,
-            duration_number=None,
-            duration_unit=None,
-            start_date=date(2025, 1, 6),
-            end_date=date(2025, 1, 6),
-            notes="Some notes",
-        ),
-    ]
-    db.session.add_all(medications)
-    db.session.commit()
+    create_medications(animal)
 
     response = logged_in_client.get(f"api/animal/{animal.id}/medication")
 
@@ -261,3 +233,67 @@ def test_get_medications_for_animal(logged_in_client: FlaskClient) -> None:
             },
         ]
     }
+
+
+def test_delete_medication(logged_in_client: FlaskClient) -> None:
+    animal = create_animal()
+    medications = create_medications(animal)
+
+    response = logged_in_client.delete(f"api/animal/{animal.id}/medication/{medications[0].id}")
+
+    assert response.status_code == 204
+
+
+def test_update_medication(logged_in_client: FlaskClient) -> None:
+    animal = create_animal()
+    medications = create_medications(animal)
+
+    assert medications[0].name == "Flea treatment"
+    assert medications[0].notes == "Some notes"
+
+    request_data = {"name": "New name", "notes": "New notes"}
+
+    response = logged_in_client.patch(f"api/animal/{animal.id}/medication/{medications[0].id}", json=request_data)
+
+    assert response.status_code == 200
+    assert response.json["name"] == request_data["name"]
+    assert response.json["notes"] == request_data["notes"]
+
+
+@pytest.mark.parametrize("field_to_update", ["name", "notes"])
+def test_update_medication_partially(logged_in_client: FlaskClient, field_to_update: str) -> None:
+    animal = create_animal()
+    medications = create_medications(animal)
+
+    assert medications[0].name == "Flea treatment"
+    assert medications[0].notes == "Some notes"
+
+    if field_to_update == "name":
+        request_data = {"name": "New name"}
+    elif field_to_update == "notes":
+        request_data = {"notes": "New notes"}
+
+    response = logged_in_client.patch(f"api/animal/{animal.id}/medication/{medications[0].id}", json=request_data)
+
+    assert response.status_code == 200
+
+    if field_to_update == "name":
+        assert response.json["name"] == request_data["name"]
+        assert response.json["notes"] == medications[0].notes
+    elif field_to_update == "notes":
+        assert response.json["name"] == medications[0].name
+        assert response.json["notes"] == request_data["notes"]
+
+
+def test_update_medication_no_notes(logged_in_client: FlaskClient) -> None:
+    animal = create_animal()
+    medications = create_medications(animal)
+
+    assert medications[0].notes == "Some notes"
+
+    request_data = {"notes": ""}
+
+    response = logged_in_client.patch(f"api/animal/{animal.id}/medication/{medications[0].id}", json=request_data)
+
+    assert response.status_code == 200
+    assert response.json["notes"] is None

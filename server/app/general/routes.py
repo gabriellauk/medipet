@@ -14,6 +14,7 @@ from app.schemas import (
     Medications,
     Symptoms,
     UpdateAppointment,
+    UpdateMedication,
     UpdateSymptom,
     UpdateWeight,
     Weights,
@@ -188,6 +189,13 @@ def create_medication(animal_id: int):
         return jsonify({"error": e.errors()}), 422
 
 
+@general.route("/api/animal/<animal_id>/medication/<medication_id>", methods=["DELETE"])
+def delete_medication(animal_id: int, medication_id: int):
+    controller.delete_medication(animal_id, medication_id)
+
+    return "", 204
+
+
 @general.route("/api/animal/<animal_id>/medication/<medication_id>", methods=["GET"])
 def get_medication(animal_id: int, medication_id: int):
     medication = controller.get_medication(animal_id, medication_id)
@@ -200,3 +208,13 @@ def get_medications_for_animal(animal_id: int):
     medications = controller.get_medications_for_animal(animal_id)
 
     return jsonify(Medications(data=[medication for medication in medications]).model_dump())
+
+
+@general.route("/api/animal/<animal_id>/medication/<medication_id>", methods=["PATCH"])
+def update_medication(animal_id: int, medication_id: int):
+    try:
+        data = UpdateMedication.model_validate(request.json)
+        medication = controller.update_medication(animal_id, medication_id, data)
+        return jsonify(medication.model_dump()), 200
+    except ValidationError as e:
+        return jsonify({"error": e.errors()}), 422

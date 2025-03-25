@@ -162,7 +162,7 @@ def get_appointment(user: models.User, animal: models.Animal, animal_id: int, ap
 @requires_animal_permission
 def update_appointment(
     user: models.User, animal: models.Animal, animal_id: int, appointment_id: int, data: schemas.UpdateAppointment
-) -> schemas.Weight:
+) -> schemas.Appointment:
     if (appointment := store.get_appointment(appointment_id)) is None or appointment.animal != animal:
         raise BadRequest(f"Appointment {appointment_id} not found for animal {animal_id}")
 
@@ -243,7 +243,27 @@ def _validate_data_for_one_off_medication(data: schemas.CreateMedication) -> dat
 
 
 @requires_animal_permission
+def delete_medication(user: models.User, animal: models.Animal, animal_id: int, medication_id: int) -> None:
+    if (medication := store.get_medication(medication_id)) is None or medication.animal != animal:
+        raise BadRequest(f"Medication {medication_id} not found for animal {animal_id}")
+
+    store.delete_medication(medication)
+
+
+@requires_animal_permission
 def get_medications_for_animal(user: models.User, animal: models.Animal, animal_id: int) -> List[schemas.Medication]:
     medications = store.get_medications(animal)
 
     return [schemas.Medication.model_validate(appointment) for appointment in medications]
+
+
+@requires_animal_permission
+def update_medication(
+    user: models.User, animal: models.Animal, animal_id: int, medication_id: int, data: schemas.UpdateMedication
+) -> schemas.Medication:
+    if (medication := store.get_medication(medication_id)) is None or medication.animal != animal:
+        raise BadRequest(f"Medication {medication_id} not found for animal {animal_id}")
+
+    medication = store.update_medication(medication, data)
+
+    return schemas.Medication.model_validate(medication)
