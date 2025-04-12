@@ -49,7 +49,6 @@ export function AppointmentForm({ close, mode, item }: Props) {
       descriptionField.current!.value = item.description;
       if (item.notes != null) {
         notesField.current!.value = item.notes;
-        console.log("I'm in the effect");
       }
     }
   }, [mode, item]);

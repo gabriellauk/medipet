@@ -6,17 +6,20 @@ import { useAnimals } from '../contexts/AnimalsContext';
 import { MedicationForm } from '../components/MedicationForm';
 import MedicationCard from '../components/MedicationCard';
 
+export type TimeUnit = 'day' | 'week' | 'month' | 'year';
+
 export type Medication = {
   id: number;
   name: string;
-  isRecurring: boolean;
-  timesPerDay: number;
-  frequencyNumber: number;
-  frequencyUnit: string;
-  durationNumber: number;
-  durationUnit: string;
   startDate: string;
-  endDate: string;
+  isRecurring: boolean;
+  timesPerDay?: number;
+  frequencyNumber?: number;
+  frequencyUnit?: TimeUnit;
+  durationNumber?: number;
+  durationUnit?: TimeUnit;
+  notes?: string;
+  endDate?: string;
 };
 
 export type DrawerMode = 'create' | 'update';
@@ -68,7 +71,7 @@ export default function MedicationSchedule() {
   return (
     <Container>
       <h1>Medication schedule</h1>
-      <p>Intro text.</p>
+      <p>Record {animal!.name}'s regular and one-off medication here.</p>
       {medicationsData.length === 0 && (
         <p>
           <i>No medication listed for {animal!.name} yet.</i>
@@ -97,7 +100,13 @@ export default function MedicationSchedule() {
             name={item.name}
             isRecurring={item.isRecurring}
             startDate={item.startDate}
+            timesPerDay={item.timesPerDay}
+            frequencyNumber={item.frequencyNumber}
             frequencyUnit={item.frequencyUnit}
+            durationNumber={item.durationNumber}
+            durationUnit={item.durationUnit}
+            endDate={item.endDate}
+            notes={item.notes}
             animalId={animal!.id}
             deleteMedication={deleteMedication}
             onEditClick={() => handleOpenDrawerEdit(item.id)}

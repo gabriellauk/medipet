@@ -1,12 +1,19 @@
 import { Card, Group, Text } from '@mantine/core';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
+import { TimeUnit } from '../pages/MedicationSchedule';
 
 export default function MedicationCard({
   medicationId,
   name,
   isRecurring,
   startDate,
+  timesPerDay,
+  frequencyNumber,
   frequencyUnit,
+  durationNumber,
+  durationUnit,
+  endDate,
+  notes,
   animalId,
   deleteMedication,
   onEditClick,
@@ -15,7 +22,13 @@ export default function MedicationCard({
   name: string;
   isRecurring: boolean;
   startDate: string;
-  frequencyUnit: string;
+  timesPerDay?: number;
+  frequencyNumber?: number;
+  frequencyUnit?: TimeUnit;
+  durationNumber?: number;
+  durationUnit?: TimeUnit;
+  endDate?: string;
+  notes?: string;
   animalId: number;
   deleteMedication: (animalId: number, appointmentId: number) => void;
   onEditClick: () => void;
@@ -33,7 +46,19 @@ export default function MedicationCard({
         </Group>
       </Group>
       <Text size="sm" c="dimmed">
-        {name}, {isRecurring}, {frequencyUnit}
+        name: {name}
+        <br />
+        recurring: {isRecurring ? 'true' : 'false'} <br />
+        start date: {startDate}
+        <br />
+        times per day: {timesPerDay}
+        <br />
+        frequency: {frequencyNumber} times a {frequencyUnit}
+        <br />
+        duration: {durationNumber} {durationUnit}s<br />
+        ends: {endDate}
+        <br />
+        notes: {notes}
       </Text>
     </Card>
   );

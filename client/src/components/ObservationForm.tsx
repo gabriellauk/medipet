@@ -1,13 +1,13 @@
-import { Button, Title } from '@mantine/core';
-import { useState, useEffect, useRef } from 'react';
-import InputField from './InputField';
+import { Button, TextInput, Title } from '@mantine/core';
+import { useForm, Controller } from 'react-hook-form';
+import { DateInput } from '@mantine/dates';
+import dayjs from 'dayjs';
 import { useApi } from '../contexts/ApiContext';
 import ErrorArea from './ErrorArea';
 import { useAnimals } from '../contexts/AnimalsContext';
-import { DateInput } from '@mantine/dates';
-import dayjs from 'dayjs';
 import { Observation } from '../pages/ObservationDiary';
 import { GenericApiResponse } from '../ApiClient';
+import { useState } from 'react';
 
 type Props =
   | {
@@ -22,120 +22,99 @@ type Props =
     };
 
 type ObservationFormData = {
-  date: string;
+  date: Date | null;
   description: string;
 };
-type CreateObservationFormData = ObservationFormData;
-type UpdateObservationFormData = Partial<ObservationFormData>;
-type ObservationFormErrors = Partial<Record<keyof ObservationFormData, string>>;
 
 export function ObservationForm({ close, mode, item }: Props) {
   const api = useApi();
   const { animal } = useAnimals();
+  const [submissionError, setSubmissionError] = useState('');
 
-  const descriptionField = useRef<HTMLInputElement | null>(null);
-  const dateField = useRef<HTMLInputElement | null>(null);
-  const [dateValue, setDateValue] = useState<Date | null>(null);
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<ObservationFormData>({
+    defaultValues: {
+      date: mode === 'update' ? new Date(item!.date) : null,
+      description: mode === 'update' ? item!.description : '',
+    },
+  });
 
-  const [formErrors, setFormErrors] = useState<ObservationFormErrors>();
-  const [submissionError, setSubmissionError] = useState<string | undefined>();
-
-  useEffect(() => {
-    if (mode === 'update') {
-      const dateObject = new Date(item.date);
-      setDateValue(dateObject);
-      descriptionField.current!.value = item.description;
-    }
-  }, [mode, item]);
-
-  useEffect(() => {
-    descriptionField.current?.focus();
-  }, []);
-
-  const onSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    const description = descriptionField.current?.value;
-    const date = dateField.current?.value
-      ? dayjs(dateValue).format('YYYY-MM-DD')
-      : '';
-
-    const formErrors: ObservationFormErrors = {};
-    if (!description) {
-      formErrors.description = 'Description must be provided.';
-    }
-    if (!date) {
-      formErrors.date = 'Date must be provided.';
-    }
-    setSubmissionError(undefined);
-    setFormErrors(formErrors);
-
-    if (Object.keys(formErrors).length > 0) {
-      return;
-    }
-
-    const handleResponse = (response: GenericApiResponse) => {
-      if (!response.ok) {
-        setSubmissionError(
-          response.body?.error ? response.body.error : 'Unknown error'
-        );
-        return;
-      }
-      setSubmissionError(undefined);
-      close();
+  const onSubmit = async (data: ObservationFormData) => {
+    const formData = {
+      description: data.description,
+      date: data.date ? dayjs(data.date).format('YYYY-MM-DD') : '',
     };
 
     let apiResponse: GenericApiResponse;
-    if (description && date) {
-      if (mode === 'create') {
-        const formData: CreateObservationFormData = {
-          description: description,
-          date: date,
-        };
-        apiResponse = await api.post(
-          '/animal/' + animal!.id + '/symptom',
-          formData
-        );
-      } else {
-        const changedFields: UpdateObservationFormData = {};
-        if (description != item.description) {
-          changedFields.description = description;
-        }
-        if (date != item.date) {
-          changedFields.date = date;
-        }
-        if (Object.keys(changedFields).length === 0) {
-          setSubmissionError('No changes to submit');
-          return;
-        }
-        apiResponse = await api.patch(
-          '/animal/' + animal!.id + '/symptom/' + item.id,
-          changedFields
-        );
+    if (mode === 'create') {
+      apiResponse = await api.post(`/animal/${animal!.id}/symptom`, formData);
+    } else {
+      const changedFields: Partial<ObservationFormData> = {};
+      if (formData.description !== item!.description) {
+        changedFields.description = formData.description;
       }
-      handleResponse(apiResponse);
+      if (
+        data.date &&
+        data.date.toISOString() !== new Date(item!.date).toISOString()
+      ) {
+        changedFields.date = data.date;
+      }
+      if (Object.keys(changedFields).length === 0) {
+        setError('description', { message: 'No changes to submit' });
+        return;
+      }
+      apiResponse = await api.patch(
+        `/animal/${animal!.id}/symptom/${item!.id}`,
+        changedFields
+      );
     }
+
+    if (!apiResponse.ok) {
+      setSubmissionError('An error occurred. Please try again later.');
+      return;
+    }
+
+    close();
   };
 
   return (
     <>
       <Title ta="center">
-        {mode == 'create' ? 'Add an observation' : 'Edit observation'}
+        {mode === 'create' ? 'Add an observation' : 'Edit observation'}
       </Title>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <ErrorArea error={submissionError} />
-        <InputField
+
+        <Controller
           name="description"
-          label="Description"
-          error={formErrors?.description}
-          fieldRef={descriptionField}
+          control={control}
+          rules={{ required: 'Description must be provided.' }}
+          render={({ field }) => (
+            <TextInput
+              {...field}
+              label="Description"
+              error={errors.description?.message}
+            />
+          )}
         />
-        <DateInput
-          value={dateValue}
-          onChange={setDateValue}
-          label="Date input"
-          ref={dateField}
+
+        <Controller
+          name="date"
+          control={control}
+          rules={{ required: 'Date must be provided.' }}
+          render={({ field }) => (
+            <DateInput
+              {...field}
+              label="Date input"
+              error={errors.date?.message}
+            />
+          )}
         />
+
         <Button variant="filled" type="submit" mt="lg">
           {mode === 'create' ? 'Add' : 'Update'}
         </Button>
