@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date as date_type
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from sqlalchemy.orm import relationship
@@ -35,7 +35,7 @@ class Animal(db.Model):
 class Symptom(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     description: so.Mapped[str] = so.mapped_column(sa.String(240), nullable=False)
-    date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, nullable=False)
+    date: so.Mapped[date_type] = so.mapped_column(sa.Date, nullable=False)
     animal_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Animal.id), index=True, nullable=False)
 
     animal = relationship("Animal")
@@ -44,7 +44,7 @@ class Symptom(db.Model):
 class Weight(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     weight: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=False)
-    date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, nullable=False)
+    date: so.Mapped[date_type] = so.mapped_column(sa.Date, nullable=False)
     animal_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Animal.id), index=True, nullable=False)
 
     animal = relationship("Animal")
@@ -53,7 +53,7 @@ class Weight(db.Model):
 class Appointment(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     description: so.Mapped[str] = so.mapped_column(sa.String(240), nullable=False)
-    date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, nullable=False)
+    date: so.Mapped[date_type] = so.mapped_column(sa.Date, nullable=False)
     notes: so.Mapped[str | None] = so.mapped_column(sa.String(750), nullable=True)
     animal_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Animal.id), index=True, nullable=False)
 
@@ -84,8 +84,8 @@ class Medication(db.Model):
     duration_unit: so.Mapped[TimeUnit | None] = so.mapped_column(
         sa.Enum(TimeUnit, values_callable=get_enum_values), nullable=True
     )
-    start_date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, nullable=False)
-    end_date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, nullable=True)
+    start_date: so.Mapped[date_type] = so.mapped_column(sa.Date, nullable=False)
+    end_date: so.Mapped[date_type | None] = so.mapped_column(sa.Date, nullable=True)
     notes: so.Mapped[str | None] = so.mapped_column(sa.String(750), nullable=True)
     animal_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Animal.id), index=True, nullable=False)
 

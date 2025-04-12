@@ -164,7 +164,7 @@ class MedicationFields(BaseSchema):
     def serialize_date(self, dt: date_type, _info):
         return dt.strftime("%Y-%m-%d")
 
-    @field_validator("name", "notes", mode="before")
+    @field_validator("name", "notes", "frequency_unit", "duration_unit", mode="before")
     @classmethod
     def empty_str_to_none(cls, v: str) -> str | None:
         if v == "":
