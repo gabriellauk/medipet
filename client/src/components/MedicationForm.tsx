@@ -136,122 +136,128 @@ export function MedicationForm({ close, mode, item }: Props) {
           )}
         />
 
-        <Controller
-          name="startDate"
-          control={control}
-          rules={{ required: 'Start date must be provided.' }}
-          render={({ field }) => (
-            <DateInput
-              {...field}
-              label="Start date"
-              error={errors.startDate?.message}
+        {mode === 'create' && (
+          <>
+            <Controller
+              name="startDate"
+              control={control}
+              rules={{ required: 'Start date must be provided.' }}
+              render={({ field }) => (
+                <DateInput
+                  {...field}
+                  label="Start date"
+                  error={errors.startDate?.message}
+                />
+              )}
             />
-          )}
-        />
 
-        <Controller
-          name="isRecurring"
-          control={control}
-          rules={{
-            required: 'You must specify if the medication is recurring or not',
-          }}
-          render={({ field }) => (
-            <Radio.Group
-              {...field}
-              label="Is this a recurring medication?"
-              error={errors.isRecurring?.message}
-            >
-              <Radio value="true" label="Yes" />
-              <Radio value="false" label="No" />
-            </Radio.Group>
-          )}
-        />
-
-        <Controller
-          name="timesPerDay"
-          control={control}
-          rules={{
-            required: isRecurringWatch
-              ? 'Times per day must be provided.'
-              : false,
-          }}
-          render={({ field }) => (
-            <NumberInput
-              {...field}
-              label="How many doses a day are required?"
-              error={errors.timesPerDay?.message}
+            <Controller
+              name="isRecurring"
+              control={control}
+              rules={{
+                required:
+                  'You must specify if the medication is recurring or not',
+              }}
+              render={({ field }) => (
+                <Radio.Group
+                  {...field}
+                  label="Is this a recurring medication?"
+                  error={errors.isRecurring?.message}
+                >
+                  <Radio value="true" label="Yes" />
+                  <Radio value="false" label="No" />
+                </Radio.Group>
+              )}
             />
-          )}
-        />
 
-        <Controller
-          name="frequencyNumber"
-          control={control}
-          rules={{
-            required: isRecurringWatch
-              ? 'Frequency number must be provided.'
-              : false,
-          }}
-          render={({ field }) => (
-            <NumberInput
-              {...field}
-              label="How frequently does this medication need to be given?"
-              error={errors.frequencyNumber?.message}
+            <Controller
+              name="timesPerDay"
+              control={control}
+              rules={{
+                required: isRecurringWatch
+                  ? 'Times per day must be provided.'
+                  : false,
+              }}
+              render={({ field }) => (
+                <NumberInput
+                  {...field}
+                  label="How many doses a day are required?"
+                  error={errors.timesPerDay?.message}
+                />
+              )}
             />
-          )}
-        />
 
-        <Controller
-          name="frequencyUnit"
-          control={control}
-          rules={{
-            required: isRecurringWatch
-              ? 'Frequency unit must be provided.'
-              : false,
-          }}
-          render={({ field }) => (
-            <NativeSelect
-              {...field}
-              label="Frequency unit"
-              data={['day', 'week', 'month', 'year']}
-              error={errors.frequencyUnit?.message}
+            <Controller
+              name="frequencyNumber"
+              control={control}
+              rules={{
+                required: isRecurringWatch
+                  ? 'Frequency number must be provided.'
+                  : false,
+              }}
+              render={({ field }) => (
+                <NumberInput
+                  {...field}
+                  label="How frequently does this medication need to be given?"
+                  error={errors.frequencyNumber?.message}
+                />
+              )}
             />
-          )}
-        />
 
-        <Controller
-          name="durationNumber"
-          control={control}
-          rules={{
-            required: isRecurringWatch
-              ? 'Duration number must be provided.'
-              : false,
-          }}
-          render={({ field }) => (
-            <NumberInput
-              {...field}
-              label="For how long should this medication be given?"
-              error={errors.durationNumber?.message}
+            <Controller
+              name="frequencyUnit"
+              control={control}
+              rules={{
+                required: isRecurringWatch
+                  ? 'Frequency unit must be provided.'
+                  : false,
+              }}
+              render={({ field }) => (
+                <NativeSelect
+                  {...field}
+                  label="Frequency unit"
+                  data={['day', 'week', 'month', 'year']}
+                  error={errors.frequencyUnit?.message}
+                />
+              )}
             />
-          )}
-        />
 
-        <Controller
-          name="durationUnit"
-          control={control}
-          rules={{
-            required: isRecurringWatch
-              ? 'Duration unit must be provided.'
-              : false,
-          }}
-          render={({ field }) => (
-            <TextInput
-              {...field}
-              label="Duration unit"
-              error={errors.durationUnit?.message}
+            <Controller
+              name="durationNumber"
+              control={control}
+              rules={{
+                required: isRecurringWatch
+                  ? 'Duration number must be provided.'
+                  : false,
+              }}
+              render={({ field }) => (
+                <NumberInput
+                  {...field}
+                  label="For how long should this medication be given?"
+                  error={errors.durationNumber?.message}
+                />
+              )}
             />
-          )}
-        />
+
+            <Controller
+              name="durationUnit"
+              control={control}
+              rules={{
+                required: isRecurringWatch
+                  ? 'Duration unit must be provided.'
+                  : false,
+              }}
+              render={({ field }) => (
+                <NativeSelect
+                  {...field}
+                  label="Duration unit"
+                  data={['day', 'week', 'month', 'year']}
+                  error={errors.durationUnit?.message}
+                />
+              )}
+            />
+          </>
+        )}
 
         <Controller
           name="notes"
