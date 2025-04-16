@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import { AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import NavMenu from './components/NavMenu.tsx';
+import NavMenu from './nav/NavMenu.tsx';
 import classes from './LoggedInLayout.module.css';
-import Logo from './components/Logo.tsx';
+import Logo from '../ui/logo/Logo.tsx';
 
 function LoggedInLayout() {
   const [opened, { toggle }] = useDisclosure();

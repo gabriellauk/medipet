@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Button, Drawer, Container } from '@mantine/core';
-import { useApi } from '../contexts/ApiContext';
+import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
-import { useAnimals } from '../contexts/AnimalsContext';
-import { WeightForm } from '../components/WeightForm';
-import WeightCard from '../components/WeightCard';
+import { useAnimals } from '../../contexts/AnimalsContext';
+import { WeightForm } from './WeightForm';
+import WeightCard from './WeightCard';
 
 export type Weight = {
   id: number;

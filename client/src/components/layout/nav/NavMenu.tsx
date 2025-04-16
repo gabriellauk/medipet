@@ -10,8 +10,8 @@ import {
 } from '@tabler/icons-react';
 import classes from './NavMenu.module.css';
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { useAnimals } from '../contexts/AnimalsContext';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useAnimals } from '../../../contexts/AnimalsContext';
 
 const options = [
   { link: '/', label: 'Home', icon: IconHome2 },

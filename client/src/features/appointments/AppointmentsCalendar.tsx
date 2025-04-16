@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Button, Drawer, Container } from '@mantine/core';
-import { useApi } from '../contexts/ApiContext';
+import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
-import { useAnimals } from '../contexts/AnimalsContext';
-import AppointmentCard from '../components/AppointmentCard';
-import { AppointmentForm } from '../components/AppointmentForm';
+import { useAnimals } from '../../contexts/AnimalsContext';
+import AppointmentCard from './AppointmentCard';
+import { AppointmentForm } from './AppointmentForm';
 
 export type Appointment = {
   id: number;

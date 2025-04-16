@@ -1,13 +1,13 @@
 import { Button, Textarea, Title } from '@mantine/core';
 import { useState, useEffect, useRef } from 'react';
-import InputField from './InputField';
-import { useApi } from '../contexts/ApiContext';
-import ErrorArea from './ErrorArea';
-import { useAnimals } from '../contexts/AnimalsContext';
+import InputField from '../../components/ui/form/InputField';
+import { useApi } from '../../contexts/ApiContext';
+import ErrorArea from '../../components/ErrorArea';
+import { useAnimals } from '../../contexts/AnimalsContext';
 import { DateInput } from '@mantine/dates';
 import dayjs from 'dayjs';
-import { GenericApiResponse } from '../ApiClient';
-import { Appointment } from '../pages/AppointmentsCalendar';
+import { GenericApiResponse } from '../../ApiClient';
+import { Appointment } from './AppointmentsCalendar';
 
 type Props =
   | {

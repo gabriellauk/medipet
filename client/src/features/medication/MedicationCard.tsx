@@ -1,6 +1,6 @@
 import { Card, Group, Text } from '@mantine/core';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
-import { TimeUnit } from '../pages/MedicationSchedule';
+import { TimeUnit } from './MedicationSchedule';
 
 export default function MedicationCard({
   medicationId,

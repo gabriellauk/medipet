@@ -12,12 +12,12 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { useState, useEffect, useRef } from 'react';
-import InputField from '../components/InputField';
+import InputField from '../../components/ui/form/InputField';
 import { useNavigate } from 'react-router-dom';
-import { useApi } from '../contexts/ApiContext';
-import ErrorArea from '../components/ErrorArea';
-import { useAnimals } from '../contexts/AnimalsContext';
-import { useAuth } from '../contexts/AuthContext';
+import { useApi } from '../../contexts/ApiContext';
+import ErrorArea from '../../components/ErrorArea';
+import { useAnimals } from '../../contexts/AnimalsContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function CreateAnimal() {
   const { logout } = useAuth();

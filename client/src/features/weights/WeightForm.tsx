@@ -1,12 +1,12 @@
 import { Button, NumberInput, Title } from '@mantine/core';
 import { useState, useEffect, useRef } from 'react';
-import { useApi } from '../contexts/ApiContext';
-import ErrorArea from './ErrorArea';
-import { useAnimals } from '../contexts/AnimalsContext';
+import { useApi } from '../../contexts/ApiContext';
+import ErrorArea from '../../components/ErrorArea';
+import { useAnimals } from '../../contexts/AnimalsContext';
 import { DateInput } from '@mantine/dates';
 import dayjs from 'dayjs';
-import { GenericApiResponse } from '../ApiClient';
-import { Weight } from '../pages/WeightTracker';
+import { GenericApiResponse } from '../../ApiClient';
+import { Weight } from './WeightTracker';
 
 type Props =
   | {

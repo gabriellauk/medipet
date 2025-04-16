@@ -3,18 +3,18 @@ import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import AuthRedirect from './components/AuthRedirect.tsx';
-import SplashPage from './pages/SplashPage.tsx';
+import SplashPage from './features/landing-page/SplashPage.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
-import LoggedInLayout from './LoggedInLayout.tsx';
+import LoggedInLayout from './components/layout/LoggedInLayout.tsx';
 import ComingSoon from './components/ComingSoon.tsx';
 import ApiContextProvider from './contexts/ApiContextProvider.tsx';
 import AuthContextProvider from './contexts/AuthContextProvider.tsx';
-import { CreateAnimal } from './pages/CreateAnimal.tsx';
+import { CreateAnimal } from './features/animal/CreateAnimal.tsx';
 import AnimalsContextProvider from './contexts/AnimalsContextProvider.tsx';
-import ObservationDiary from './pages/ObservationDiary.tsx';
-import AppointmentsCalendar from './pages/AppointmentsCalendar.tsx';
-import WeightTracker from './pages/WeightTracker.tsx';
-import MedicationSchedule from './pages/MedicationSchedule.tsx';
+import ObservationDiary from './features/observations/ObservationDiary.tsx';
+import AppointmentsCalendar from './features/appointments/AppointmentsCalendar.tsx';
+import WeightTracker from './features/weights/WeightTracker.tsx';
+import MedicationSchedule from './features/medication/MedicationSchedule.tsx';
 
 function App() {
   return (

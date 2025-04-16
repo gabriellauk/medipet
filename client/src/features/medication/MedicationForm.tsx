@@ -10,11 +10,11 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { DateInput } from '@mantine/dates';
 import dayjs from 'dayjs';
-import { useApi } from '../contexts/ApiContext';
-import ErrorArea from './ErrorArea';
-import { useAnimals } from '../contexts/AnimalsContext';
-import { Medication, TimeUnit } from '../pages/MedicationSchedule';
+import { useApi } from '../../contexts/ApiContext';
+import { useAnimals } from '../../contexts/AnimalsContext';
+import { Medication, TimeUnit } from './MedicationSchedule';
 import { useEffect, useState } from 'react';
+import ErrorArea from '../../components/ErrorArea';
 
 type Props =
   | {

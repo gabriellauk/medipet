@@ -2,11 +2,11 @@ import { Button, TextInput, Title } from '@mantine/core';
 import { useForm, Controller } from 'react-hook-form';
 import { DateInput } from '@mantine/dates';
 import dayjs from 'dayjs';
-import { useApi } from '../contexts/ApiContext';
-import ErrorArea from './ErrorArea';
-import { useAnimals } from '../contexts/AnimalsContext';
-import { Observation } from '../pages/ObservationDiary';
-import { GenericApiResponse } from '../ApiClient';
+import { useApi } from '../../contexts/ApiContext';
+import ErrorArea from '../../components/ErrorArea';
+import { useAnimals } from '../../contexts/AnimalsContext';
+import { Observation } from './ObservationDiary';
+import { GenericApiResponse } from '../../ApiClient';
 import { useState } from 'react';
 
 type Props =

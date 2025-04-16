@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Button, Drawer, Container } from '@mantine/core';
-import { useApi } from '../contexts/ApiContext';
+import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
-import { useAnimals } from '../contexts/AnimalsContext';
-import { MedicationForm } from '../components/MedicationForm';
-import MedicationCard from '../components/MedicationCard';
+import { useAnimals } from '../../contexts/AnimalsContext';
+import { MedicationForm } from './MedicationForm';
+import MedicationCard from './MedicationCard';
 
 export type TimeUnit = 'day' | 'week' | 'month' | 'year';
 

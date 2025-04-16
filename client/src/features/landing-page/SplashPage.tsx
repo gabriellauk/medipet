@@ -1,7 +1,7 @@
 import { AppShell, Container } from '@mantine/core';
-import { Hero } from '../components/Hero/Hero.tsx';
+import { Hero } from './components/hero/Hero.tsx';
 import classes from './SplashPage.module.css';
-import Logo from '../components/Logo.tsx';
+import Logo from '../../components/ui/logo/Logo.tsx';
 
 function SplashPage() {
   return (
