@@ -34,7 +34,6 @@ export function ObservationForm({ close, mode, item }: Props) {
   const {
     control,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm<ObservationFormData>({
     defaultValues: {
@@ -44,27 +43,21 @@ export function ObservationForm({ close, mode, item }: Props) {
   });
 
   const onSubmit = async (data: ObservationFormData) => {
-    const formData = {
-      description: data.description,
-      date: data.date ? dayjs(data.date).format('YYYY-MM-DD') : '',
-    };
+    const formattedDate = data.date
+      ? dayjs(data.date).format('YYYY-MM-DD')
+      : '';
 
     let apiResponse: GenericApiResponse;
     if (mode === 'create') {
+      const formData = { description: data.description, date: formattedDate };
       apiResponse = await api.post(`/animal/${animal!.id}/symptom`, formData);
     } else {
-      const changedFields: Partial<ObservationFormData> = {};
-      if (formData.description !== item!.description) {
-        changedFields.description = formData.description;
-      }
-      if (
-        data.date &&
-        data.date.toISOString() !== new Date(item!.date).toISOString()
-      ) {
-        changedFields.date = data.date;
-      }
+      const changedFields: Partial<{ description: string; date: string }> = {};
+      if (data.description !== item!.description)
+        changedFields.description = data.description;
+      if (formattedDate != item.date) changedFields.date = formattedDate;
+
       if (Object.keys(changedFields).length === 0) {
-        setError('description', { message: 'No changes to submit' });
         return;
       }
       apiResponse = await api.patch(
@@ -92,11 +85,12 @@ export function ObservationForm({ close, mode, item }: Props) {
         <Controller
           name="description"
           control={control}
-          rules={{ required: 'Description must be provided.' }}
+          rules={{ required: 'Description must be provided' }}
           render={({ field }) => (
             <TextInput
               {...field}
               label="Description"
+              placeholder="Describe the symptom or behaviour"
               error={errors.description?.message}
             />
           )}
@@ -105,17 +99,18 @@ export function ObservationForm({ close, mode, item }: Props) {
         <Controller
           name="date"
           control={control}
-          rules={{ required: 'Date must be provided.' }}
+          rules={{ required: 'Date must be provided' }}
           render={({ field }) => (
             <DateInput
               {...field}
-              label="Date input"
+              label="Date observed"
+              placeholder="Pick a date"
               error={errors.date?.message}
             />
           )}
         />
 
-        <Button variant="filled" type="submit" mt="lg">
+        <Button type="submit" mt="lg">
           {mode === 'create' ? 'Add' : 'Update'}
         </Button>
       </form>

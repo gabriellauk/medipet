@@ -216,7 +216,13 @@ export function MedicationForm({ close, mode, item }: Props) {
                 <NativeSelect
                   {...field}
                   label="Frequency unit"
-                  data={['day', 'week', 'month', 'year']}
+                  data={[
+                    { value: '', label: 'Select a unit of time' },
+                    { value: 'day', label: 'day(s)' },
+                    { value: 'week', label: 'week(s)' },
+                    { value: 'month', label: 'month(s)' },
+                    { value: 'year', label: 'year(s)' },
+                  ]}
                   error={errors.frequencyUnit?.message}
                 />
               )}
@@ -251,7 +257,13 @@ export function MedicationForm({ close, mode, item }: Props) {
                 <NativeSelect
                   {...field}
                   label="Duration unit"
-                  data={['day', 'week', 'month', 'year']}
+                  data={[
+                    { value: '', label: 'Select a unit of time' },
+                    { value: 'day', label: 'day(s)' },
+                    { value: 'week', label: 'week(s)' },
+                    { value: 'month', label: 'month(s)' },
+                    { value: 'year', label: 'year(s)' },
+                  ]}
                   error={errors.durationUnit?.message}
                 />
               )}

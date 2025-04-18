@@ -85,9 +85,7 @@ export default function ObservationDiary() {
         Add weight
       </Button>
       {weightsLoading && <Text>Loading weights...</Text>}
-      {weightsError && (
-        <Text>Failed to load weights: {weightsError}</Text>
-      )}
+      {weightsError && <Text>Failed to load weights: {weightsError}</Text>}
       {weights.length > 0 &&
         weights.map((item) => (
           <WeightCard

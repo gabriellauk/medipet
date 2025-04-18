@@ -26,7 +26,7 @@ const stats = keyStatsData.map((stat) => {
 
 export default function Dashboard() {
   const { animal } = useAnimals();
-  const { weights, weightsLoading, weightsError } = useWeights();
+  const { weights } = useWeights();
 
   const sortedWeights = [...weights].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()

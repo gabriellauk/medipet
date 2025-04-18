@@ -5,83 +5,69 @@ import {
   Button,
   Center,
   Container,
+  NativeSelect,
   Paper,
   Stepper,
   Text,
+  TextInput,
   Title,
   UnstyledButton,
 } from '@mantine/core';
-import { useState, useEffect, useRef } from 'react';
-import InputField from '../../components/ui/form/InputField';
+import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../../contexts/ApiContext';
 import ErrorArea from '../../components/ErrorArea';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useState } from 'react';
 
 export function CreateAnimal() {
   const { logout } = useAuth();
   const { refreshAnimals } = useAnimals();
-  interface CreateAnimalFormErrors {
-    name?: string;
-    animalType?: string;
-  }
-
-  const [formErrors, setFormErrors] = useState<CreateAnimalFormErrors>();
-  const [submissionError, setSubmissionError] = useState<string | undefined>();
-  const nameField = useRef<HTMLInputElement | null>(null);
-  const animalTypeField = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const api = useApi();
+  const [submissionError, setSubmissionError] = useState('');
 
-  interface CreateAnimalFormData {
+  type CreateAnimalFormData = {
     name: string;
-    animalTypeId: string;
+    animalType: string;
+  };
+
+  enum AnimalTypeId {
+    Cat = 1,
+    Dog = 2,
+    Rabbit = 3,
   }
 
-  useEffect(() => {
-    nameField.current?.focus();
-  }, []);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateAnimalFormData>({
+    defaultValues: {
+      name: '',
+      animalType: '',
+    },
+  });
 
-  const onSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const onSubmit = async (data: CreateAnimalFormData) => {
+    const animalTypeId =
+      AnimalTypeId[data.animalType as keyof typeof AnimalTypeId];
 
-    const name = nameField.current?.value;
-    const animalType = animalTypeField.current?.value;
+    const formData = {
+      name: data.name,
+      animalTypeId: animalTypeId,
+    };
 
-    const formErrors: CreateAnimalFormErrors = {};
+    const response = await api.post('/animal', formData);
 
-    if (!name) {
-      formErrors.name = 'Name must be provided.';
-    }
-    if (!animalType) {
-      formErrors.animalType = 'Animal type must be provided.';
-    }
-    setSubmissionError(undefined);
-    setFormErrors(formErrors);
-
-    if (formErrors && Object.keys(formErrors).length > 0) {
+    if (!response.ok) {
+      setSubmissionError('An error occurred. Please try again.');
       return;
     }
 
-    if (name && animalType) {
-      const formData: CreateAnimalFormData = {
-        name: name,
-        animalTypeId: animalType,
-      };
-
-      const data = await api.post('/animal', { ...formData });
-
-      if (!data.ok) {
-        setSubmissionError(data.body.error ? data.body.error : 'Unknown error');
-        setFormErrors(formErrors);
-      } else {
-        setSubmissionError(undefined);
-        setFormErrors({});
-        refreshAnimals();
-        navigate('/test');
-      }
-    }
+    refreshAnimals();
+    navigate('/dashboard');
   };
 
   return (
@@ -103,24 +89,48 @@ export function CreateAnimal() {
       </Text>
 
       <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ErrorArea error={submissionError} />
-          <InputField
+
+          <Controller
             name="name"
-            label="Your pet's name"
-            error={formErrors?.name}
-            fieldRef={nameField}
+            control={control}
+            rules={{ required: 'Name must be provided' }}
+            render={({ field }) => (
+              <TextInput
+                {...field}
+                label="Your pet's name"
+                error={errors.name?.message}
+              />
+            )}
           />
-          <InputField
+
+          <Controller
             name="animalType"
-            label="Species - change to dropdown later"
-            error={formErrors?.animalType}
-            fieldRef={animalTypeField}
+            control={control}
+            rules={{
+              required: 'Species must be provided',
+            }}
+            render={({ field }) => (
+              <NativeSelect
+                {...field}
+                label="Species"
+                data={[
+                  { value: '', label: 'Select species' },
+                  { value: 'Cat', label: 'Cat' },
+                  { value: 'Dog', label: 'Dog' },
+                  { value: 'Rabbit', label: 'Rabbit' },
+                ]}
+                error={errors.animalType?.message}
+              />
+            )}
           />
-          <Button variant="filled" type="submit" mt="lg">
+
+          <Button type="submit" mt="lg">
             Continue
           </Button>
         </form>
+
         <Anchor c="dimmed" size="sm">
           <Center inline mt="lg">
             <IconArrowLeft size={12} stroke={1.5} />

@@ -1,13 +1,13 @@
-import { Button, Textarea, Title } from '@mantine/core';
-import { useState, useEffect, useRef } from 'react';
-import InputField from '../../components/ui/form/InputField';
+import { Button, Textarea, TextInput, Title } from '@mantine/core';
+import { useForm, Controller } from 'react-hook-form';
+import { DateInput } from '@mantine/dates';
+import dayjs from 'dayjs';
 import { useApi } from '../../contexts/ApiContext';
 import ErrorArea from '../../components/ErrorArea';
 import { useAnimals } from '../../contexts/AnimalsContext';
-import { DateInput } from '@mantine/dates';
-import dayjs from 'dayjs';
 import { GenericApiResponse } from '../../ApiClient';
 import { Appointment } from './AppointmentsCalendar';
+import { useState } from 'react';
 
 type Props =
   | {
@@ -22,138 +22,126 @@ type Props =
     };
 
 type AppointmentFormData = {
-  date: string;
+  date: Date | null;
   description: string;
   notes?: string;
 };
-type CreateAppointmentFormData = AppointmentFormData;
-type UpdateAppointmentFormData = Partial<AppointmentFormData>;
-type AppointmentFormErrors = Partial<Record<keyof AppointmentFormData, string>>;
 
 export function AppointmentForm({ close, mode, item }: Props) {
   const api = useApi();
   const { animal } = useAnimals();
+  const [submissionError, setSubmissionError] = useState('');
 
-  const descriptionField = useRef<HTMLInputElement | null>(null);
-  const dateField = useRef<HTMLInputElement | null>(null);
-  const [dateValue, setDateValue] = useState<Date | null>(null);
-  const notesField = useRef<HTMLTextAreaElement | null>(null);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AppointmentFormData>({
+    defaultValues: {
+      date: mode === 'update' ? new Date(item!.date) : null,
+      description: mode === 'update' ? item!.description : '',
+      notes: mode === 'update' ? item!.notes || '' : '',
+    },
+  });
 
-  const [formErrors, setFormErrors] = useState<AppointmentFormErrors>();
-  const [submissionError, setSubmissionError] = useState<string | undefined>();
-
-  useEffect(() => {
-    if (mode === 'update') {
-      const dateObject = new Date(item.date);
-      setDateValue(dateObject);
-      descriptionField.current!.value = item.description;
-      if (item.notes != null) {
-        notesField.current!.value = item.notes;
-      }
-    }
-  }, [mode, item]);
-
-  useEffect(() => {
-    descriptionField.current?.focus();
-  }, []);
-
-  const onSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    const description = descriptionField.current?.value;
-    const date = dateField.current?.value
-      ? dayjs(dateValue).format('YYYY-MM-DD')
+  const onSubmit = async (data: AppointmentFormData) => {
+    const formattedDate = data.date
+      ? dayjs(data.date).format('YYYY-MM-DD')
       : '';
-    const notes = notesField.current?.value;
 
-    const formErrors: AppointmentFormErrors = {};
-    if (!description) {
-      formErrors.description = 'Description must be provided.';
-    }
-    if (!date) {
-      formErrors.date = 'Date must be provided.';
-    }
-    setSubmissionError(undefined);
-    setFormErrors(formErrors);
+    let apiResponse: GenericApiResponse;
 
-    if (Object.keys(formErrors).length > 0) {
+    if (mode === 'create') {
+      const formData = {
+        description: data.description,
+        date: formattedDate,
+        notes: data.notes,
+      };
+      apiResponse = await api.post(
+        `/animal/${animal!.id}/appointment`,
+        formData
+      );
+    } else {
+      const changedFields: Partial<{
+        description: string;
+        date: string;
+        notes: string;
+      }> = {};
+      if (data.description !== item.description)
+        changedFields.description = data.description;
+      if (formattedDate !== item.date) changedFields.date = formattedDate;
+      if (data.notes !== item.notes) changedFields.notes = data.notes;
+
+      if (Object.keys(changedFields).length === 0) {
+        return;
+      }
+
+      apiResponse = await api.patch(
+        `/animal/${animal!.id}/appointment/${item.id}`,
+        changedFields
+      );
+    }
+
+    if (!apiResponse.ok) {
+      setSubmissionError(
+        'An error occurred while saving the appointment. Please try again.'
+      );
       return;
     }
 
-    const handleResponse = (response: GenericApiResponse) => {
-      if (!response.ok) {
-        setSubmissionError(
-          response.body?.error ? response.body.error : 'Unknown error'
-        );
-        return;
-      }
-      setSubmissionError(undefined);
-      close();
-    };
-
-    let apiResponse: GenericApiResponse;
-    if (description && date) {
-      if (mode === 'create') {
-        const formData: CreateAppointmentFormData = {
-          description: description,
-          date: date,
-          notes: notes,
-        };
-        apiResponse = await api.post(
-          '/animal/' + animal!.id + '/appointment',
-          formData
-        );
-      } else {
-        const changedFields: UpdateAppointmentFormData = {};
-        if (description != item.description) {
-          changedFields.description = description;
-        }
-        if (date != item.date) {
-          changedFields.date = date;
-        }
-        if (notes != item.notes) {
-          changedFields.notes = notes;
-        }
-        if (Object.keys(changedFields).length === 0) {
-          setSubmissionError('No changes to submit');
-          return;
-        }
-        apiResponse = await api.patch(
-          '/animal/' + animal!.id + '/appointment/' + item.id,
-          changedFields
-        );
-      }
-      handleResponse(apiResponse);
-    }
+    close();
   };
 
   return (
     <>
       <Title ta="center">
-        {mode == 'create' ? 'Add an appointment' : 'Edit appointment'}
+        {mode === 'create' ? 'Add an appointment' : 'Edit appointment'}
       </Title>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <ErrorArea error={submissionError} />
-        <InputField
+
+        <Controller
           name="description"
-          label="Description"
-          error={formErrors?.description}
-          fieldRef={descriptionField}
+          control={control}
+          rules={{ required: 'Description must be provided' }}
+          render={({ field }) => (
+            <TextInput
+              {...field}
+              label="Description"
+              placeholder="e.g. vaccination, check-up, etc."
+              error={errors.description?.message}
+            />
+          )}
         />
-        <DateInput
-          value={dateValue}
-          onChange={setDateValue}
-          label="Appointment date"
-          ref={dateField}
+
+        <Controller
+          name="date"
+          control={control}
+          rules={{ required: 'Date must be provided' }}
+          render={({ field }) => (
+            <DateInput
+              {...field}
+              label="Appointment date"
+              placeholder="Pick a date"
+              error={errors.date?.message}
+            />
+          )}
         />
-        <Textarea
+
+        <Controller
           name="notes"
-          description="Use this field to record anything you intend to discuss with the vet. After the appointment, you could update it with their recommended follow-up actions."
-          label="Notes"
-          error={formErrors?.notes}
-          ref={notesField}
+          control={control}
+          render={({ field }) => (
+            <Textarea
+              {...field}
+              label="Notes"
+              description="Use this field to record anything you intend to discuss with the vet. After the appointment, you could update it with their recommended follow-up actions."
+              error={errors.notes?.message}
+            />
+          )}
         />
-        <Button variant="filled" type="submit" mt="lg">
+
+        <Button type="submit" mt="lg">
           {mode === 'create' ? 'Add' : 'Update'}
         </Button>
       </form>

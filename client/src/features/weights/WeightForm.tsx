@@ -1,12 +1,13 @@
 import { Button, NumberInput, Title } from '@mantine/core';
-import { useState, useEffect, useRef } from 'react';
-import { useApi } from '../../contexts/ApiContext';
-import ErrorArea from '../../components/ErrorArea';
-import { useAnimals } from '../../contexts/AnimalsContext';
+import { useForm, Controller } from 'react-hook-form';
 import { DateInput } from '@mantine/dates';
 import dayjs from 'dayjs';
+import { useApi } from '../../contexts/ApiContext';
+import { useAnimals } from '../../contexts/AnimalsContext';
+import ErrorArea from '../../components/ErrorArea';
 import { GenericApiResponse } from '../../ApiClient';
 import { Weight } from './WeightTracker';
+import { useState } from 'react';
 
 type Props =
   | {
@@ -23,136 +24,103 @@ type Props =
     };
 
 type WeightFormData = {
-  date: string;
   weight: number;
+  date: Date | null;
 };
-type CreateWeightFormData = WeightFormData;
-type UpdateWeightFormData = Partial<WeightFormData>;
-type WeightFormErrors = Partial<Record<keyof WeightFormData, string>>;
 
 export function WeightForm({ close, mode, item, refetchWeights }: Props) {
   const api = useApi();
   const { animal } = useAnimals();
+  const [submissionError, setSubmissionError] = useState('');
 
-  const weightField = useRef<HTMLInputElement | null>(null);
-  const dateField = useRef<HTMLInputElement | null>(null);
-  const [dateValue, setDateValue] = useState<Date | null>(null);
-  const [weightValue, setWeightValue] = useState<number | undefined>(undefined);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<WeightFormData>({
+    defaultValues: {
+      weight: mode === 'update' ? item.weight / 100 : undefined,
+      date: mode === 'update' ? new Date(item.date) : null,
+    },
+  });
 
-  const [formErrors, setFormErrors] = useState<WeightFormErrors>();
-  const [submissionError, setSubmissionError] = useState<string | undefined>();
-
-  useEffect(() => {
-    if (mode === 'update') {
-      const dateObject = new Date(item.date);
-      setDateValue(dateObject);
-      setWeightValue(item.weight / 100);
-    }
-  }, [mode, item]);
-
-  useEffect(() => {
-    weightField.current?.focus();
-  }, []);
-
-  function convertWeightFromKgToGrams(weightWithSuffix: string) {
-    const weight = weightWithSuffix.replace(/\s*kg$/, '').trim();
-    const result = Number(weight) * 100;
-    return Math.round(result);
-  }
-
-  const onSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    const weightWithSuffix = weightField.current?.value;
-    const weight = weightWithSuffix
-      ? convertWeightFromKgToGrams(weightWithSuffix)
+  const onSubmit = async (data: WeightFormData) => {
+    const weightInGrams = Math.round(data.weight * 100);
+    const formattedDate = data.date
+      ? dayjs(data.date).format('YYYY-MM-DD')
       : '';
-
-    const date = dateField.current?.value
-      ? dayjs(dateValue).format('YYYY-MM-DD')
-      : '';
-
-    const formErrors: WeightFormErrors = {};
-    if (!weight) {
-      formErrors.weight = 'Weight must be provided.';
-    }
-    if (!date) {
-      formErrors.date = 'Date must be provided.';
-    }
-    setSubmissionError(undefined);
-    setFormErrors(formErrors);
-
-    if (Object.keys(formErrors).length > 0) {
-      return;
-    }
-
-    const handleResponse = (response: GenericApiResponse) => {
-      if (!response.ok) {
-        setSubmissionError(
-          response.body?.error ? response.body.error : 'Unknown error'
-        );
-        return;
-      }
-      setSubmissionError(undefined);
-      refetchWeights();
-      close();
-    };
 
     let apiResponse: GenericApiResponse;
-    if (weight && date) {
-      if (mode === 'create') {
-        const formData: CreateWeightFormData = {
-          weight: weight,
-          date: date,
-        };
-        apiResponse = await api.post(
-          '/animal/' + animal!.id + '/weight',
-          formData
-        );
-      } else {
-        const changedFields: UpdateWeightFormData = {};
-        if (weight != item.weight) {
-          changedFields.weight = weight;
-        }
-        if (date != item.date) {
-          changedFields.date = date;
-        }
-        if (Object.keys(changedFields).length === 0) {
-          setSubmissionError('No changes to submit');
-          return;
-        }
-        apiResponse = await api.patch(
-          '/animal/' + animal!.id + '/weight/' + item.id,
-          changedFields
-        );
+
+    if (mode === 'create') {
+      const formData = { weight: weightInGrams, date: formattedDate };
+      apiResponse = await api.post(`/animal/${animal!.id}/weight`, formData);
+    } else {
+      const changedFields: Partial<{ weight: number; date: string }> = {};
+      if (weightInGrams !== item.weight) changedFields.weight = weightInGrams;
+      if (formattedDate !== item.date) changedFields.date = formattedDate;
+
+      if (Object.keys(changedFields).length === 0) {
+        return;
       }
-      handleResponse(apiResponse);
+
+      apiResponse = await api.patch(
+        `/animal/${animal!.id}/weight/${item.id}`,
+        changedFields
+      );
+    }
+
+    if (apiResponse.ok) {
+      refetchWeights();
+      close();
+    } else {
+      setSubmissionError('An error occurred. Please try again later.');
     }
   };
 
   return (
     <>
       <Title ta="center">
-        {mode == 'create' ? 'Add a weight' : 'Edit weight'}
+        {mode === 'create' ? 'Add a weight' : 'Edit weight'}
       </Title>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <ErrorArea error={submissionError} />
-        <NumberInput
+
+        <Controller
           name="weight"
-          label="Weight (kg)"
-          suffix=" kg"
-          error={formErrors?.weight}
-          ref={weightField}
-          value={weightValue}
-          onChange={() => setWeightValue}
+          control={control}
+          rules={{
+            required: 'Weight must be provided.',
+            min: { value: 0.1, message: 'Weight must be greater than 0.' },
+          }}
+          render={({ field }) => (
+            <NumberInput
+              {...field}
+              label="Weight (kg)"
+              suffix=" kg"
+              placeholder="Enter weight in kg"
+              error={errors.weight?.message}
+            />
+          )}
         />
-        <DateInput
-          value={dateValue}
-          onChange={setDateValue}
-          label="Date recorded"
-          ref={dateField}
+
+        <Controller
+          name="date"
+          control={control}
+          rules={{
+            required: 'Date must be provided.',
+          }}
+          render={({ field }) => (
+            <DateInput
+              {...field}
+              label="Date recorded"
+              placeholder="Pick a date"
+              error={errors.date?.message}
+            />
+          )}
         />
-        <Button variant="filled" type="submit" mt="lg">
+
+        <Button type="submit" mt="lg">
           {mode === 'create' ? 'Add' : 'Update'}
         </Button>
       </form>
