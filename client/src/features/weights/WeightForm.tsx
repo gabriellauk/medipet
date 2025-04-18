@@ -13,11 +13,13 @@ type Props =
       close: () => void;
       mode: 'create';
       item: null;
+      refetchWeights: () => void;
     }
   | {
       close: () => void;
       mode: 'update';
       item: Weight;
+      refetchWeights: () => void;
     };
 
 type WeightFormData = {
@@ -28,7 +30,7 @@ type CreateWeightFormData = WeightFormData;
 type UpdateWeightFormData = Partial<WeightFormData>;
 type WeightFormErrors = Partial<Record<keyof WeightFormData, string>>;
 
-export function WeightForm({ close, mode, item }: Props) {
+export function WeightForm({ close, mode, item, refetchWeights }: Props) {
   const api = useApi();
   const { animal } = useAnimals();
 
@@ -92,6 +94,7 @@ export function WeightForm({ close, mode, item }: Props) {
         return;
       }
       setSubmissionError(undefined);
+      refetchWeights();
       close();
     };
 

@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Button, Drawer, Container } from '@mantine/core';
+import { useState } from 'react';
+import { Button, Drawer, Container, Text } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import { WeightForm } from './WeightForm';
 import WeightCard from './WeightCard';
+import { useWeights } from '../../hooks/useWeights';
 
 export type Weight = {
   id: number;
@@ -20,24 +21,15 @@ export default function ObservationDiary() {
   const [opened, { open, close }] = useDisclosure(false);
   const [drawerMode, setDrawerMode] = useState<DrawerMode | null>();
   const [itemToEdit, setItemToEdit] = useState<Weight | null>(null);
-  const [weightsData, setWeightsData] = useState<Weight[]>([]);
 
-  useEffect(() => {
-    (async () => {
-      const response = await api.get('/animal/' + animal!.id + '/weight');
-      if (response.ok) {
-        setWeightsData(response.body.data as Weight[]);
-      } else {
-        setWeightsData([]);
-      }
-    })();
-  }, [opened, animal, api]);
+  const { weights, weightsLoading, weightsError, refetchWeights } =
+    useWeights();
 
   async function deleteWeight(animalId: number, weightId: number) {
-    await api.delete('/animal/' + animalId + '/weight/' + weightId);
-    setWeightsData((prevList) =>
-      prevList.filter((item) => item.id !== weightId)
-    );
+    const response = await api.delete(`/animal/${animalId}/weight/${weightId}`);
+    if (response.ok) {
+      refetchWeights();
+    }
   }
 
   async function handleOpenDrawerCreate() {
@@ -62,7 +54,7 @@ export default function ObservationDiary() {
     <Container>
       <h1>Weight tracker</h1>
       <p>Monitor any fluctuations in {animal!.name}'s weight here.</p>
-      {weightsData.length === 0 && (
+      {!weightsLoading && !weightsError && weights.length === 0 && (
         <p>
           <i>{animal!.name} doesn't have any weights listed yet.</i>
         </p>
@@ -74,16 +66,30 @@ export default function ObservationDiary() {
         closeButtonProps={{ 'aria-label': 'Close drawer' }}
       >
         {drawerMode == 'create' ? (
-          <WeightForm close={close} mode={'create'} item={null} />
+          <WeightForm
+            close={close}
+            mode={'create'}
+            item={null}
+            refetchWeights={refetchWeights}
+          />
         ) : (
-          <WeightForm close={close} mode={'update'} item={itemToEdit!} />
+          <WeightForm
+            close={close}
+            mode={'update'}
+            item={itemToEdit!}
+            refetchWeights={refetchWeights}
+          />
         )}
       </Drawer>
       <Button onClick={handleOpenDrawerCreate} radius="xl" mb="xl" size="md">
         Add weight
       </Button>
-      {weightsData.length > 0 &&
-        weightsData.map((item) => (
+      {weightsLoading && <Text>Loading weights...</Text>}
+      {weightsError && (
+        <Text>Failed to load weights: {weightsError}</Text>
+      )}
+      {weights.length > 0 &&
+        weights.map((item) => (
           <WeightCard
             key={item.id}
             weightId={item.id}

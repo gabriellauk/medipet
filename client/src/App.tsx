@@ -2,11 +2,11 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import '@mantine/charts/styles.css';
 import AuthRedirect from './components/AuthRedirect.tsx';
 import SplashPage from './features/landing-page/SplashPage.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import LoggedInLayout from './components/layout/LoggedInLayout.tsx';
-import ComingSoon from './components/ComingSoon.tsx';
 import ApiContextProvider from './contexts/ApiContextProvider.tsx';
 import AuthContextProvider from './contexts/AuthContextProvider.tsx';
 import { CreateAnimal } from './features/animal/CreateAnimal.tsx';
@@ -15,6 +15,7 @@ import ObservationDiary from './features/observations/ObservationDiary.tsx';
 import AppointmentsCalendar from './features/appointments/AppointmentsCalendar.tsx';
 import WeightTracker from './features/weights/WeightTracker.tsx';
 import MedicationSchedule from './features/medication/MedicationSchedule.tsx';
+import Dashboard from './features/dashboard/Dashboard.tsx';
 
 function App() {
   return (
@@ -30,10 +31,7 @@ function App() {
                 <Route path="*" element={<Navigate to="/" />} />
                 <Route element={<ProtectedRoute />}>
                   <Route element={<LoggedInLayout />}>
-                    <Route
-                      path="/dashboard"
-                      element={<ComingSoon title="Dashboard" />}
-                    />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/weight-tracker" element={<WeightTracker />} />
                     <Route
                       path="/medication-schedule"

@@ -1,0 +1,15 @@
+.paper {
+  height: 100%;
+  background-color: var(--mantine-color-blue-1);
+  border-radius: var(--mantine-radius-md);
+  padding: var(--mantine-spacing-lg);
+}
+
+.avatar {
+  margin: 0 auto;
+  background-color: white;
+}
+
+.textCenter {
+  text-align: center;
+}

@@ -9,7 +9,7 @@ import {
   ThemeIcon,
   Title,
 } from '@mantine/core';
-import image from './image.jpg';
+import image from '../../assets/image.jpg';
 import classes from './Hero.module.css';
 
 const loginUrl = import.meta.env.VITE_REACT_APP_BASE_API_URL + '/login';

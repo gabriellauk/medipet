@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Button, Drawer, Container } from '@mantine/core';
-import { useApi } from '../contexts/ApiContext';
+import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
-import { ObservationForm } from '../components/ObservationForm';
-import { useAnimals } from '../contexts/AnimalsContext';
-import ObservationCard from '../components/ObservationCard';
+import { ObservationForm } from './ObservationForm';
+import { useAnimals } from '../../contexts/AnimalsContext';
+import ObservationCard from './ObservationCard';
 
 export type Observation = {
   id: number;
