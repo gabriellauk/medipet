@@ -20,6 +20,7 @@ import ErrorArea from '../../components/ErrorArea';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useState } from 'react';
+import { AnimalTypeId, CreateAnimalFormData } from '../../types/AnimalTypes';
 
 export function CreateAnimal() {
   const { logout } = useAuth();
@@ -27,17 +28,6 @@ export function CreateAnimal() {
   const navigate = useNavigate();
   const api = useApi();
   const [submissionError, setSubmissionError] = useState('');
-
-  type CreateAnimalFormData = {
-    name: string;
-    animalType: string;
-  };
-
-  enum AnimalTypeId {
-    Cat = 1,
-    Dog = 2,
-    Rabbit = 3,
-  }
 
   const {
     control,

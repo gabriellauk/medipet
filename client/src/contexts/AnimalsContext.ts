@@ -1,17 +1,5 @@
 import { createContext, useContext } from 'react';
-
-export type Animal = {
-  id: number;
-  name: string;
-  animalTypeId: number;
-};
-
-type AnimalsContextType = {
-  animal: Animal | null;
-  animals: Animal[];
-  animalsLoading: boolean;
-  refreshAnimals: () => void;
-};
+import { AnimalsContextType } from '../types/AnimalTypes';
 
 export const AnimalsContext = createContext<AnimalsContextType>({
   animal: null,

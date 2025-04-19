@@ -5,29 +5,14 @@ import dayjs from 'dayjs';
 import { useApi } from '../../contexts/ApiContext';
 import ErrorArea from '../../components/ErrorArea';
 import { useAnimals } from '../../contexts/AnimalsContext';
-import { GenericApiResponse } from '../../ApiClient';
-import { Appointment } from './AppointmentsCalendar';
 import { useState } from 'react';
+import {
+  AppointmentFormData,
+  AppointmentFormProps,
+} from '../../types/AppointmentTypes';
+import { GenericApiResponse } from '../../types/CommonTypes';
 
-type Props =
-  | {
-      close: () => void;
-      mode: 'create';
-      item: null;
-    }
-  | {
-      close: () => void;
-      mode: 'update';
-      item: Appointment;
-    };
-
-type AppointmentFormData = {
-  date: Date | null;
-  description: string;
-  notes?: string;
-};
-
-export function AppointmentForm({ close, mode, item }: Props) {
+export function AppointmentForm({ close, mode, item }: AppointmentFormProps) {
   const api = useApi();
   const { animal } = useAnimals();
   const [submissionError, setSubmissionError] = useState('');

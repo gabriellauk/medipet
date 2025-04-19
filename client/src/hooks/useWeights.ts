@@ -1,12 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useApi } from '../contexts/ApiContext';
 import { useAnimals } from '../contexts/AnimalsContext';
-
-export type Weight = {
-  id: number;
-  weight: number;
-  date: string;
-};
+import { Weight } from '../types/WeightTypes';
 
 export function useWeights() {
   const api = useApi();

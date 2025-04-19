@@ -5,30 +5,16 @@ import dayjs from 'dayjs';
 import { useApi } from '../../contexts/ApiContext';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import ErrorArea from '../../components/ErrorArea';
-import { GenericApiResponse } from '../../ApiClient';
-import { Weight } from './WeightTracker';
 import { useState } from 'react';
+import { WeightFormData, WeightFormProps } from '../../types/WeightTypes';
+import { GenericApiResponse } from '../../types/CommonTypes';
 
-type Props =
-  | {
-      close: () => void;
-      mode: 'create';
-      item: null;
-      refetchWeights: () => void;
-    }
-  | {
-      close: () => void;
-      mode: 'update';
-      item: Weight;
-      refetchWeights: () => void;
-    };
-
-type WeightFormData = {
-  weight: number;
-  date: Date | null;
-};
-
-export function WeightForm({ close, mode, item, refetchWeights }: Props) {
+export function WeightForm({
+  close,
+  mode,
+  item,
+  refetchWeights,
+}: WeightFormProps) {
   const api = useApi();
   const { animal } = useAnimals();
   const [submissionError, setSubmissionError] = useState('');

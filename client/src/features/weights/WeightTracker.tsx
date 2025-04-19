@@ -6,14 +6,8 @@ import { useAnimals } from '../../contexts/AnimalsContext';
 import { WeightForm } from './WeightForm';
 import WeightCard from './WeightCard';
 import { useWeights } from '../../hooks/useWeights';
-
-export type Weight = {
-  id: number;
-  weight: number;
-  date: string;
-};
-
-export type DrawerMode = 'create' | 'update';
+import { DrawerMode } from '../../types/CommonTypes';
+import { Weight } from '../../types/WeightTypes';
 
 export default function ObservationDiary() {
   const api = useApi();

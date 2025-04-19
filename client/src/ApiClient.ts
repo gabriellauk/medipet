@@ -1,10 +1,6 @@
-const BASE_API_URL = import.meta.env.VITE_REACT_APP_BASE_API_URL;
+import { GenericApiResponse } from './types/CommonTypes';
 
-export type GenericApiResponse = {
-  ok: boolean;
-  status: number;
-  body: any;
-};
+const BASE_API_URL = import.meta.env.VITE_REACT_APP_BASE_API_URL;
 
 export default class ApiClient {
   async request(options: any): Promise<GenericApiResponse> {

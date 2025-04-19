@@ -5,14 +5,8 @@ import { useDisclosure } from '@mantine/hooks';
 import { ObservationForm } from './ObservationForm';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import ObservationCard from './ObservationCard';
-
-export type Observation = {
-  id: number;
-  description: string;
-  date: string;
-};
-
-export type DrawerMode = 'create' | 'update';
+import { DrawerMode } from '../../types/CommonTypes';
+import { Observation } from '../../types/ObservationTypes';
 
 export default function ObservationDiary() {
   const api = useApi();

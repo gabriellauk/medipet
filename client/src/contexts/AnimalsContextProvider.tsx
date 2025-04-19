@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useApi } from './ApiContext';
-import { AnimalsContext, Animal } from './AnimalsContext';
+import { AnimalsContext } from './AnimalsContext';
 import { useNavigate } from 'react-router-dom';
+import { Animal } from '../types/AnimalTypes';
 
 export default function AnimalsContextProvider({
   children,

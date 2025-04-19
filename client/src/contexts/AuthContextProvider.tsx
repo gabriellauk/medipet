@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useApi } from './ApiContext';
-import { AuthContext, User } from './AuthContext';
+import { AuthContext } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { User } from '../types/AuthTypes';
 
 export default function AuthContextProvider({
   children,

@@ -12,35 +12,14 @@ import { DateInput } from '@mantine/dates';
 import dayjs from 'dayjs';
 import { useApi } from '../../contexts/ApiContext';
 import { useAnimals } from '../../contexts/AnimalsContext';
-import { Medication, TimeUnit } from './MedicationSchedule';
 import { useEffect, useState } from 'react';
 import ErrorArea from '../../components/ErrorArea';
+import {
+  MedicationFormData,
+  MedicationFormProps,
+} from '../../types/MedicationTypes';
 
-type Props =
-  | {
-      close: () => void;
-      mode: 'create';
-      item: null;
-    }
-  | {
-      close: () => void;
-      mode: 'update';
-      item: Medication;
-    };
-
-type MedicationFormData = {
-  name: string;
-  isRecurring: string;
-  timesPerDay?: number;
-  frequencyNumber?: number;
-  frequencyUnit?: TimeUnit;
-  durationNumber?: number;
-  durationUnit?: TimeUnit;
-  startDate: Date | null;
-  notes?: string;
-};
-
-export function MedicationForm({ close, mode, item }: Props) {
+export function MedicationForm({ close, mode, item }: MedicationFormProps) {
   const api = useApi();
   const { animal } = useAnimals();
   const [submissionError, setSubmissionError] = useState('');

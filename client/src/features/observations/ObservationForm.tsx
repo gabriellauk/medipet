@@ -5,28 +5,14 @@ import dayjs from 'dayjs';
 import { useApi } from '../../contexts/ApiContext';
 import ErrorArea from '../../components/ErrorArea';
 import { useAnimals } from '../../contexts/AnimalsContext';
-import { Observation } from './ObservationDiary';
-import { GenericApiResponse } from '../../ApiClient';
+import { GenericApiResponse } from '../../types/CommonTypes';
 import { useState } from 'react';
+import {
+  ObservationFormData,
+  ObservationFormProps,
+} from '../../types/ObservationTypes';
 
-type Props =
-  | {
-      close: () => void;
-      mode: 'create';
-      item: null;
-    }
-  | {
-      close: () => void;
-      mode: 'update';
-      item: Observation;
-    };
-
-type ObservationFormData = {
-  date: Date | null;
-  description: string;
-};
-
-export function ObservationForm({ close, mode, item }: Props) {
+export function ObservationForm({ close, mode, item }: ObservationFormProps) {
   const api = useApi();
   const { animal } = useAnimals();
   const [submissionError, setSubmissionError] = useState('');

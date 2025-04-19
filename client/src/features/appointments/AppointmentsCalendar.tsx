@@ -5,15 +5,8 @@ import { useDisclosure } from '@mantine/hooks';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import AppointmentCard from './AppointmentCard';
 import { AppointmentForm } from './AppointmentForm';
-
-export type Appointment = {
-  id: number;
-  description: string;
-  date: string;
-  notes: string | null;
-};
-
-export type DrawerMode = 'create' | 'update';
+import { Appointment } from '../../types/AppointmentTypes';
+import { DrawerMode } from '../../types/CommonTypes';
 
 export default function AppointmentsCalendar() {
   const api = useApi();

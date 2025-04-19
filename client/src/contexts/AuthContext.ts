@@ -1,16 +1,5 @@
 import { createContext, useContext } from 'react';
-
-export type User = {
-  firstName: string;
-  lastName: string;
-};
-
-type AuthContextType = {
-  authenticationStateIsLoading: boolean;
-  isAuthenticated: boolean;
-  userInfo: User | null;
-  logout: (e: React.FormEvent<HTMLFormElement>) => void;
-};
+import { AuthContextType } from '../types/AuthTypes';
 
 export const AuthContext = createContext<AuthContextType>({
   authenticationStateIsLoading: true,

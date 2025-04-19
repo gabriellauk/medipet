@@ -5,24 +5,8 @@ import { useDisclosure } from '@mantine/hooks';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import { MedicationForm } from './MedicationForm';
 import MedicationCard from './MedicationCard';
-
-export type TimeUnit = 'day' | 'week' | 'month' | 'year';
-
-export type Medication = {
-  id: number;
-  name: string;
-  startDate: string;
-  isRecurring: boolean;
-  timesPerDay?: number;
-  frequencyNumber?: number;
-  frequencyUnit?: TimeUnit;
-  durationNumber?: number;
-  durationUnit?: TimeUnit;
-  notes?: string;
-  endDate?: string;
-};
-
-export type DrawerMode = 'create' | 'update';
+import { DrawerMode } from '../../types/CommonTypes';
+import { Medication } from '../../types/MedicationTypes';
 
 export default function MedicationSchedule() {
   const api = useApi();
