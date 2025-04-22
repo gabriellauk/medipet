@@ -17,14 +17,16 @@ export function useWeights() {
     setError(null);
 
     try {
-      const response = await api.get(`/animal/${animal.id}/weight`);
+      const response = await api.get<{ data: Weight[] }>(
+        `/animal/${animal.id}/weight`
+      );
       if (response.ok) {
-        setWeights(response.body.data as Weight[]);
+        setWeights(response.body.data);
       } else {
         setError('Failed to fetch weights');
       }
     } catch (err) {
-      setError('An error occurred while fetching weights');
+      setError('An unexpected error occurred');
     } finally {
       setLoading(false);
     }

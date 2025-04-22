@@ -31,7 +31,7 @@ export default function AuthContextProvider({
   // Check if user is logged in on mount
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const response = await api.get('/user');
+      const response = await api.get<User>('/user');
       if (response.status === 200) {
         setIsAuthenticated(true);
         setUserInfo({

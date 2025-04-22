@@ -2,23 +2,61 @@ import { GenericApiResponse } from './types/CommonTypes';
 
 const BASE_API_URL = import.meta.env.VITE_REACT_APP_BASE_API_URL;
 
+type RequestOptions = {
+  query?: Record<string, string>;
+  headers?: Record<string, string>;
+};
+
 export default class ApiClient {
-  async request(options: any): Promise<GenericApiResponse> {
-    let query = new URLSearchParams(options.query || {}).toString();
-    if (query !== '') {
-      query = '?' + query;
-    }
+  private buildQueryString(query?: Record<string, string>): string {
+    if (!query) return '';
+    const queryString = new URLSearchParams(query).toString();
+    return queryString ? `?${queryString}` : '';
+  }
+
+  private getDefaultHeaders(): Record<string, string> {
+    return {
+      'Content-Type': 'application/json',
+    };
+  }
+
+  private async fetchWithTimeout(
+    resource: string,
+    options: RequestInit,
+    timeout = 5000
+  ): Promise<Response> {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    const response = await fetch(resource, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+    return response;
+  }
+
+  async request<T>(
+    options: {
+      method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+      url: string;
+      body?: object;
+    } & RequestOptions
+  ): Promise<GenericApiResponse<T>> {
+    const query = this.buildQueryString(options.query);
 
     try {
-      const response = await fetch(BASE_API_URL + options.url + query, {
-        method: options.method,
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
-        body: options.body ? JSON.stringify(options.body) : null,
-        credentials: 'include',
-      });
+      const response = await this.fetchWithTimeout(
+        BASE_API_URL + options.url + query,
+        {
+          method: options.method,
+          headers: {
+            ...this.getDefaultHeaders(),
+            ...options.headers,
+          },
+          body: options.body ? JSON.stringify(options.body) : null,
+          credentials: 'include',
+        }
+      );
 
       const bodyText = await response.text();
       const jsonBody = bodyText ? JSON.parse(bodyText) : null;
@@ -26,38 +64,81 @@ export default class ApiClient {
       return {
         ok: response.ok,
         status: response.status,
-        body: jsonBody,
+        body: jsonBody as T,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      console.error('API Request Error:', error);
+
+      const isErrorWithMessage = error instanceof Object && 'error' in error;
+
       return {
         ok: false,
         status: 500,
         body: {
           code: 500,
           message: 'The server is unresponsive',
-          description: error.toString(),
-        },
+          description: isErrorWithMessage
+            ? error.error
+            : 'Unknown error occurred',
+        } as T,
       };
     }
   }
 
-  async get(url: string, query?: string, options?: any) {
-    return this.request({ method: 'GET', url, query, ...options });
+  async get<T>(
+    url: string,
+    options?: RequestOptions
+  ): Promise<GenericApiResponse<T>> {
+    return this.request({ ...options, method: 'GET', url });
   }
 
-  async post(url: string, body?: object | null | undefined, options?: any) {
-    return this.request({ method: 'POST', url, body, ...options });
+  async post<TBody, TResult>(
+    url: string,
+    body?: TBody,
+    options?: RequestOptions
+  ): Promise<GenericApiResponse<TResult>> {
+    if (body) {
+      return this.request({
+        ...options,
+        method: 'POST',
+        url,
+        body: body as object,
+      });
+    }
+
+    return this.request({ ...options, method: 'POST', url });
   }
 
-  async put(url: string, body?: object | null | undefined, options?: any) {
-    return this.request({ method: 'PUT', url, body, ...options });
+  async put<TBody, TResult>(
+    url: string,
+    body: TBody,
+    options?: RequestOptions
+  ): Promise<GenericApiResponse<TResult>> {
+    return this.request({
+      ...options,
+      method: 'PUT',
+      url,
+      body: body as object,
+    });
   }
 
-  async patch(url: string, body?: object | null | undefined, options?: any) {
-    return this.request({ method: 'PATCH', url, body, ...options });
+  async patch<TBody, TResult>(
+    url: string,
+    body: TBody,
+    options?: RequestOptions
+  ): Promise<GenericApiResponse<TResult>> {
+    return this.request({
+      ...options,
+      method: 'PATCH',
+      url,
+      body: body as object,
+    });
   }
 
-  async delete(url: string, options?: any) {
-    return this.request({ method: 'DELETE', url, ...options });
+  async delete<T>(
+    url: string,
+    options?: RequestOptions
+  ): Promise<GenericApiResponse<T>> {
+    return this.request({ ...options, method: 'DELETE', url });
   }
 }

@@ -12,8 +12,8 @@ export type FormProps<T> =
 
 export type DrawerMode = 'create' | 'update';
 
-export type GenericApiResponse = {
+export type GenericApiResponse<T> = {
   ok: boolean;
   status: number;
-  body: any;
+  body: T;
 };

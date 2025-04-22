@@ -18,9 +18,11 @@ export default function MedicationSchedule() {
 
   useEffect(() => {
     (async () => {
-      const response = await api.get('/animal/' + animal!.id + '/medication');
+      const response = await api.get<{ data: Medication[] }>(
+        '/animal/' + animal!.id + '/medication'
+      );
       if (response.ok) {
-        setMedicationsData(response.body.data as Medication[]);
+        setMedicationsData(response.body.data);
       } else {
         setMedicationsData([]);
       }

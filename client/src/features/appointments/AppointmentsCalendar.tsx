@@ -18,9 +18,11 @@ export default function AppointmentsCalendar() {
 
   useEffect(() => {
     (async () => {
-      const response = await api.get('/animal/' + animal!.id + '/appointment');
+      const response = await api.get<{ data: Appointment[] }>(
+        '/animal/' + animal!.id + '/appointment'
+      );
       if (response.ok) {
-        setAppointmentsData(response.body.data as Appointment[]);
+        setAppointmentsData(response.body.data);
       } else {
         setAppointmentsData([]);
       }

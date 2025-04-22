@@ -32,7 +32,7 @@ export default function AnimalsContextProvider({
   }
 
   const refreshAnimals = async () => {
-    const response = await api.get('/animal');
+    const response = await api.get<{ data: Animal[] }>('/animal');
     if (response.status === 200) {
       updateAnimals(response.body.data);
       navigate('/');
@@ -41,7 +41,7 @@ export default function AnimalsContextProvider({
 
   useEffect(() => {
     const checkAnimals = async () => {
-      const response = await api.get('/animal');
+      const response = await api.get<{ data: Animal[] }>('/animal');
       if (response.status === 200) {
         updateAnimals(response.body.data);
       } else {

@@ -6,7 +6,11 @@ import { useApi } from '../../contexts/ApiContext';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import ErrorArea from '../../components/ErrorArea';
 import { useState } from 'react';
-import { WeightFormData, WeightFormProps } from '../../types/WeightTypes';
+import {
+  Weight,
+  WeightFormData,
+  WeightFormProps,
+} from '../../types/WeightTypes';
 import { GenericApiResponse } from '../../types/CommonTypes';
 
 export function WeightForm({
@@ -36,7 +40,7 @@ export function WeightForm({
       ? dayjs(data.date).format('YYYY-MM-DD')
       : '';
 
-    let apiResponse: GenericApiResponse;
+    let apiResponse: GenericApiResponse<Weight>;
 
     if (mode === 'create') {
       const formData = { weight: weightInGrams, date: formattedDate };

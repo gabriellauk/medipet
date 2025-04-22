@@ -18,9 +18,11 @@ export default function ObservationDiary() {
 
   useEffect(() => {
     (async () => {
-      const response = await api.get('/animal/' + animal!.id + '/symptom');
+      const response = await api.get<{ data: Observation[] }>(
+        '/animal/' + animal!.id + '/symptom'
+      );
       if (response.ok) {
-        setObservationsData(response.body.data as Observation[]);
+        setObservationsData(response.body.data);
       } else {
         setObservationsData([]);
       }

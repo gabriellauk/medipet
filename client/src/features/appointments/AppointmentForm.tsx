@@ -7,6 +7,7 @@ import ErrorArea from '../../components/ErrorArea';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import { useState } from 'react';
 import {
+  Appointment,
   AppointmentFormData,
   AppointmentFormProps,
 } from '../../types/AppointmentTypes';
@@ -34,7 +35,7 @@ export function AppointmentForm({ close, mode, item }: AppointmentFormProps) {
       ? dayjs(data.date).format('YYYY-MM-DD')
       : '';
 
-    let apiResponse: GenericApiResponse;
+    let apiResponse: GenericApiResponse<Appointment>;
 
     if (mode === 'create') {
       const formData = {

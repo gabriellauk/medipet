@@ -6,7 +6,7 @@ import styles from './Profile.module.css';
 export default function Profile({ weight }: { weight: number | null }) {
   const { animal } = useAnimals();
 
-  const animalIcons: Record<any, JSX.Element> = {
+  const animalIcons: Record<number, JSX.Element> = {
     1: <GiCat size={80} />,
     2: <GiSittingDog size={80} />,
     3: <GiRabbit size={80} />,

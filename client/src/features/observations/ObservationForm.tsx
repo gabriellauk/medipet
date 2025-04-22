@@ -8,6 +8,7 @@ import { useAnimals } from '../../contexts/AnimalsContext';
 import { GenericApiResponse } from '../../types/CommonTypes';
 import { useState } from 'react';
 import {
+  Observation,
   ObservationFormData,
   ObservationFormProps,
 } from '../../types/ObservationTypes';
@@ -33,7 +34,7 @@ export function ObservationForm({ close, mode, item }: ObservationFormProps) {
       ? dayjs(data.date).format('YYYY-MM-DD')
       : '';
 
-    let apiResponse: GenericApiResponse;
+    let apiResponse: GenericApiResponse<Observation>;
     if (mode === 'create') {
       const formData = { description: data.description, date: formattedDate };
       apiResponse = await api.post(`/animal/${animal!.id}/symptom`, formData);
