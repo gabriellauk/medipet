@@ -13,7 +13,12 @@ import {
 } from '../../types/AppointmentTypes';
 import { GenericApiResponse } from '../../types/CommonTypes';
 
-export function AppointmentForm({ close, mode, item }: AppointmentFormProps) {
+export function AppointmentForm({
+  close,
+  mode,
+  item,
+  refetchAppointments,
+}: AppointmentFormProps) {
   const api = useApi();
   const { animal } = useAnimals();
   const [submissionError, setSubmissionError] = useState('');
@@ -68,11 +73,11 @@ export function AppointmentForm({ close, mode, item }: AppointmentFormProps) {
       );
     }
 
-    if (!apiResponse.ok) {
-      setSubmissionError(
-        'An error occurred while saving the appointment. Please try again.'
-      );
-      return;
+    if (apiResponse.ok) {
+      refetchAppointments();
+      close();
+    } else {
+      setSubmissionError('An error occurred. Please try again later.');
     }
 
     close();

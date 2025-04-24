@@ -7,29 +7,22 @@ export function useWeights() {
   const api = useApi();
   const { animal } = useAnimals();
   const [weights, setWeights] = useState<Weight[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchWeights = useCallback(async () => {
-    if (!animal) return;
-
     setLoading(true);
     setError(null);
 
-    try {
-      const response = await api.get<{ data: Weight[] }>(
-        `/animal/${animal.id}/weight`
-      );
-      if (response.ok) {
-        setWeights(response.body.data);
-      } else {
-        setError('Failed to fetch weights');
-      }
-    } catch (err) {
-      setError('An unexpected error occurred');
-    } finally {
-      setLoading(false);
+    const response = await api.get<{ data: Weight[] }>(
+      `/animal/${animal!.id}/weight`
+    );
+    if (response.ok) {
+      setWeights(response.body.data);
+    } else {
+      setError('Failed to fetch weights');
     }
+    setLoading(false);
   }, [animal, api]);
 
   useEffect(() => {

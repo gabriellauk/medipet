@@ -1,5 +1,3 @@
-import { FormProps } from './CommonTypes';
-
 export type Appointment = {
   id: number;
   description: string;
@@ -7,7 +5,19 @@ export type Appointment = {
   notes: string | null;
 };
 
-export type AppointmentFormProps = FormProps<Appointment>;
+export type AppointmentFormProps =
+  | {
+      close: () => void;
+      mode: 'create';
+      item: null;
+      refetchAppointments: () => void;
+    }
+  | {
+      close: () => void;
+      mode: 'update';
+      item: Appointment;
+      refetchAppointments: () => void;
+    };
 
 export type AppointmentFormData = {
   date: Date | null;

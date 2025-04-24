@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Button, Drawer, Container } from '@mantine/core';
+import { useState } from 'react';
+import { Button, Drawer, Container, Loader } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
 import { useAnimals } from '../../contexts/AnimalsContext';
@@ -7,6 +7,7 @@ import AppointmentCard from './AppointmentCard';
 import { AppointmentForm } from './AppointmentForm';
 import { Appointment } from '../../types/AppointmentTypes';
 import { DrawerMode } from '../../types/CommonTypes';
+import { useAppointments } from '../../hooks/useAppointments';
 
 export default function AppointmentsCalendar() {
   const api = useApi();
@@ -14,26 +15,21 @@ export default function AppointmentsCalendar() {
   const [opened, { open, close }] = useDisclosure(false);
   const [drawerMode, setDrawerMode] = useState<DrawerMode | null>();
   const [itemToEdit, setItemToEdit] = useState<Appointment | null>(null);
-  const [appointmentsData, setAppointmentsData] = useState<Appointment[]>([]);
 
-  useEffect(() => {
-    (async () => {
-      const response = await api.get<{ data: Appointment[] }>(
-        '/animal/' + animal!.id + '/appointment'
-      );
-      if (response.ok) {
-        setAppointmentsData(response.body.data);
-      } else {
-        setAppointmentsData([]);
-      }
-    })();
-  }, [opened, animal, api]);
+  const {
+    appointments,
+    appointmentsLoading,
+    appointmentsError,
+    refetchAppointments: refetchApppontments,
+  } = useAppointments();
 
   async function deleteAppointment(animalId: number, appointmentId: number) {
-    await api.delete('/animal/' + animalId + '/appointment/' + appointmentId);
-    setAppointmentsData((prevList) =>
-      prevList.filter((item) => item.id !== appointmentId)
+    const response = await api.delete(
+      '/animal/' + animalId + '/appointment/' + appointmentId
     );
+    if (response.ok) {
+      refetchApppontments();
+    }
   }
 
   async function handleOpenDrawerCreate() {
@@ -61,10 +57,41 @@ export default function AppointmentsCalendar() {
         View details about {animal!.name}'s check-ups and other vet appointments
         here.
       </p>
-      {appointmentsData.length === 0 && (
+
+      {appointmentsLoading ? (
+        <Loader />
+      ) : appointmentsError ? (
+        <p>
+          <i>{appointmentsError}</i>
+        </p>
+      ) : appointments.length === 0 ? (
         <p>
           <i>No appointments listed for {animal!.name} yet.</i>
         </p>
+      ) : (
+        <>
+          <Button
+            onClick={handleOpenDrawerCreate}
+            radius="xl"
+            mb="xl"
+            size="md"
+          >
+            Add appointment
+          </Button>
+          {appointments.length > 0 &&
+            appointments.map((item) => (
+              <AppointmentCard
+                key={item.id}
+                appointmentId={item.id}
+                date={item.date}
+                description={item.description}
+                notes={item.notes}
+                animalId={animal!.id}
+                deleteAppointment={deleteAppointment}
+                onEditClick={() => handleOpenDrawerEdit(item.id)}
+              />
+            ))}
+        </>
       )}
       <Drawer
         opened={opened}
@@ -73,27 +100,21 @@ export default function AppointmentsCalendar() {
         closeButtonProps={{ 'aria-label': 'Close drawer' }}
       >
         {drawerMode == 'create' ? (
-          <AppointmentForm close={close} mode={'create'} item={null} />
+          <AppointmentForm
+            close={close}
+            mode={'create'}
+            item={null}
+            refetchAppointments={refetchApppontments}
+          />
         ) : (
-          <AppointmentForm close={close} mode={'update'} item={itemToEdit!} />
+          <AppointmentForm
+            close={close}
+            mode={'update'}
+            item={itemToEdit!}
+            refetchAppointments={refetchApppontments}
+          />
         )}
       </Drawer>
-      <Button onClick={handleOpenDrawerCreate} radius="xl" mb="xl" size="md">
-        Add appointment
-      </Button>
-      {appointmentsData.length > 0 &&
-        appointmentsData.map((item) => (
-          <AppointmentCard
-            key={item.id}
-            appointmentId={item.id}
-            date={item.date}
-            description={item.description}
-            notes={item.notes}
-            animalId={animal!.id}
-            deleteAppointment={deleteAppointment}
-            onEditClick={() => handleOpenDrawerEdit(item.id)}
-          />
-        ))}
     </Container>
   );
 }

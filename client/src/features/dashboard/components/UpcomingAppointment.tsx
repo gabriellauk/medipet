@@ -1,17 +1,28 @@
 import { Blockquote, Button, Group, Text } from '@mantine/core';
 import { useAnimals } from '../../../contexts/AnimalsContext';
 import { IconCalendar } from '@tabler/icons-react';
+import { Appointment } from '../../../types/AppointmentTypes';
+import { useNavigate } from 'react-router-dom';
 
-export default function Appointment() {
+export default function UpcomingAppointment({
+  appointment,
+  error,
+}: {
+  appointment: Appointment | null;
+  error: string | null;
+}) {
   const { animal } = useAnimals();
+  const navigate = useNavigate();
 
-  // const appointment = null;
-
-  const appointment = {
-    id: 1,
-    description: 'Yearly check-up/booster',
-    date: '2025-04-01',
-  };
+  let formattedDate = null;
+  if (appointment?.date) {
+    const date = new Date(appointment?.date || '');
+    formattedDate = new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(date);
+  }
 
   return (
     <Blockquote
@@ -33,13 +44,17 @@ export default function Appointment() {
         </Text>
       </Group>
       <br />
-      {appointment ? (
-        '14th April 2025 at 10am'
+      {error ? (
+        error
+      ) : appointment ? (
+        <>{formattedDate}</>
       ) : (
         <>
           No upcoming appointments.
           <p></p>
-          <Button>Record appointment</Button>
+          <Button onClick={() => navigate('/appointments-calendar')}>
+            Record appointment
+          </Button>
         </>
       )}
     </Blockquote>
