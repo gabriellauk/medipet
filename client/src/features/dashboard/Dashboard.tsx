@@ -1,4 +1,4 @@
-import { Button, Container, Loader, Paper } from '@mantine/core';
+import { Button, Container, Loader, Paper, Title } from '@mantine/core';
 import { useWeights } from '../../hooks/useWeights';
 
 import { Text } from '@mantine/core';
@@ -40,7 +40,7 @@ export default function Dashboard() {
 
   const mostRecentWeight =
     sortedWeights.length > 0
-      ? sortedWeights[sortedWeights.length - 1].weight / 100
+      ? sortedWeights[sortedWeights.length - 1].weight
       : null;
 
   return (
@@ -71,7 +71,9 @@ export default function Dashboard() {
 
           <Grid align="stretch" gutter="md" mt="md">
             <Grid.Col span={{ base: 12, xs: 12 }}>
-              <b>{animal!.name}'s weight over time</b>
+              <Title order={2} size="h3">
+                {animal!.name}'s weight over time
+              </Title>
               <p></p>
               <LineChart
                 h={300}
@@ -79,6 +81,7 @@ export default function Dashboard() {
                 dataKey="date"
                 series={[{ name: 'weight', color: 'indigo.6' }]}
                 curveType="linear"
+                valueFormatter={(value) => `${value} kg`}
               />
             </Grid.Col>
           </Grid>

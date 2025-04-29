@@ -18,7 +18,11 @@ export function useWeights() {
       `/animal/${animal!.id}/weight`
     );
     if (response.ok) {
-      setWeights(response.body.data);
+      const convertedWeights = response.body.data.map((weight) => ({
+        ...weight,
+        weight: weight.weight / 1000,
+      }));
+      setWeights(convertedWeights);
     } else {
       setError('Failed to fetch weights');
     }

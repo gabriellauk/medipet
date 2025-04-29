@@ -29,13 +29,13 @@ export function WeightForm({
     formState: { errors },
   } = useForm<WeightFormData>({
     defaultValues: {
-      weight: mode === 'update' ? item.weight / 100 : undefined,
+      weight: mode === 'update' ? item.weight : undefined,
       date: mode === 'update' ? new Date(item.date) : null,
     },
   });
 
   const onSubmit = async (data: WeightFormData) => {
-    const weightInGrams = Math.round(data.weight * 100);
+    const weightInGrams = Math.round(data.weight * 1000);
     const formattedDate = data.date
       ? dayjs(data.date).format('YYYY-MM-DD')
       : '';
@@ -47,7 +47,7 @@ export function WeightForm({
       apiResponse = await api.post(`/animal/${animal!.id}/weight`, formData);
     } else {
       const changedFields: Partial<{ weight: number; date: string }> = {};
-      if (weightInGrams !== item.weight) changedFields.weight = weightInGrams;
+      if (data.weight !== item.weight) changedFields.weight = weightInGrams;
       if (formattedDate !== item.date) changedFields.date = formattedDate;
 
       if (Object.keys(changedFields).length === 0) {

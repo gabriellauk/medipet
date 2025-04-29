@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Drawer, Container, Text, Loader } from '@mantine/core';
+import { Button, Drawer, Container, Loader } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
 import { useAnimals } from '../../contexts/AnimalsContext';
@@ -9,7 +9,7 @@ import { useWeights } from '../../hooks/useWeights';
 import { DrawerMode } from '../../types/CommonTypes';
 import { Weight } from '../../types/WeightTypes';
 
-export default function ObservationDiary() {
+export default function WeightTracker() {
   const api = useApi();
   const { animal } = useAnimals();
   const [opened, { open, close }] = useDisclosure(false);
@@ -36,13 +36,21 @@ export default function ObservationDiary() {
       '/animal/' + animal!.id + '/weight/' + itemId
     );
     if (response.ok) {
-      setItemToEdit(response.body as Weight);
+      const weight = response.body as Weight;
+      weight.weight = weight.weight / 1000;
+      setItemToEdit(weight);
       setDrawerMode('update');
       open();
     } else {
       setItemToEdit(null);
     }
   }
+
+  const addWeightButton = (
+    <Button onClick={handleOpenDrawerCreate} radius="xl" mb="xl" size="md">
+      Add weight
+    </Button>
+  );
 
   return (
     <Container>
@@ -55,33 +63,26 @@ export default function ObservationDiary() {
           <i>{weightsError}</i>
         </p>
       ) : weights.length === 0 ? (
-        <p>
-          <i>{animal!.name} doesn't have any weights listed yet.</i>
-        </p>
+        <>
+          <p>
+            <i>{animal!.name} doesn't have any weights listed yet.</i>
+          </p>
+          {addWeightButton}
+        </>
       ) : (
         <>
-          <Button
-            onClick={handleOpenDrawerCreate}
-            radius="xl"
-            mb="xl"
-            size="md"
-          >
-            Add weight
-          </Button>
-          {weightsLoading && <Text>Loading weights...</Text>}
-          {weightsError && <Text>Failed to load weights: {weightsError}</Text>}
-          {weights.length > 0 &&
-            weights.map((item) => (
-              <WeightCard
-                key={item.id}
-                weightId={item.id}
-                date={item.date}
-                weight={item.weight / 100}
-                animalId={animal!.id}
-                deleteWeight={deleteWeight}
-                onEditClick={() => handleOpenDrawerEdit(item.id)}
-              />
-            ))}
+          {addWeightButton}
+          {weights.map((item) => (
+            <WeightCard
+              key={item.id}
+              weightId={item.id}
+              date={item.date}
+              weight={item.weight}
+              animalId={animal!.id}
+              deleteWeight={deleteWeight}
+              onEditClick={() => handleOpenDrawerEdit(item.id)}
+            />
+          ))}
         </>
       )}
       <Drawer
