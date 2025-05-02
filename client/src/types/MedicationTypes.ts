@@ -1,5 +1,3 @@
-import { FormProps } from './CommonTypes';
-
 export type TimeUnit = 'day' | 'week' | 'month' | 'year';
 
 export type Medication = {
@@ -16,7 +14,19 @@ export type Medication = {
   endDate?: string;
 };
 
-export type MedicationFormProps = FormProps<Medication>;
+export type MedicationFormProps =
+  | {
+      close: () => void;
+      mode: 'create';
+      item: null;
+      refetchMedication: () => void;
+    }
+  | {
+      close: () => void;
+      mode: 'update';
+      item: Medication;
+      refetchMedication: () => void;
+    };
 
 export type MedicationFormData = {
   name: string;

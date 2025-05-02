@@ -19,6 +19,8 @@ import DemoDisclaimer from '../../components/DemoDisclaimer';
 import styles from './Dashboard.module.css';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import { useAppointments } from '../../hooks/useAppointments';
+import { useMedication } from '../../hooks/useMedication';
+import { filterCurrentMedication } from '../../utils/medicationUtils';
 
 const stats = keyStatsData.map((stat) => {
   const Icon = icons[stat.icon];
@@ -30,6 +32,8 @@ export default function Dashboard() {
   const { weights, weightsLoading } = useWeights();
   const { appointments, appointmentsLoading, appointmentsError } =
     useAppointments();
+  const { medication, medicationLoading, medicationError } = useMedication();
+  const filteredMedication = filterCurrentMedication(medication);
 
   const upcomingAppointment =
     appointments.length > 0 ? appointments.slice(-1)[0] : null;
@@ -45,7 +49,7 @@ export default function Dashboard() {
 
   return (
     <Container my="md">
-      {weightsLoading || appointmentsLoading ? (
+      {weightsLoading || appointmentsLoading || medicationLoading ? (
         <Loader />
       ) : (
         <>
@@ -114,7 +118,10 @@ export default function Dashboard() {
           <Grid align="stretch" gutter="md" mt="md">
             {/* <Grid.Col span={{ base: 12, xs: 12 }}><MedicationSummary /></Grid.Col> */}
             <Grid.Col span={{ base: 12, xs: 6 }}>
-              <MedicationSummary />
+              <MedicationSummary
+                medication={filteredMedication}
+                error={medicationError}
+              />
             </Grid.Col>
             <Grid.Col span={{ base: 12, xs: 6 }}>
               <Text ta="right">

@@ -1,19 +1,19 @@
 import { Blockquote, Group, List, Text } from '@mantine/core';
 import { IconPill } from '@tabler/icons-react';
 import { useAnimals } from '../../../contexts/AnimalsContext';
+import { Medication } from '../../../types/MedicationTypes';
+import { useNavigate } from 'react-router-dom';
+import { transformMedication } from '../../../utils/medicationUtils';
 
-export default function MedicationSummary() {
+export default function MedicationSummary({
+  medication,
+  error,
+}: {
+  medication: Medication[];
+  error: string | null;
+}) {
   const { animal } = useAnimals();
-
-  // const medications = null
-
-  const medications = (
-    <List>
-      <List.Item>Flea treatment (every month)</List.Item>
-      <List.Item>Worming tablets (every three months)</List.Item>
-      <List.Item>Antibiotics (until 1st May 2025)</List.Item>
-    </List>
-  );
+  const navigate = useNavigate();
 
   return (
     <Blockquote
@@ -34,10 +34,27 @@ export default function MedicationSummary() {
         </Text>
       </Group>
       <p></p>
-      {medications ? medications : 'No medications recorded yet'}
+
+      {error ? (
+        error
+      ) : medication.length > 0 ? (
+        <List>
+          {medication.map((med) => (
+            <List.Item key={med.id}>{transformMedication(med)}</List.Item>
+          ))}
+        </List>
+      ) : (
+        'No current medication to display.'
+      )}
       <p></p>
-      <Text variant="link" component="a" href="https://google.com">
-        → Update schedule
+
+      <Text
+        variant="link"
+        component="a"
+        onClick={() => navigate('/medication-schedule')}
+        style={{ cursor: 'pointer' }}
+      >
+        <b>→ Update schedule</b>
       </Text>
     </Blockquote>
   );

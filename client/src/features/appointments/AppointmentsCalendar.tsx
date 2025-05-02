@@ -50,6 +50,12 @@ export default function AppointmentsCalendar() {
     }
   }
 
+  const addAppointmentButton = (
+    <Button onClick={handleOpenDrawerCreate} radius="xl" mb="xl" size="md">
+      Add appointment
+    </Button>
+  );
+
   return (
     <Container>
       <h1>Appointments calendar</h1>
@@ -57,7 +63,6 @@ export default function AppointmentsCalendar() {
         View details about {animal!.name}'s check-ups and other vet appointments
         here.
       </p>
-
       {appointmentsLoading ? (
         <Loader />
       ) : appointmentsError ? (
@@ -65,19 +70,15 @@ export default function AppointmentsCalendar() {
           <i>{appointmentsError}</i>
         </p>
       ) : appointments.length === 0 ? (
-        <p>
-          <i>No appointments listed for {animal!.name} yet.</i>
-        </p>
+        <>
+          <p>
+            <i>No appointments listed for {animal!.name} yet.</i>
+          </p>
+          {addAppointmentButton}
+        </>
       ) : (
         <>
-          <Button
-            onClick={handleOpenDrawerCreate}
-            radius="xl"
-            mb="xl"
-            size="md"
-          >
-            Add appointment
-          </Button>
+          {addAppointmentButton}
           {appointments.length > 0 &&
             appointments.map((item) => (
               <AppointmentCard

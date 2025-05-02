@@ -19,7 +19,12 @@ import {
   MedicationFormProps,
 } from '../../types/MedicationTypes';
 
-export function MedicationForm({ close, mode, item }: MedicationFormProps) {
+export function MedicationForm({
+  close,
+  mode,
+  item,
+  refetchMedication,
+}: MedicationFormProps) {
   const api = useApi();
   const { animal } = useAnimals();
   const [submissionError, setSubmissionError] = useState('');
@@ -81,7 +86,6 @@ export function MedicationForm({ close, mode, item }: MedicationFormProps) {
       if (formData.startDate !== item!.startDate)
         changedFields.startDate = data.startDate;
       if (Object.keys(changedFields).length === 0) {
-        setSubmissionError('No changes to submit');
         return;
       }
       apiResponse = await api.patch(
@@ -90,12 +94,12 @@ export function MedicationForm({ close, mode, item }: MedicationFormProps) {
       );
     }
 
-    if (!apiResponse.ok) {
+    if (apiResponse.ok) {
+      refetchMedication();
+      close();
+    } else {
       setSubmissionError('An error occurred. Please try again later.');
-      return;
     }
-
-    close();
   };
 
   return (

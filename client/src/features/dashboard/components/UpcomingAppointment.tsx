@@ -3,6 +3,7 @@ import { useAnimals } from '../../../contexts/AnimalsContext';
 import { IconCalendar } from '@tabler/icons-react';
 import { Appointment } from '../../../types/AppointmentTypes';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '../../../utils/dateUtils';
 
 export default function UpcomingAppointment({
   appointment,
@@ -15,14 +16,7 @@ export default function UpcomingAppointment({
   const navigate = useNavigate();
 
   let formattedDate = null;
-  if (appointment?.date) {
-    const date = new Date(appointment?.date || '');
-    formattedDate = new Intl.DateTimeFormat('en-GB', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    }).format(date);
-  }
+  if (appointment?.date) formattedDate = formatDate(appointment.date);
 
   return (
     <Blockquote
