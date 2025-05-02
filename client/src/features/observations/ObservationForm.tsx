@@ -13,7 +13,12 @@ import {
   ObservationFormProps,
 } from '../../types/ObservationTypes';
 
-export function ObservationForm({ close, mode, item }: ObservationFormProps) {
+export function ObservationForm({
+  close,
+  mode,
+  item,
+  refetchObservations,
+}: ObservationFormProps) {
   const api = useApi();
   const { animal } = useAnimals();
   const [submissionError, setSubmissionError] = useState('');
@@ -53,12 +58,13 @@ export function ObservationForm({ close, mode, item }: ObservationFormProps) {
       );
     }
 
-    if (!apiResponse.ok) {
+    if (apiResponse.ok) {
+      refetchObservations();
+      close();
+    } else {
       setSubmissionError('An error occurred. Please try again later.');
       return;
     }
-
-    close();
   };
 
   return (

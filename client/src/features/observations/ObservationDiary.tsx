@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Button, Drawer, Container } from '@mantine/core';
+import { useState } from 'react';
+import { Button, Drawer, Container, Loader } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
 import { ObservationForm } from './ObservationForm';
@@ -7,6 +7,7 @@ import { useAnimals } from '../../contexts/AnimalsContext';
 import ObservationCard from './ObservationCard';
 import { DrawerMode } from '../../types/CommonTypes';
 import { Observation } from '../../types/ObservationTypes';
+import { useObservations } from '../../hooks/useObservations';
 
 export default function ObservationDiary() {
   const api = useApi();
@@ -14,26 +15,20 @@ export default function ObservationDiary() {
   const [opened, { open, close }] = useDisclosure(false);
   const [drawerMode, setDrawerMode] = useState<DrawerMode | null>();
   const [itemToEdit, setItemToEdit] = useState<Observation | null>(null);
-  const [observationsData, setObservationsData] = useState<Observation[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      const response = await api.get<{ data: Observation[] }>(
-        '/animal/' + animal!.id + '/symptom'
-      );
-      if (response.ok) {
-        setObservationsData(response.body.data);
-      } else {
-        setObservationsData([]);
-      }
-    })();
-  }, [opened, animal, api]);
+  const {
+    observations,
+    observationsLoading,
+    observationsError,
+    refetchObservations,
+  } = useObservations();
 
   async function deleteObservation(animalId: number, symptomId: number) {
-    await api.delete('/animal/' + animalId + '/symptom/' + symptomId);
-    setObservationsData((prevList) =>
-      prevList.filter((item) => item.id !== symptomId)
+    const response = await api.delete(
+      '/animal/' + animalId + '/symptom/' + symptomId
     );
+    if (response.ok) {
+      refetchObservations();
+    }
   }
 
   async function handleOpenDrawerCreate() {
@@ -54,6 +49,12 @@ export default function ObservationDiary() {
     }
   }
 
+  const addObservationButton = (
+    <Button onClick={handleOpenDrawerCreate} radius="xl" mb="xl" size="md">
+      Add observation
+    </Button>
+  );
+
   return (
     <Container>
       <h1>Observation diary</h1>
@@ -62,10 +63,34 @@ export default function ObservationDiary() {
         else you may want to make a note of ahead of {animal!.name}'s next
         appointment.
       </p>
-      {observationsData.length === 0 && (
+      {observationsLoading ? (
+        <Loader />
+      ) : observationsError ? (
         <p>
-          <i>No observations noted for {animal!.name} yet.</i>
+          <i>{observationsError}</i>
         </p>
+      ) : observations.length === 0 ? (
+        <>
+          <p>
+            <i>No observations noted for {animal!.name} yet.</i>
+          </p>
+          {addObservationButton}
+        </>
+      ) : (
+        <>
+          {addObservationButton}
+          {observations.map((item) => (
+            <ObservationCard
+              key={item.id}
+              observationId={item.id}
+              date={item.date}
+              description={item.description}
+              animalId={animal!.id}
+              deleteObservation={deleteObservation}
+              onEditClick={() => handleOpenDrawerEdit(item.id)}
+            />
+          ))}
+        </>
       )}
       <Drawer
         opened={opened}
@@ -74,26 +99,21 @@ export default function ObservationDiary() {
         closeButtonProps={{ 'aria-label': 'Close drawer' }}
       >
         {drawerMode == 'create' ? (
-          <ObservationForm close={close} mode={'create'} item={null} />
+          <ObservationForm
+            close={close}
+            mode={'create'}
+            item={null}
+            refetchObservations={refetchObservations}
+          />
         ) : (
-          <ObservationForm close={close} mode={'update'} item={itemToEdit!} />
+          <ObservationForm
+            close={close}
+            mode={'update'}
+            item={itemToEdit!}
+            refetchObservations={refetchObservations}
+          />
         )}
       </Drawer>
-      <Button onClick={handleOpenDrawerCreate} radius="xl" mb="xl" size="md">
-        Add observation
-      </Button>
-      {observationsData.length > 0 &&
-        observationsData.map((item) => (
-          <ObservationCard
-            key={item.id}
-            observationId={item.id}
-            date={item.date}
-            description={item.description}
-            animalId={animal!.id}
-            deleteObservation={deleteObservation}
-            onEditClick={() => handleOpenDrawerEdit(item.id)}
-          />
-        ))}
     </Container>
   );
 }
