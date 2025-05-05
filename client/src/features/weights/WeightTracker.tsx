@@ -37,7 +37,6 @@ export default function WeightTracker() {
     );
     if (response.ok) {
       const weight = response.body as Weight;
-      weight.weight = weight.weight / 1000;
       setItemToEdit(weight);
       setDrawerMode('update');
       open();

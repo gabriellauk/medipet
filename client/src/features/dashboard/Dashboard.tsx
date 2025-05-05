@@ -6,8 +6,6 @@ import { Text } from '@mantine/core';
 import { LineChart } from '@mantine/charts';
 
 import { Grid } from '@mantine/core';
-import { icons } from './dashboard-data';
-import { keyStatsData } from './dashboard-data';
 import { Group, SimpleGrid } from '@mantine/core';
 import Profile from './components/Profile/Profile';
 import UpcomingAppointment from './components/UpcomingAppointment';
@@ -23,10 +21,15 @@ import { useMedication } from '../../hooks/useMedication';
 import { filterCurrentMedication } from '../../utils/medicationUtils';
 import { useObservations } from '../../hooks/useObservations';
 
-const stats = keyStatsData.map((stat) => {
-  const Icon = icons[stat.icon];
-  return <KeyStat stat={stat} Icon={Icon} key={stat.label} />;
-});
+import {
+  IconArrowDownRight,
+  IconNotes,
+  IconPill,
+  IconScaleOutline,
+} from '@tabler/icons-react';
+
+import { IconArrowUpRight } from '@tabler/icons-react';
+import { getObservationsFromPastThreeMonths } from '../../utils/observationsUtils';
 
 export default function Dashboard() {
   const { animal } = useAnimals();
@@ -45,9 +48,16 @@ export default function Dashboard() {
   );
 
   const mostRecentWeight =
-    sortedWeights.length > 0
-      ? sortedWeights[sortedWeights.length - 1].weight
+    sortedWeights.length > 0 ? sortedWeights[sortedWeights.length - 1] : null;
+
+  const weightChange =
+    sortedWeights.length >= 2
+      ? (sortedWeights[sortedWeights.length - 1].weight -
+          sortedWeights[sortedWeights.length - 2].weight) /
+        1000
       : null;
+
+  const weightDecrease = weightChange && weightChange < 0 ? true : false;
 
   const latestObservations = observations ? observations.slice(0, 3) : [];
 
@@ -76,26 +86,49 @@ export default function Dashboard() {
 
           <Grid align="stretch" gutter="md" mt="md">
             <Grid.Col span={{ base: 12, xs: 12 }}>
-              <SimpleGrid cols={{ base: 1, sm: 4 }}>{stats}</SimpleGrid>
+              <SimpleGrid cols={{ base: 1, sm: 4 }}>
+                <KeyStat
+                  label="Recent observations"
+                  stat={getObservationsFromPastThreeMonths(observations).length}
+                  Icon={IconNotes}
+                />
+                <KeyStat
+                  label="Last weighed"
+                  stat={mostRecentWeight ? mostRecentWeight.date : 'N/A'}
+                  Icon={IconScaleOutline}
+                />
+                <KeyStat
+                  label="Weight change"
+                  stat={weightChange ? weightChange + ' kg' : 'N/A'}
+                  Icon={weightDecrease ? IconArrowDownRight : IconArrowUpRight}
+                />
+                <KeyStat
+                  label="Current medication"
+                  stat={filteredMedication.length}
+                  Icon={IconPill}
+                />
+              </SimpleGrid>
             </Grid.Col>
           </Grid>
 
-          <Grid align="stretch" gutter="md" mt="md">
-            <Grid.Col span={{ base: 12, xs: 12 }}>
-              <Title order={2} size="h3">
-                {animal!.name}'s weight over time
-              </Title>
-              <p></p>
-              <LineChart
-                h={300}
-                data={sortedWeights.map(({ id, ...rest }) => rest)}
-                dataKey="date"
-                series={[{ name: 'weight', color: 'indigo.6' }]}
-                curveType="linear"
-                valueFormatter={(value) => `${value} kg`}
-              />
-            </Grid.Col>
-          </Grid>
+          {weights.length > 0 && (
+            <Grid align="stretch" gutter="md" mt="md">
+              <Grid.Col span={{ base: 12, xs: 12 }}>
+                <Title order={2} size="h3">
+                  {animal!.name}'s weight over time
+                </Title>
+                <p></p>
+                <LineChart
+                  h={300}
+                  data={sortedWeights.map(({ id, ...rest }) => rest)}
+                  dataKey="date"
+                  series={[{ name: 'weight', color: 'indigo.6' }]}
+                  curveType="linear"
+                  valueFormatter={(value) => `${value / 1000} kg`}
+                />
+              </Grid.Col>
+            </Grid>
+          )}
 
           <Grid align="stretch" gutter="md" mt="md">
             <Grid.Col span={{ base: 12, xs: 12 }}>

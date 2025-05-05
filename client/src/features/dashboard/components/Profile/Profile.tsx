@@ -2,8 +2,9 @@ import { Avatar, Paper, Text } from '@mantine/core';
 import { GiCat, GiRabbit, GiSittingDog } from 'react-icons/gi';
 import { useAnimals } from '../../../../contexts/AnimalsContext';
 import styles from './Profile.module.css';
+import { Weight } from '../../../../types/WeightTypes';
 
-export default function Profile({ weight }: { weight: number | null }) {
+export default function Profile({ weight }: { weight: Weight | null }) {
   const { animal } = useAnimals();
 
   const animalIcons: Record<number, JSX.Element> = {
@@ -23,7 +24,7 @@ export default function Profile({ weight }: { weight: number | null }) {
         {animal!.name}
       </Text>
       <Text ta="center" c="dimmed" fz="sm">
-        Current weight: {weight ? `${weight} kg` : 'N/A'}
+        Current weight: {weight ? `${weight.weight / 1000} kg` : 'N/A'}
       </Text>
     </Paper>
   );

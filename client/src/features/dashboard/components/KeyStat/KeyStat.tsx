@@ -1,6 +1,16 @@
 import { Center, Group, Paper, Text } from '@mantine/core';
 import styles from './KeyStat.module.css';
-export default function KeyStat({ stat, Icon }: { stat: any; Icon: any }) {
+import { Icon, IconProps } from '@tabler/icons-react';
+
+export default function KeyStat({
+  label,
+  stat,
+  Icon,
+}: {
+  label: string;
+  stat: number | string;
+  Icon: React.ForwardRefExoticComponent<IconProps & React.RefAttributes<Icon>>;
+}) {
   return (
     <Paper withBorder radius="md" p="xs" className={styles.keyStat}>
       <Group>
@@ -9,10 +19,10 @@ export default function KeyStat({ stat, Icon }: { stat: any; Icon: any }) {
         </Center>
         <div>
           <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
-            {stat.label}
+            {label}
           </Text>
           <Text fw={700} size="xl">
-            {stat.stats}
+            {stat}
           </Text>
         </div>
       </Group>

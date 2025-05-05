@@ -29,7 +29,7 @@ export function WeightForm({
     formState: { errors },
   } = useForm<WeightFormData>({
     defaultValues: {
-      weight: mode === 'update' ? item.weight : undefined,
+      weight: mode === 'update' ? item.weight / 1000 : undefined,
       date: mode === 'update' ? new Date(item.date) : null,
     },
   });

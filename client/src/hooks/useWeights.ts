@@ -20,7 +20,7 @@ export function useWeights() {
     if (response.ok) {
       const convertedWeights = response.body.data.map((weight) => ({
         ...weight,
-        weight: weight.weight / 1000,
+        weight: weight.weight,
       }));
       setWeights(convertedWeights);
     } else {

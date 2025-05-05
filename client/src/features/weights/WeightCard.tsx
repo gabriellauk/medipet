@@ -29,7 +29,7 @@ export default function WeightCard({
         </Group>
       </Group>
       <Text size="sm" c="dimmed">
-        {weight} kg
+        {weight / 1000} kg
       </Text>
     </Card>
   );
