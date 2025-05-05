@@ -1,12 +1,10 @@
-import { Button, Container, Loader, Paper, Title } from '@mantine/core';
+import { Container, Loader, Title } from '@mantine/core';
 import { useWeights } from '../../hooks/useWeights';
-
-import { Text } from '@mantine/core';
 
 import { LineChart } from '@mantine/charts';
 
 import { Grid } from '@mantine/core';
-import { Group, SimpleGrid } from '@mantine/core';
+import { SimpleGrid } from '@mantine/core';
 import Profile from './components/Profile/Profile';
 import UpcomingAppointment from './components/UpcomingAppointment';
 import KeyStat from './components/KeyStat/KeyStat';
@@ -14,7 +12,6 @@ import ObservationsTimeline from './components/ObservationsTimeline';
 import MedicationSummary from './components/MedicationSummary';
 import DemoDisclaimer from '../../components/DemoDisclaimer';
 
-import styles from './Dashboard.module.css';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import { useAppointments } from '../../hooks/useAppointments';
 import { useMedication } from '../../hooks/useMedication';
@@ -30,6 +27,7 @@ import {
 
 import { IconArrowUpRight } from '@tabler/icons-react';
 import { getObservationsFromPastThreeMonths } from '../../utils/observationsUtils';
+import CallToActionBanner from './CallToActionBanner';
 
 export default function Dashboard() {
   const { animal } = useAnimals();
@@ -131,28 +129,7 @@ export default function Dashboard() {
           )}
 
           <Grid align="stretch" gutter="md" mt="md">
-            <Grid.Col span={{ base: 12, xs: 12 }}>
-              <Paper
-                withBorder
-                radius="md"
-                p="lg"
-                className={styles.callToAction}
-              >
-                <Group justify="space-between" mt="xs" mb="xs">
-                  {/* TODO: Move to separate component */}
-                  {/* <Text fw={500}>No weights or observations listed yet.</Text> */}
-                  <Text fw={500}>Noticed a new symptom or behaviour?</Text>
-                  <Group>
-                    <Button variant="filled" color="blue">
-                      Add weight
-                    </Button>
-                    <Button variant="filled" color="blue">
-                      Add observation
-                    </Button>
-                  </Group>
-                </Group>
-              </Paper>
-            </Grid.Col>
+            <CallToActionBanner observations={observations} weights={weights} />
           </Grid>
 
           <Grid align="stretch" gutter="md" mt="md">
