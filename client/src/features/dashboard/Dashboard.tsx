@@ -21,6 +21,7 @@ import { useAnimals } from '../../contexts/AnimalsContext';
 import { useAppointments } from '../../hooks/useAppointments';
 import { useMedication } from '../../hooks/useMedication';
 import { filterCurrentMedication } from '../../utils/medicationUtils';
+import { useObservations } from '../../hooks/useObservations';
 
 const stats = keyStatsData.map((stat) => {
   const Icon = icons[stat.icon];
@@ -34,6 +35,7 @@ export default function Dashboard() {
     useAppointments();
   const { medication, medicationLoading, medicationError } = useMedication();
   const filteredMedication = filterCurrentMedication(medication);
+  const { observations, observationsLoading } = useObservations();
 
   const upcomingAppointment =
     appointments.length > 0 ? appointments.slice(-1)[0] : null;
@@ -47,9 +49,14 @@ export default function Dashboard() {
       ? sortedWeights[sortedWeights.length - 1].weight
       : null;
 
+  const latestObservations = observations ? observations.slice(0, 3) : [];
+
   return (
     <Container my="md">
-      {weightsLoading || appointmentsLoading || medicationLoading ? (
+      {weightsLoading ||
+      appointmentsLoading ||
+      medicationLoading ||
+      observationsLoading ? (
         <Loader />
       ) : (
         <>
@@ -116,20 +123,26 @@ export default function Dashboard() {
           </Grid>
 
           <Grid align="stretch" gutter="md" mt="md">
-            {/* <Grid.Col span={{ base: 12, xs: 12 }}><MedicationSummary /></Grid.Col> */}
-            <Grid.Col span={{ base: 12, xs: 6 }}>
-              <MedicationSummary
-                medication={filteredMedication}
-                error={medicationError}
-              />
-            </Grid.Col>
-            <Grid.Col span={{ base: 12, xs: 6 }}>
-              <Text ta="right">
-                <b>Latest observations</b>
-              </Text>
-              <p></p>
-              <ObservationsTimeline />
-            </Grid.Col>
+            {latestObservations.length === 0 ? (
+              <Grid.Col span={{ base: 12, xs: 12 }}>
+                <MedicationSummary
+                  medication={filteredMedication}
+                  error={medicationError}
+                />
+              </Grid.Col>
+            ) : (
+              <>
+                <Grid.Col span={{ base: 12, xs: 6 }}>
+                  <MedicationSummary
+                    medication={filteredMedication}
+                    error={medicationError}
+                  />
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, xs: 6 }}>
+                  <ObservationsTimeline observations={latestObservations} />
+                </Grid.Col>
+              </>
+            )}
           </Grid>
         </>
       )}

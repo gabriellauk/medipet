@@ -7,3 +7,26 @@ export const formatDate = (inputDate: string) => {
     year: 'numeric',
   }).format(date);
 };
+
+export const getRelativeTime = (date: string): string => {
+  const today = new Date();
+  const inputDate = new Date(date);
+
+  today.setHours(0, 0, 0, 0);
+  inputDate.setHours(0, 0, 0, 0);
+
+  const differenceInDays =
+    (today.getTime() - inputDate.getTime()) / (1000 * 60 * 60 * 24);
+
+  if (differenceInDays === 0) {
+    return 'today';
+  } else if (differenceInDays === 1) {
+    return '1 day ago';
+  } else if (differenceInDays > 1) {
+    return `${differenceInDays} days ago`;
+  } else if (differenceInDays === -1) {
+    return 'tomorrow';
+  } else {
+    return `${Math.abs(differenceInDays)} days from now`;
+  }
+};
