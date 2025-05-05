@@ -1,6 +1,7 @@
-from datetime import date as date_type
+from datetime import date as date_type, datetime
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from sqlalchemy.sql import expression
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 
@@ -12,6 +13,10 @@ from enum import Enum
 class User(UserMixin, db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     email: so.Mapped[str] = so.mapped_column(sa.String(120), unique=True, nullable=False)
+    is_demo_account: so.Mapped[bool] = so.mapped_column(sa.Boolean, server_default=expression.false(), nullable=False)
+    created_at: so.Mapped[datetime] = so.mapped_column(
+        sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False
+    )
 
     def __repr__(self):
         return "<User {}>".format(self.email)
