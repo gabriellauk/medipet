@@ -1,64 +1,46 @@
 import { Card, Group, Text } from '@mantine/core';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
-import { TimeUnit } from '../../types/MedicationTypes';
+import { Medication } from '../../types/MedicationTypes';
+import { transformMedication } from '../../utils/medicationUtils';
+import { formatDate } from '../../utils/dateUtils';
 
 export default function MedicationCard({
-  medicationId,
-  name,
-  isRecurring,
-  startDate,
-  timesPerDay,
-  frequencyNumber,
-  frequencyUnit,
-  durationNumber,
-  durationUnit,
-  endDate,
-  notes,
+  medication,
   animalId,
   deleteMedication,
   onEditClick,
 }: {
-  medicationId: number;
-  name: string;
-  isRecurring: boolean;
-  startDate: string;
-  timesPerDay?: number;
-  frequencyNumber?: number;
-  frequencyUnit?: TimeUnit;
-  durationNumber?: number;
-  durationUnit?: TimeUnit;
-  endDate?: string;
-  notes?: string;
+  medication: Medication;
   animalId: number;
-  deleteMedication: (animalId: number, appointmentId: number) => void;
+  deleteMedication: (animalId: number, medicationId: number) => void;
   onEditClick: () => void;
 }) {
+  const schedule = transformMedication(medication);
+
   return (
     <Card shadow="sm" padding="xl" radius="md" withBorder mb="lg">
       <Group justify="space-between" mt="xs" mb="xs">
-        <Text fw={500}>{startDate}</Text>
+        <Text fw={500}>{medication.name}</Text>
         <Group>
           <IconPencil onClick={onEditClick} style={{ cursor: 'pointer' }} />
           <IconTrash
-            onClick={() => deleteMedication(animalId, medicationId)}
+            onClick={() => deleteMedication(animalId, medication.id)}
             style={{ cursor: 'pointer' }}
           />
         </Group>
       </Group>
       <Text size="sm" c="dimmed">
-        name: {name}
-        <br />
-        recurring: {isRecurring ? 'true' : 'false'} <br />
-        start date: {startDate}
-        <br />
-        times per day: {timesPerDay}
-        <br />
-        frequency: {frequencyNumber} times a {frequencyUnit}
-        <br />
-        duration: {durationNumber} {durationUnit}s<br />
-        ends: {endDate}
-        <br />
-        notes: {notes}
+        {!medication.isRecurring &&
+          'On ' + formatDate(medication.startDate) + ' (one-off)'}
+        {medication.isRecurring &&
+          'From ' + formatDate(medication.startDate) + ': ' + schedule}
+        {medication.timesPerDay && (
+          <>
+            <br />
+            {medication.timesPerDay} time(s) a day
+          </>
+        )}
+        {medication.notes && medication.notes}
       </Text>
     </Card>
   );

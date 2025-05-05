@@ -72,20 +72,11 @@ export default function MedicationSchedule() {
       ) : (
         <>
           {addMedicationButton}
+
           {medication.map((item) => (
             <MedicationCard
               key={item.id}
-              medicationId={item.id}
-              name={item.name}
-              isRecurring={item.isRecurring}
-              startDate={item.startDate}
-              timesPerDay={item.timesPerDay}
-              frequencyNumber={item.frequencyNumber}
-              frequencyUnit={item.frequencyUnit}
-              durationNumber={item.durationNumber}
-              durationUnit={item.durationUnit}
-              endDate={item.endDate}
-              notes={item.notes}
+              medication={item}
               animalId={animal!.id}
               deleteMedication={deleteMedication}
               onEditClick={() => handleOpenDrawerEdit(item.id)}

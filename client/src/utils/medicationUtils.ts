@@ -20,7 +20,7 @@ export const filterCurrentMedication = (
 
 export const transformMedication = (medication: Medication) => {
   let frequencyAndDuration = '';
-  if (medication.isRecurring === false) return `${medication.name} (one-off)`;
+  if (medication.isRecurring === false) return `(one-off)`;
   if (medication.frequencyNumber === 1) {
     if (medication.frequencyUnit === 'day') frequencyAndDuration += 'daily';
     if (medication.frequencyUnit !== 'day')
@@ -32,5 +32,5 @@ export const transformMedication = (medication: Medication) => {
     const endDate = formatDate(medication.endDate);
     frequencyAndDuration += ` until ${endDate}`;
   }
-  return `${medication.name} ${frequencyAndDuration}`;
+  return `${frequencyAndDuration}`;
 };

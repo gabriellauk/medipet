@@ -40,7 +40,9 @@ export default function MedicationSummary({
       ) : medication.length > 0 ? (
         <List>
           {medication.map((med) => (
-            <List.Item key={med.id}>{transformMedication(med)}</List.Item>
+            <List.Item key={med.id}>
+              {med.name} {transformMedication(med)}
+            </List.Item>
           ))}
         </List>
       ) : (
