@@ -1,5 +1,6 @@
 import { Card, Group, Text } from '@mantine/core';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
+import { formatDate } from '../../utils/dateUtils';
 
 export default function ObservationCard({
   observationId,
@@ -19,7 +20,7 @@ export default function ObservationCard({
   return (
     <Card shadow="sm" padding="xl" radius="md" withBorder mb="lg">
       <Group justify="space-between" mt="xs" mb="xs">
-        <Text fw={500}>{date}</Text>
+        <Text fw={500}>{formatDate(date)}</Text>
         <Group>
           <IconPencil onClick={onEditClick} style={{ cursor: 'pointer' }} />
           <IconTrash

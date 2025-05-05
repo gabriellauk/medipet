@@ -40,7 +40,12 @@ export default function MedicationCard({
             {medication.timesPerDay} time(s) a day
           </>
         )}
-        {medication.notes && medication.notes}
+        {medication.notes && (
+          <>
+            <br />
+            {medication.notes}
+          </>
+        )}
       </Text>
     </Card>
   );

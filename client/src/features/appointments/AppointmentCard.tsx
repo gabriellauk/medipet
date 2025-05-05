@@ -1,5 +1,6 @@
 import { Card, Group, Text } from '@mantine/core';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
+import { formatDate } from '../../utils/dateUtils';
 
 export default function AppointmentCard({
   appointmentId,
@@ -21,7 +22,7 @@ export default function AppointmentCard({
   return (
     <Card shadow="sm" padding="xl" radius="md" withBorder mb="lg">
       <Group justify="space-between" mt="xs" mb="xs">
-        <Text fw={500}>{date}</Text>
+        <Text fw={500}>{formatDate(date)}</Text>
         <Group>
           <IconPencil onClick={onEditClick} style={{ cursor: 'pointer' }} />
           <IconTrash
@@ -31,7 +32,13 @@ export default function AppointmentCard({
         </Group>
       </Group>
       <Text size="sm" c="dimmed">
-        {description}, {notes}
+        {description}
+        {notes && (
+          <>
+            <br />
+            {notes}
+          </>
+        )}
       </Text>
     </Card>
   );

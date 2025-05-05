@@ -81,10 +81,7 @@ export function MedicationForm({
     } else {
       const changedFields: Partial<MedicationFormData> = {};
       if (formData.name !== item!.name) changedFields.name = formData.name;
-      if ((formData.isRecurring === 'true') !== item!.isRecurring)
-        changedFields.isRecurring = formData.isRecurring;
-      if (formData.startDate !== item!.startDate)
-        changedFields.startDate = data.startDate;
+      if (formData.notes !== item!.notes) changedFields.notes = formData.notes;
       if (Object.keys(changedFields).length === 0) {
         return;
       }
