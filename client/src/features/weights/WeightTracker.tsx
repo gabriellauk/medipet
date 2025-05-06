@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Drawer, Container, Loader } from '@mantine/core';
+import { Button, Drawer, Loader } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
 import { useAnimals } from '../../contexts/AnimalsContext';
@@ -52,7 +52,7 @@ export default function WeightTracker() {
   );
 
   return (
-    <Container>
+    <>
       <h1>Weight tracker</h1>
       <p>Monitor any fluctuations in {animal!.name}'s weight here.</p>
       {weightsLoading ? (
@@ -106,6 +106,6 @@ export default function WeightTracker() {
           />
         )}
       </Drawer>
-    </Container>
+    </>
   );
 }

@@ -37,6 +37,7 @@ export default function AuthContextProvider({
         setUserInfo({
           firstName: response.body.firstName,
           lastName: response.body.lastName,
+          isDemoAccount: response.body.isDemoAccount,
         });
         setAuthenticationStateIsLoading(false);
       } else {

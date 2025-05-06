@@ -30,9 +30,7 @@ def session(app):
 def client(app, session):
     with app.app_context():
         try:
-            session.add_all(
-                [AnimalType(name="Cat"), AnimalType(name="Dog"), AnimalType(name="Rabbit"), User(email="test@test.com")]
-            )
+            session.add_all([AnimalType(name="Cat"), AnimalType(name="Dog"), AnimalType(name="Rabbit")])
             session.commit()
         except Exception:
             session.rollback()
@@ -44,7 +42,15 @@ def client(app, session):
 
 
 @pytest.fixture
-def logged_in_client(client):
+def logged_in_client(app, session, client):
+    with app.app_context():
+        try:
+            session.add(User(email="test@test.com"))
+            session.commit()
+        except Exception:
+            session.rollback()
+            raise
+
     with client.session_transaction() as session:
         session["user"] = {"given_name": "First name", "family_name": "Second name", "email": "test@test.com"}
     return client

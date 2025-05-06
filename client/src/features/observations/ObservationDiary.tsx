@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Drawer, Container, Loader } from '@mantine/core';
+import { Button, Drawer, Loader } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
 import { ObservationForm } from './ObservationForm';
@@ -56,7 +56,7 @@ export default function ObservationDiary() {
   );
 
   return (
-    <Container>
+    <>
       <h1>Observation diary</h1>
       <p>
         Here's where you can keep track of any changes to behaviour or anything
@@ -114,6 +114,6 @@ export default function ObservationDiary() {
           />
         )}
       </Drawer>
-    </Container>
+    </>
   );
 }

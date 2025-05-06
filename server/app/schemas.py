@@ -23,6 +23,7 @@ class BaseSchema(BaseModel):
 class User(BaseSchema):
     first_name: str
     last_name: str
+    is_demo_account: bool
 
 
 class AnimalType(BaseSchema):

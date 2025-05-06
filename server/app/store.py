@@ -1,4 +1,5 @@
 from datetime import date
+import time
 from typing import List
 
 from app import models, schemas
@@ -6,6 +7,8 @@ from app import models, schemas
 import sqlalchemy as sa
 
 from app.extensions import db
+
+from dateutil.relativedelta import relativedelta
 
 
 def check_user_exists(email):
@@ -194,3 +197,174 @@ def update_medication(medication: models.Medication, data: schemas.UpdateMedicat
     db.session.commit()
 
     return medication
+
+
+def create_demo_account() -> models.User:
+    current_time = int(time.time())
+    email = "demo_" + str(current_time)
+    user = models.User(email=email, is_demo_account=True)
+    db.session.add(user)
+
+    animal_type = get_animal_type_by_id(1)
+    animal = models.Animal(name="Horatio", animal_type=animal_type, user=user)
+    db.session.add(animal)
+
+    about_eight_years_ago = date.today() - relativedelta(years=8, months=3, days=2)
+    about_two_years_ago = date.today() - relativedelta(years=2, months=1, days=14)
+    about_six_months_ago = date.today() - relativedelta(months=6, days=3)
+
+    medications = [
+        models.Medication(
+            name="Worming tablets",
+            is_recurring=True,
+            times_per_day=1,
+            frequency_number=3,
+            frequency_unit="month",
+            duration_number=None,
+            duration_unit=None,
+            start_date=about_eight_years_ago,
+            end_date=None,
+            notes=None,
+            animal=animal,
+        ),
+        models.Medication(
+            name="Flea spot-on",
+            is_recurring=True,
+            times_per_day=1,
+            frequency_number=1,
+            frequency_unit="month",
+            duration_number=None,
+            duration_unit=None,
+            start_date=about_eight_years_ago,
+            end_date=None,
+            notes="PetsAtHome subscription",
+            animal=animal,
+        ),
+        models.Medication(
+            name="Diuretic",
+            is_recurring=False,
+            times_per_day=1,
+            frequency_number=None,
+            frequency_unit=None,
+            duration_number=None,
+            duration_unit=None,
+            start_date=about_two_years_ago + relativedelta(days=2),
+            end_date=about_two_years_ago + relativedelta(days=2),
+            notes="Given at the vets",
+            animal=animal,
+        ),
+        models.Medication(
+            name="Antibiotics",
+            is_recurring=True,
+            times_per_day=1,
+            frequency_number=None,
+            frequency_unit=None,
+            duration_number=None,
+            duration_unit=None,
+            start_date=about_two_years_ago + relativedelta(days=2),
+            end_date=about_two_years_ago + relativedelta(days=9),
+            notes=None,
+            animal=animal,
+        ),
+    ]
+    db.session.add_all(medications)
+
+    symptoms = [
+        models.Symptom(
+            description="Rapid breathing - called vet, said to monitor", date=about_two_years_ago, animal=animal
+        ),
+        models.Symptom(
+            description="Rapid breathing continuing. Seems very tired after appointment",
+            date=about_two_years_ago + relativedelta(days=2),
+            animal=animal,
+        ),
+        models.Symptom(
+            description="Breathing back to normal", date=about_two_years_ago + relativedelta(days=4), animal=animal
+        ),
+        models.Symptom(
+            description="Didn't eat breakfast. No interest even when offered repeatedly.",
+            date=about_six_months_ago,
+            animal=animal,
+        ),
+        models.Symptom(description="Not eating again", date=about_six_months_ago, animal=animal),
+        models.Symptom(
+            description="Tried new food - appetite appears to be back",
+            date=about_six_months_ago + relativedelta(days=1),
+            animal=animal,
+        ),
+        models.Symptom(description="Excessive scratching", date=date.today(), animal=animal),
+    ]
+    db.session.add_all(symptoms)
+
+    weights = [
+        models.Weight(weight=4060, date=date.today() - relativedelta(weeks=1), animal=animal),
+        models.Weight(weight=4100, date=date.today() - relativedelta(weeks=2), animal=animal),
+        models.Weight(weight=3890, date=date.today() - relativedelta(weeks=5), animal=animal),
+        models.Weight(weight=3900, date=date.today() - relativedelta(weeks=6), animal=animal),
+        models.Weight(weight=3880, date=date.today() - relativedelta(weeks=10), animal=animal),
+        models.Weight(weight=4200, date=date.today() - relativedelta(weeks=14), animal=animal),
+    ]
+    db.session.add_all(weights)
+
+    appointments = [
+        models.Appointment(description="Annual check-up", date=about_eight_years_ago, notes=None, animal=animal),
+        models.Appointment(
+            description="Annual check-up",
+            date=about_eight_years_ago + relativedelta(years=1, days=5),
+            notes=None,
+            animal=animal,
+        ),
+        models.Appointment(
+            description="Annual check-up",
+            date=about_eight_years_ago + relativedelta(years=2, weeks=2),
+            notes=None,
+            animal=animal,
+        ),
+        models.Appointment(
+            description="Annual check-up",
+            date=about_eight_years_ago + relativedelta(years=3, months=1, days=2),
+            notes=None,
+            animal=animal,
+        ),
+        models.Appointment(
+            description="Annual check-up",
+            date=about_eight_years_ago + relativedelta(years=4, weeks=1),
+            notes=None,
+            animal=animal,
+        ),
+        models.Appointment(
+            description="Annual check-up",
+            date=about_eight_years_ago + relativedelta(years=5, weeks=2, days=6),
+            notes=None,
+            animal=animal,
+        ),
+        models.Appointment(
+            description="Annual check-up",
+            date=about_eight_years_ago + relativedelta(years=6, weeks=3, days=4),
+            notes=None,
+            animal=animal,
+        ),
+        models.Appointment(
+            description="Phone call - rapid breathing",
+            date=about_two_years_ago,
+            notes="Vet said to monitor, book in-person appointment if continues",
+            animal=animal,
+        ),
+        models.Appointment(
+            description="Out of hours appt - rapid breathing",
+            date=about_two_years_ago + relativedelta(days=2),
+            notes="Given duretic and prescribed antibiotics",
+            animal=animal,
+        ),
+        models.Appointment(
+            description="Annual check-up",
+            date=about_eight_years_ago + relativedelta(years=7, weeks=1),
+            notes=None,
+            animal=animal,
+        ),
+    ]
+    db.session.add_all(appointments)
+
+    db.session.commit()
+
+    return user

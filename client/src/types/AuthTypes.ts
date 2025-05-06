@@ -1,6 +1,7 @@
 export type User = {
   firstName: string;
   lastName: string;
+  isDemoAccount: boolean;
 };
 
 export type AuthContextType = {

@@ -1,12 +1,15 @@
 import { Outlet } from 'react-router-dom';
-import { AppShell, Burger, Group } from '@mantine/core';
+import { AppShell, Burger, Container, Group, Space } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import NavMenu from './nav/NavMenu.tsx';
 import classes from './LoggedInLayout.module.css';
 import Logo from '../ui/logo/Logo.tsx';
+import { useAuth } from '../../contexts/AuthContext.ts';
+import DemoDisclaimer from '../DemoDisclaimer.tsx';
 
 function LoggedInLayout() {
   const [opened, { toggle }] = useDisclosure();
+  const { userInfo } = useAuth();
 
   return (
     <AppShell
@@ -30,7 +33,15 @@ function LoggedInLayout() {
       </AppShell.Navbar>
 
       <AppShell.Main>
-        <Outlet />
+        <Container my="md">
+          {userInfo?.isDemoAccount && (
+            <>
+              <DemoDisclaimer />
+              <Space h="lg" />
+            </>
+          )}
+          <Outlet />
+        </Container>
       </AppShell.Main>
     </AppShell>
   );

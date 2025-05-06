@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Drawer, Container, Loader } from '@mantine/core';
+import { Button, Drawer, Loader } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
 import { useAnimals } from '../../contexts/AnimalsContext';
@@ -53,7 +53,7 @@ export default function MedicationSchedule() {
   );
 
   return (
-    <Container>
+    <>
       <h1>Medication schedule</h1>
       <p>Record {animal!.name}'s regular and one-off medication here.</p>
       {medicationLoading ? (
@@ -106,6 +106,6 @@ export default function MedicationSchedule() {
           />
         )}
       </Drawer>
-    </Container>
+    </>
   );
 }

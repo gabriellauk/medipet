@@ -1,4 +1,4 @@
-import { Container, Loader, Title } from '@mantine/core';
+import { Loader, Title } from '@mantine/core';
 import { useWeights } from '../../hooks/useWeights';
 
 import { LineChart } from '@mantine/charts';
@@ -10,7 +10,6 @@ import UpcomingAppointment from './components/UpcomingAppointment';
 import KeyStat from './components/KeyStat/KeyStat';
 import ObservationsTimeline from './components/ObservationsTimeline';
 import MedicationSummary from './components/MedicationSummary';
-import DemoDisclaimer from '../../components/DemoDisclaimer';
 
 import { useAnimals } from '../../contexts/AnimalsContext';
 import { useAppointments } from '../../hooks/useAppointments';
@@ -60,7 +59,7 @@ export default function Dashboard() {
   const latestObservations = observations ? observations.slice(0, 3) : [];
 
   return (
-    <Container my="md">
+    <>
       {weightsLoading ||
       appointmentsLoading ||
       medicationLoading ||
@@ -68,8 +67,6 @@ export default function Dashboard() {
         <Loader />
       ) : (
         <>
-          <DemoDisclaimer />
-          <p></p>
           <Grid align="stretch" gutter="md">
             <Grid.Col span={{ base: 12, xs: 6 }}>
               <Profile weight={mostRecentWeight} />
@@ -156,6 +153,6 @@ export default function Dashboard() {
           </Grid>
         </>
       )}
-    </Container>
+    </>
   );
 }

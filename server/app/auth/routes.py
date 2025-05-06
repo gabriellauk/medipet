@@ -9,16 +9,18 @@ from app.extensions import oauth
 from werkzeug.exceptions import Unauthorized
 
 
-@auth.route("/api/login-url", methods=["GET"])
-def login_url():
-    redirect_uri = url_for("auth.authenticate", _external=True)
-    return jsonify({"test": redirect_uri})
-
-
 @auth.route("/api/login", methods=["POST"])
 def login():
+    session.clear()
     redirect_uri = url_for("auth.authenticate", _external=True)
     return oauth.google.authorize_redirect(redirect_uri)
+
+
+@auth.route("/api/login-demo", methods=["POST"])
+def login_demo_account():
+    session.clear()
+    controller.create_demo_account()
+    return redirect(current_app.config["CORS_ORIGINS"] + "/dashboard")
 
 
 @auth.route("/api/auth")
@@ -39,5 +41,5 @@ def get_user():
 
 @auth.route("/api/logout", methods=["POST"])
 def logout():
-    session.pop("user", None)
+    session.clear()
     return jsonify({"message": "Logged out successfully"})

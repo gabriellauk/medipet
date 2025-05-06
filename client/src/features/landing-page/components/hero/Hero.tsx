@@ -13,6 +13,8 @@ import image from '../../assets/image.jpg';
 import classes from './Hero.module.css';
 
 const loginUrl = import.meta.env.VITE_REACT_APP_BASE_API_URL + '/login';
+const loginDemoUrl =
+  import.meta.env.VITE_REACT_APP_BASE_API_URL + '/login-demo';
 
 export function Hero() {
   return (
@@ -63,14 +65,17 @@ export function Hero() {
                 Sign in with Google
               </Button>
             </form>
-            <Button
-              variant="default"
-              radius="xl"
-              size="md"
-              className={classes.control}
-            >
-              Log in to demo
-            </Button>
+            <form action={loginDemoUrl} method="POST">
+              <Button
+                variant="default"
+                radius="xl"
+                size="md"
+                className={classes.control}
+                type="submit"
+              >
+                Log in to demo
+              </Button>
+            </form>
           </Group>
         </div>
         <Image src={image} className={classes.image} />

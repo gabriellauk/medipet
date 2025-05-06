@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Drawer, Container, Loader } from '@mantine/core';
+import { Button, Drawer, Loader } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
 import { useAnimals } from '../../contexts/AnimalsContext';
@@ -57,7 +57,7 @@ export default function AppointmentsCalendar() {
   );
 
   return (
-    <Container>
+    <>
       <h1>Appointments calendar</h1>
       <p>
         View details about {animal!.name}'s check-ups and other vet appointments
@@ -116,6 +116,6 @@ export default function AppointmentsCalendar() {
           />
         )}
       </Drawer>
-    </Container>
+    </>
   );
 }

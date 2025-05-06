@@ -19,10 +19,15 @@ def authenticate():
 
 
 def get_user() -> schemas.User:
-    user = session.get("user")
-    if user is None:
+    user_session = session.get("user")
+    if user_session is None or (user := store.get_user_by_email(user_session["email"])) is None:
         raise Unauthorized("Authentication required")
-    first_name = user.get("given_name", None)
-    last_name = user.get("family_name", None)
+    first_name = user_session.get("given_name", None)
+    last_name = user_session.get("family_name", None)
 
-    return schemas.User(first_name=first_name, last_name=last_name)
+    return schemas.User(first_name=first_name, last_name=last_name, is_demo_account=user.is_demo_account)
+
+
+def create_demo_account():
+    user = store.create_demo_account()
+    session["user"] = {"given_name": "Demo", "family_name": "Account", "email": user.email}
