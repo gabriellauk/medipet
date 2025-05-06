@@ -15,8 +15,9 @@ export const getRelativeTime = (date: string): string => {
   today.setHours(0, 0, 0, 0);
   inputDate.setHours(0, 0, 0, 0);
 
-  const differenceInDays =
-    (today.getTime() - inputDate.getTime()) / (1000 * 60 * 60 * 24);
+  const differenceInDays = Math.round(
+    (today.getTime() - inputDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
 
   if (differenceInDays === 0) {
     return 'today';

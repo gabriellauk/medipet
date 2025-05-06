@@ -21,7 +21,7 @@ export default function ObservationsTimeline({
         color="blue"
       >
         {observations.map((obs) => (
-          <TimelineItem observation={obs} />
+          <TimelineItem observation={obs} key={obs.id} />
         ))}
       </Timeline>
     </>
