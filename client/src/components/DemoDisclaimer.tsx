@@ -15,7 +15,7 @@ export default function DemoDisclaimer() {
       icon={<IconInfoCircle />}
     >
       <form action={loginUrl} method="POST">
-        <UnstyledButton type="submit" component="a" fz="sm">
+        <UnstyledButton type="submit" fz="sm">
           This account has been auto-populated with sample data for a fictional{' '}
           {AnimalTypeId[animal!.animalTypeId].toLowerCase()} named{' '}
           {animal!.name} to give you a feel for how MediPet works. To set up a
