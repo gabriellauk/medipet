@@ -1,7 +1,6 @@
-import { Card, Group, Text } from '@mantine/core';
-import { IconPencil, IconTrash } from '@tabler/icons-react';
 import { formatDate } from '../../utils/dateUtils';
 import { Appointment } from '../../types/AppointmentTypes';
+import EntityCard from '../../components/EntityCard';
 
 export default function AppointmentCard({
   appointment,
@@ -14,27 +13,24 @@ export default function AppointmentCard({
   deleteAppointment: (animalId: number, appointmentId: number) => void;
   onEditClick: () => void;
 }) {
+  const bodyContent = (
+    <>
+      {appointment.description}
+      {appointment.notes && (
+        <>
+          <br />
+          {appointment.notes}
+        </>
+      )}
+    </>
+  );
+
   return (
-    <Card shadow="sm" padding="xl" radius="md" withBorder mb="lg">
-      <Group justify="space-between" mt="xs" mb="xs">
-        <Text fw={500}>{formatDate(appointment.date)}</Text>
-        <Group>
-          <IconPencil onClick={onEditClick} style={{ cursor: 'pointer' }} />
-          <IconTrash
-            onClick={() => deleteAppointment(animalId, appointment.id)}
-            style={{ cursor: 'pointer' }}
-          />
-        </Group>
-      </Group>
-      <Text size="sm" c="dimmed">
-        {appointment.description}
-        {appointment.notes && (
-          <>
-            <br />
-            {appointment.notes}
-          </>
-        )}
-      </Text>
-    </Card>
+    <EntityCard
+      title={formatDate(appointment.date)}
+      bodyContent={bodyContent}
+      onEditClick={onEditClick}
+      onDeleteClick={() => deleteAppointment(animalId, appointment.id)}
+    />
   );
 }

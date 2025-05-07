@@ -1,7 +1,6 @@
-import { Card, Group, Text } from '@mantine/core';
-import { IconPencil, IconTrash } from '@tabler/icons-react';
-import { formatDate } from '../../utils/dateUtils';
 import { Observation } from '../../types/ObservationTypes';
+import EntityCard from '../../components/EntityCard';
+import { formatDate } from '../../utils/dateUtils';
 
 export default function ObservationCard({
   observation,
@@ -15,20 +14,11 @@ export default function ObservationCard({
   onEditClick: () => void;
 }) {
   return (
-    <Card shadow="sm" padding="xl" radius="md" withBorder mb="lg">
-      <Group justify="space-between" mt="xs" mb="xs">
-        <Text fw={500}>{formatDate(observation.date)}</Text>
-        <Group>
-          <IconPencil onClick={onEditClick} style={{ cursor: 'pointer' }} />
-          <IconTrash
-            onClick={() => deleteObservation(animalId, observation.id)}
-            style={{ cursor: 'pointer' }}
-          />
-        </Group>
-      </Group>
-      <Text size="sm" c="dimmed">
-        {observation.description}
-      </Text>
-    </Card>
+    <EntityCard
+      title={formatDate(observation.date)}
+      bodyContent={observation.description}
+      onEditClick={onEditClick}
+      onDeleteClick={() => deleteObservation(animalId, observation.id)}
+    />
   );
 }
