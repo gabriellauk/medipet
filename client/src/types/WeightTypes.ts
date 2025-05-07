@@ -1,22 +1,12 @@
+import { FormProps } from "./CommonTypes";
+
 export type Weight = {
   id: number;
   weight: number;
   date: string;
 };
 
-export type WeightFormProps =
-  | {
-      close: () => void;
-      mode: 'create';
-      item: null;
-      refetchWeights: () => void;
-    }
-  | {
-      close: () => void;
-      mode: 'update';
-      item: Weight;
-      refetchWeights: () => void;
-    };
+export type WeightFormProps = FormProps<Weight>;
 
 export type WeightFormData = {
   weight: number;

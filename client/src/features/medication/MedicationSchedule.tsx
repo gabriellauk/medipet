@@ -95,14 +95,14 @@ export default function MedicationSchedule() {
             close={close}
             mode={'create'}
             item={null}
-            refetchMedication={refetchMedication}
+            refetchItems={refetchMedication}
           />
         ) : (
           <MedicationForm
             close={close}
             mode={'update'}
             item={itemToEdit!}
-            refetchMedication={refetchMedication}
+            refetchItems={refetchMedication}
           />
         )}
       </Drawer>

@@ -83,10 +83,7 @@ export default function AppointmentsCalendar() {
             appointments.map((item) => (
               <AppointmentCard
                 key={item.id}
-                appointmentId={item.id}
-                date={item.date}
-                description={item.description}
-                notes={item.notes}
+                appointment={item}
                 animalId={animal!.id}
                 deleteAppointment={deleteAppointment}
                 onEditClick={() => handleOpenDrawerEdit(item.id)}
@@ -105,14 +102,14 @@ export default function AppointmentsCalendar() {
             close={close}
             mode={'create'}
             item={null}
-            refetchAppointments={refetchApppontments}
+            refetchItems={refetchApppontments}
           />
         ) : (
           <AppointmentForm
             close={close}
             mode={'update'}
             item={itemToEdit!}
-            refetchAppointments={refetchApppontments}
+            refetchItems={refetchApppontments}
           />
         )}
       </Drawer>

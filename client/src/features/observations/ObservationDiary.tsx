@@ -82,9 +82,7 @@ export default function ObservationDiary() {
           {observations.map((item) => (
             <ObservationCard
               key={item.id}
-              observationId={item.id}
-              date={item.date}
-              description={item.description}
+              observation={item}
               animalId={animal!.id}
               deleteObservation={deleteObservation}
               onEditClick={() => handleOpenDrawerEdit(item.id)}
@@ -103,14 +101,14 @@ export default function ObservationDiary() {
             close={close}
             mode={'create'}
             item={null}
-            refetchObservations={refetchObservations}
+            refetchItems={refetchObservations}
           />
         ) : (
           <ObservationForm
             close={close}
             mode={'update'}
             item={itemToEdit!}
-            refetchObservations={refetchObservations}
+            refetchItems={refetchObservations}
           />
         )}
       </Drawer>

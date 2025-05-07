@@ -17,7 +17,7 @@ export function AppointmentForm({
   close,
   mode,
   item,
-  refetchAppointments,
+  refetchItems,
 }: AppointmentFormProps) {
   const api = useApi();
   const { animal } = useAnimals();
@@ -74,7 +74,7 @@ export function AppointmentForm({
     }
 
     if (apiResponse.ok) {
-      refetchAppointments();
+      refetchItems();
       close();
     } else {
       setSubmissionError('An error occurred. Please try again later.');

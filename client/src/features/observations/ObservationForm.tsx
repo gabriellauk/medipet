@@ -17,7 +17,7 @@ export function ObservationForm({
   close,
   mode,
   item,
-  refetchObservations,
+  refetchItems,
 }: ObservationFormProps) {
   const api = useApi();
   const { animal } = useAnimals();
@@ -59,7 +59,7 @@ export function ObservationForm({
     }
 
     if (apiResponse.ok) {
-      refetchObservations();
+      refetchItems();
       close();
     } else {
       setSubmissionError('An error occurred. Please try again later.');

@@ -74,9 +74,7 @@ export default function WeightTracker() {
           {weights.map((item) => (
             <WeightCard
               key={item.id}
-              weightId={item.id}
-              date={item.date}
-              weight={item.weight}
+              weight={item}
               animalId={animal!.id}
               deleteWeight={deleteWeight}
               onEditClick={() => handleOpenDrawerEdit(item.id)}
@@ -95,14 +93,14 @@ export default function WeightTracker() {
             close={close}
             mode={'create'}
             item={null}
-            refetchWeights={refetchWeights}
+            refetchItems={refetchWeights}
           />
         ) : (
           <WeightForm
             close={close}
             mode={'update'}
             item={itemToEdit!}
-            refetchWeights={refetchWeights}
+            refetchItems={refetchWeights}
           />
         )}
       </Drawer>

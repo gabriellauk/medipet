@@ -23,7 +23,7 @@ export function MedicationForm({
   close,
   mode,
   item,
-  refetchMedication,
+  refetchItems,
 }: MedicationFormProps) {
   const api = useApi();
   const { animal } = useAnimals();
@@ -92,7 +92,7 @@ export function MedicationForm({
     }
 
     if (apiResponse.ok) {
-      refetchMedication();
+      refetchItems();
       close();
     } else {
       setSubmissionError('An error occurred. Please try again later.');

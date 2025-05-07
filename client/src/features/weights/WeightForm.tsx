@@ -17,7 +17,7 @@ export function WeightForm({
   close,
   mode,
   item,
-  refetchWeights,
+  refetchItems,
 }: WeightFormProps) {
   const api = useApi();
   const { animal } = useAnimals();
@@ -61,7 +61,7 @@ export function WeightForm({
     }
 
     if (apiResponse.ok) {
-      refetchWeights();
+      refetchItems();
       close();
     } else {
       setSubmissionError('An error occurred. Please try again later.');
