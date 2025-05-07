@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Drawer, Loader } from '@mantine/core';
+import { Button, Loader } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
 import { useAnimals } from '../../contexts/AnimalsContext';
@@ -8,6 +8,7 @@ import WeightCard from './WeightCard';
 import { useWeights } from '../../hooks/useWeights';
 import { DrawerMode } from '../../types/CommonTypes';
 import { Weight } from '../../types/WeightTypes';
+import EntityDrawer from '../../components/EntityDrawer';
 
 export default function WeightTracker() {
   const api = useApi();
@@ -82,12 +83,7 @@ export default function WeightTracker() {
           ))}
         </>
       )}
-      <Drawer
-        opened={opened}
-        onClose={close}
-        position="right"
-        closeButtonProps={{ 'aria-label': 'Close drawer' }}
-      >
+      <EntityDrawer opened={opened} onClose={close}>
         {drawerMode == 'create' ? (
           <WeightForm
             close={close}
@@ -103,7 +99,7 @@ export default function WeightTracker() {
             refetchItems={refetchWeights}
           />
         )}
-      </Drawer>
+      </EntityDrawer>
     </>
   );
 }

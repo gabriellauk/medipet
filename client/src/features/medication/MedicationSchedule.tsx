@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Drawer, Loader } from '@mantine/core';
+import { Button, Loader } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
 import { useAnimals } from '../../contexts/AnimalsContext';
@@ -8,6 +8,7 @@ import MedicationCard from './MedicationCard';
 import { DrawerMode } from '../../types/CommonTypes';
 import { Medication } from '../../types/MedicationTypes';
 import { useMedication } from '../../hooks/useMedication';
+import EntityDrawer from '../../components/EntityDrawer';
 
 export default function MedicationSchedule() {
   const api = useApi();
@@ -84,12 +85,7 @@ export default function MedicationSchedule() {
           ))}
         </>
       )}
-      <Drawer
-        opened={opened}
-        onClose={close}
-        position="right"
-        closeButtonProps={{ 'aria-label': 'Close drawer' }}
-      >
+      <EntityDrawer opened={opened} onClose={close}>
         {drawerMode == 'create' ? (
           <MedicationForm
             close={close}
@@ -105,7 +101,7 @@ export default function MedicationSchedule() {
             refetchItems={refetchMedication}
           />
         )}
-      </Drawer>
+      </EntityDrawer>
     </>
   );
 }

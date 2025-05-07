@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Drawer, Loader } from '@mantine/core';
+import { Button, Loader } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
 import { useDisclosure } from '@mantine/hooks';
 import { ObservationForm } from './ObservationForm';
@@ -8,6 +8,7 @@ import ObservationCard from './ObservationCard';
 import { DrawerMode } from '../../types/CommonTypes';
 import { Observation } from '../../types/ObservationTypes';
 import { useObservations } from '../../hooks/useObservations';
+import EntityDrawer from '../../components/EntityDrawer';
 
 export default function ObservationDiary() {
   const api = useApi();
@@ -90,12 +91,7 @@ export default function ObservationDiary() {
           ))}
         </>
       )}
-      <Drawer
-        opened={opened}
-        onClose={close}
-        position="right"
-        closeButtonProps={{ 'aria-label': 'Close drawer' }}
-      >
+      <EntityDrawer opened={opened} onClose={close}>
         {drawerMode == 'create' ? (
           <ObservationForm
             close={close}
@@ -111,7 +107,7 @@ export default function ObservationDiary() {
             refetchItems={refetchObservations}
           />
         )}
-      </Drawer>
+      </EntityDrawer>
     </>
   );
 }
