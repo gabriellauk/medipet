@@ -5,15 +5,13 @@ import {
   Button,
   Center,
   Container,
-  NativeSelect,
   Paper,
   Stepper,
   Text,
-  TextInput,
   Title,
   UnstyledButton,
 } from '@mantine/core';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../../contexts/ApiContext';
 import ErrorArea from '../../components/ErrorArea';
@@ -21,6 +19,7 @@ import { useAnimals } from '../../contexts/AnimalsContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useState } from 'react';
 import { AnimalTypeId, CreateAnimalFormData } from '../../types/AnimalTypes';
+import { FormField } from '../../components/FormField';
 
 export function CreateAnimal() {
   const { logout } = useAuth();
@@ -82,38 +81,30 @@ export function CreateAnimal() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <ErrorArea error={submissionError} />
 
-          <Controller
+          <FormField
             name="name"
             control={control}
             rules={{ required: 'Name must be provided' }}
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                label="Your pet's name"
-                error={errors.name?.message}
-              />
-            )}
+            label="Your pet's name"
+            type="text"
+            error={errors.name?.message}
           />
 
-          <Controller
+          <FormField
             name="animalType"
             control={control}
             rules={{
               required: 'Species must be provided',
             }}
-            render={({ field }) => (
-              <NativeSelect
-                {...field}
-                label="Species"
-                data={[
-                  { value: '', label: 'Select species' },
-                  { value: 'Cat', label: 'Cat' },
-                  { value: 'Dog', label: 'Dog' },
-                  { value: 'Rabbit', label: 'Rabbit' },
-                ]}
-                error={errors.animalType?.message}
-              />
-            )}
+            label="Species"
+            type="select"
+            options={[
+              { value: '', label: 'Select species' },
+              { value: 'Cat', label: 'Cat' },
+              { value: 'Dog', label: 'Dog' },
+              { value: 'Rabbit', label: 'Rabbit' },
+            ]}
+            error={errors.animalType?.message}
           />
 
           <Button type="submit" mt="lg">

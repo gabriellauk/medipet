@@ -1,6 +1,5 @@
-import { Button, NumberInput, Title } from '@mantine/core';
-import { useForm, Controller } from 'react-hook-form';
-import { DateInput } from '@mantine/dates';
+import { Button, Title } from '@mantine/core';
+import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { useApi } from '../../contexts/ApiContext';
 import { useAnimals } from '../../contexts/AnimalsContext';
@@ -12,6 +11,7 @@ import {
   WeightFormProps,
 } from '../../types/WeightTypes';
 import { GenericApiResponse } from '../../types/CommonTypes';
+import { FormField } from '../../components/FormField';
 
 export function WeightForm({
   close,
@@ -76,38 +76,28 @@ export function WeightForm({
       <form onSubmit={handleSubmit(onSubmit)}>
         <ErrorArea error={submissionError} />
 
-        <Controller
+        <FormField
           name="weight"
           control={control}
           rules={{
             required: 'Weight must be provided.',
             min: { value: 0.1, message: 'Weight must be greater than 0.' },
           }}
-          render={({ field }) => (
-            <NumberInput
-              {...field}
-              label="Weight (kg)"
-              suffix=" kg"
-              placeholder="Enter weight in kg"
-              error={errors.weight?.message}
-            />
-          )}
+          label="Weight (kg)"
+          placeholder="Enter weight in kg"
+          error={errors.weight?.message}
+          type="number"
+          suffix="kg"
         />
 
-        <Controller
+        <FormField
           name="date"
           control={control}
-          rules={{
-            required: 'Date must be provided.',
-          }}
-          render={({ field }) => (
-            <DateInput
-              {...field}
-              label="Date recorded"
-              placeholder="Pick a date"
-              error={errors.date?.message}
-            />
-          )}
+          rules={{ required: 'Date must be provided.' }}
+          label="Date recorded"
+          placeholder="Pick a date"
+          error={errors.date?.message}
+          type="date"
         />
 
         <Button type="submit" mt="lg">

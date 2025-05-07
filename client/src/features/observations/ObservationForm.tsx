@@ -1,6 +1,5 @@
-import { Button, TextInput, Title } from '@mantine/core';
-import { useForm, Controller } from 'react-hook-form';
-import { DateInput } from '@mantine/dates';
+import { Button, Title } from '@mantine/core';
+import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { useApi } from '../../contexts/ApiContext';
 import ErrorArea from '../../components/ErrorArea';
@@ -12,6 +11,7 @@ import {
   ObservationFormData,
   ObservationFormProps,
 } from '../../types/ObservationTypes';
+import { FormField } from '../../components/FormField';
 
 export function ObservationForm({
   close,
@@ -75,32 +75,24 @@ export function ObservationForm({
       <form onSubmit={handleSubmit(onSubmit)}>
         <ErrorArea error={submissionError} />
 
-        <Controller
+        <FormField
           name="description"
           control={control}
-          rules={{ required: 'Description must be provided' }}
-          render={({ field }) => (
-            <TextInput
-              {...field}
-              label="Description"
-              placeholder="Describe the symptom or behaviour"
-              error={errors.description?.message}
-            />
-          )}
+          rules={{ required: 'Description must be provided.' }}
+          label="Description"
+          placeholder="Describe the symptom or behaviour"
+          error={errors.description?.message}
+          type="text"
         />
 
-        <Controller
+        <FormField
           name="date"
           control={control}
-          rules={{ required: 'Date must be provided' }}
-          render={({ field }) => (
-            <DateInput
-              {...field}
-              label="Date observed"
-              placeholder="Pick a date"
-              error={errors.date?.message}
-            />
-          )}
+          rules={{ required: 'Date must be provided.' }}
+          label="Date recorded"
+          placeholder="Pick a date"
+          error={errors.date?.message}
+          type="date"
         />
 
         <Button type="submit" mt="lg">

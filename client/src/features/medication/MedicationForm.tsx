@@ -1,14 +1,5 @@
-import {
-  Button,
-  NativeSelect,
-  NumberInput,
-  Radio,
-  Textarea,
-  TextInput,
-  Title,
-} from '@mantine/core';
-import { useForm, Controller } from 'react-hook-form';
-import { DateInput } from '@mantine/dates';
+import { Button, Title } from '@mantine/core';
+import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { useApi } from '../../contexts/ApiContext';
 import { useAnimals } from '../../contexts/AnimalsContext';
@@ -18,6 +9,7 @@ import {
   MedicationFormData,
   MedicationFormProps,
 } from '../../types/MedicationTypes';
+import { FormField } from '../../components/FormField';
 
 export function MedicationForm({
   close,
@@ -107,50 +99,45 @@ export function MedicationForm({
       <form onSubmit={handleSubmit(onSubmit)}>
         <ErrorArea error={submissionError} />
 
-        <Controller
+        <FormField
           name="name"
           control={control}
           rules={{ required: 'Name must be provided.' }}
-          render={({ field }) => (
-            <TextInput {...field} label="Name" error={errors.name?.message} />
-          )}
+          label="Name"
+          placeholder="Enter the medication name"
+          type="text"
+          error={errors.name?.message}
         />
 
         {mode === 'create' && (
           <>
-            <Controller
+            <FormField
               name="startDate"
               control={control}
               rules={{ required: 'Start date must be provided.' }}
-              render={({ field }) => (
-                <DateInput
-                  {...field}
-                  label="Start date"
-                  error={errors.startDate?.message}
-                />
-              )}
+              label="Start date"
+              placeholder="Pick a start date"
+              type="date"
+              error={errors.startDate?.message}
             />
 
-            <Controller
+            <FormField
               name="isRecurring"
               control={control}
               rules={{
                 required:
                   'You must specify if the medication is recurring or not',
               }}
-              render={({ field }) => (
-                <Radio.Group
-                  {...field}
-                  label="Is this a recurring medication?"
-                  error={errors.isRecurring?.message}
-                >
-                  <Radio value="true" label="Yes" />
-                  <Radio value="false" label="No" />
-                </Radio.Group>
-              )}
+              label="Is this a recurring medication?"
+              type="radio"
+              options={[
+                { value: 'true', label: 'Yes' },
+                { value: 'false', label: 'No' },
+              ]}
+              error={errors.isRecurring?.message}
             />
 
-            <Controller
+            <FormField
               name="timesPerDay"
               control={control}
               rules={{
@@ -158,16 +145,12 @@ export function MedicationForm({
                   ? 'Times per day must be provided.'
                   : false,
               }}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  label="How many doses a day are required?"
-                  error={errors.timesPerDay?.message}
-                />
-              )}
+              label="How many doses a day are required?"
+              type="number"
+              error={errors.timesPerDay?.message}
             />
 
-            <Controller
+            <FormField
               name="frequencyNumber"
               control={control}
               rules={{
@@ -175,16 +158,12 @@ export function MedicationForm({
                   ? 'Frequency number must be provided.'
                   : false,
               }}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  label="How frequently does this medication need to be given?"
-                  error={errors.frequencyNumber?.message}
-                />
-              )}
+              label="How frequently does this medication need to be given?"
+              type="number"
+              error={errors.frequencyNumber?.message}
             />
 
-            <Controller
+            <FormField
               name="frequencyUnit"
               control={control}
               rules={{
@@ -192,23 +171,19 @@ export function MedicationForm({
                   ? 'Frequency unit must be provided.'
                   : false,
               }}
-              render={({ field }) => (
-                <NativeSelect
-                  {...field}
-                  label="Frequency unit"
-                  data={[
-                    { value: '', label: 'Select a unit of time' },
-                    { value: 'day', label: 'day(s)' },
-                    { value: 'week', label: 'week(s)' },
-                    { value: 'month', label: 'month(s)' },
-                    { value: 'year', label: 'year(s)' },
-                  ]}
-                  error={errors.frequencyUnit?.message}
-                />
-              )}
+              label="Frequency unit"
+              type="select"
+              options={[
+                { value: '', label: 'Select a unit of time' },
+                { value: 'day', label: 'day(s)' },
+                { value: 'week', label: 'week(s)' },
+                { value: 'month', label: 'month(s)' },
+                { value: 'year', label: 'year(s)' },
+              ]}
+              error={errors.frequencyUnit?.message}
             />
 
-            <Controller
+            <FormField
               name="durationNumber"
               control={control}
               rules={{
@@ -216,16 +191,12 @@ export function MedicationForm({
                   ? 'Duration number must be provided.'
                   : false,
               }}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  label="For how long should this medication be given?"
-                  error={errors.durationNumber?.message}
-                />
-              )}
+              label="For how long should this medication be given?"
+              type="number"
+              error={errors.durationNumber?.message}
             />
 
-            <Controller
+            <FormField
               name="durationUnit"
               control={control}
               rules={{
@@ -233,35 +204,27 @@ export function MedicationForm({
                   ? 'Duration unit must be provided.'
                   : false,
               }}
-              render={({ field }) => (
-                <NativeSelect
-                  {...field}
-                  label="Duration unit"
-                  data={[
-                    { value: '', label: 'Select a unit of time' },
-                    { value: 'day', label: 'day(s)' },
-                    { value: 'week', label: 'week(s)' },
-                    { value: 'month', label: 'month(s)' },
-                    { value: 'year', label: 'year(s)' },
-                  ]}
-                  error={errors.durationUnit?.message}
-                />
-              )}
+              label="Duration unit"
+              type="select"
+              options={[
+                { value: '', label: 'Select a unit of time' },
+                { value: 'day', label: 'day(s)' },
+                { value: 'week', label: 'week(s)' },
+                { value: 'month', label: 'month(s)' },
+                { value: 'year', label: 'year(s)' },
+              ]}
+              error={errors.durationUnit?.message}
             />
           </>
         )}
 
-        <Controller
+        <FormField
           name="notes"
           control={control}
-          render={({ field }) => (
-            <Textarea
-              {...field}
-              label="Notes"
-              description="Use this field to record any additional details about this medication item."
-              error={errors.notes?.message}
-            />
-          )}
+          label="Notes"
+          description="Use this field to record any additional details about this medication item."
+          type="textarea"
+          error={errors.notes?.message}
         />
 
         <Button variant="filled" type="submit" mt="lg">

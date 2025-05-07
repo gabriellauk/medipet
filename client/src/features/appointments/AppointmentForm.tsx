@@ -1,6 +1,5 @@
-import { Button, Textarea, TextInput, Title } from '@mantine/core';
-import { useForm, Controller } from 'react-hook-form';
-import { DateInput } from '@mantine/dates';
+import { Button, Title } from '@mantine/core';
+import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { useApi } from '../../contexts/ApiContext';
 import ErrorArea from '../../components/ErrorArea';
@@ -12,6 +11,7 @@ import {
   AppointmentFormProps,
 } from '../../types/AppointmentTypes';
 import { GenericApiResponse } from '../../types/CommonTypes';
+import { FormField } from '../../components/FormField';
 
 export function AppointmentForm({
   close,
@@ -91,45 +91,33 @@ export function AppointmentForm({
       <form onSubmit={handleSubmit(onSubmit)}>
         <ErrorArea error={submissionError} />
 
-        <Controller
+        <FormField
           name="description"
           control={control}
           rules={{ required: 'Description must be provided' }}
-          render={({ field }) => (
-            <TextInput
-              {...field}
-              label="Description"
-              placeholder="e.g. vaccination, check-up, etc."
-              error={errors.description?.message}
-            />
-          )}
+          label="Description"
+          placeholder="e.g. vaccination, check-up, etc."
+          type="text"
+          error={errors.description?.message}
         />
 
-        <Controller
+        <FormField
           name="date"
           control={control}
           rules={{ required: 'Date must be provided' }}
-          render={({ field }) => (
-            <DateInput
-              {...field}
-              label="Appointment date"
-              placeholder="Pick a date"
-              error={errors.date?.message}
-            />
-          )}
+          label="Appointment date"
+          placeholder="Pick a date"
+          type="date"
+          error={errors.date?.message}
         />
 
-        <Controller
+        <FormField
           name="notes"
           control={control}
-          render={({ field }) => (
-            <Textarea
-              {...field}
-              label="Notes"
-              description="Use this field to record anything you intend to discuss with the vet. After the appointment, you could update it with their recommended follow-up actions."
-              error={errors.notes?.message}
-            />
-          )}
+          label="Notes"
+          description="Use this field to record anything you intend to discuss with the vet. After the appointment, you could update it with their recommended follow-up actions."
+          type="textarea"
+          error={errors.notes?.message}
         />
 
         <Button type="submit" mt="lg">
