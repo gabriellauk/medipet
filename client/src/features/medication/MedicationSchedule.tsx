@@ -1,90 +1,58 @@
-import { useState } from 'react';
-import { Button, Loader } from '@mantine/core';
 import { useApi } from '../../contexts/ApiContext';
-import { useDisclosure } from '@mantine/hooks';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import { MedicationForm } from './MedicationForm';
 import MedicationCard from './MedicationCard';
-import { DrawerMode } from '../../types/CommonTypes';
 import { Medication } from '../../types/MedicationTypes';
 import { useMedication } from '../../hooks/useMedication';
 import EntityDrawer from '../../components/EntityDrawer';
+import { useEntityManager } from '../../hooks/useEntityManager';
+import { EntityList } from '../../components/EntityList';
 
 export default function MedicationSchedule() {
   const api = useApi();
   const { animal } = useAnimals();
-  const [opened, { open, close }] = useDisclosure(false);
-  const [drawerMode, setDrawerMode] = useState<DrawerMode | null>();
-  const [itemToEdit, setItemToEdit] = useState<Medication | null>(null);
-
   const { medication, medicationLoading, medicationError, refetchMedication } =
     useMedication();
 
-  async function deleteMedication(animalId: number, medicationId: number) {
-    const response = await api.delete(
-      '/animal/' + animalId + '/medication/' + medicationId
-    );
+  const {
+    opened,
+    close,
+    drawerMode,
+    itemToEdit,
+    openCreateMode,
+    openUpdateMode,
+  } = useEntityManager<Medication>();
+
+  const handleDelete = async (id: number) => {
+    const response = await api.delete(`/animal/${animal!.id}/medication/${id}`);
     if (response.ok) {
       refetchMedication();
     }
-  }
-
-  async function handleOpenDrawerCreate() {
-    setDrawerMode('create');
-    open();
-  }
-
-  async function handleOpenDrawerEdit(itemId: number) {
-    const response = await api.get(
-      '/animal/' + animal!.id + '/medication/' + itemId
-    );
-    if (response.ok) {
-      setItemToEdit(response.body as Medication);
-      setDrawerMode('update');
-      open();
-    } else {
-      setItemToEdit(null);
-    }
-  }
-
-  const addMedicationButton = (
-    <Button onClick={handleOpenDrawerCreate} radius="xl" mb="xl" size="md">
-      Add medication
-    </Button>
-  );
+  };
 
   return (
     <>
       <h1>Medication schedule</h1>
       <p>Record {animal!.name}'s regular and one-off medication here.</p>
-      {medicationLoading ? (
-        <Loader />
-      ) : medicationError ? (
-        <p>
-          <i>{medicationError}</i>
-        </p>
-      ) : medication.length === 0 ? (
-        <>
-          <p>
-            <i>No medication listed for {animal!.name} yet.</i>
-          </p>
-          {addMedicationButton}
-        </>
-      ) : (
-        <>
-          {addMedicationButton}
 
-          {medication.map((item) => (
-            <MedicationCard
-              key={item.id}
-              medication={item}
-              animalId={animal!.id}
-              deleteMedication={deleteMedication}
-              onEditClick={() => handleOpenDrawerEdit(item.id)}
-            />
-          ))}
-        </>
-      )}
+      <EntityList<Medication>
+        name="medication"
+        entities={medication}
+        loading={medicationLoading}
+        error={medicationError}
+        emptyMessage={`No medication listed for ${animal!.name} yet.`}
+        onAdd={openCreateMode}
+        renderEntity={(medication) => (
+          <MedicationCard
+            key={medication.id}
+            medication={medication}
+            animalId={animal!.id}
+            deleteMedication={() => handleDelete(medication.id)}
+            onEditClick={() => openUpdateMode(medication)}
+          />
+        )}
+      />
+
       <EntityDrawer opened={opened} onClose={close}>
         {drawerMode == 'create' ? (
           <MedicationForm
