@@ -1,14 +1,5 @@
 import { Loader, Button } from '@mantine/core';
-
-interface EntityListProps<T> {
-  name: string;
-  entities: T[];
-  loading: boolean;
-  error: string | null;
-  emptyMessage: string;
-  onAdd: () => void;
-  renderEntity: (entity: T) => JSX.Element;
-}
+import { EntityListProps } from '../types/GenericTypes';
 
 export function EntityList<T>({
   name,

@@ -1,18 +1,16 @@
 import { Text, Paper, Grid, Group, Button } from '@mantine/core';
-import { Observation } from '../../types/ObservationTypes';
-import { Weight } from '../../types/WeightTypes';
 import { useNavigate } from 'react-router-dom';
 
 export default function CallToActionBanner({
-  observations,
-  weights,
+  observationsCount,
+  weightsCount,
 }: {
-  observations: Observation[];
-  weights: Weight[];
+  observationsCount: number;
+  weightsCount: number;
 }) {
   const navigate = useNavigate();
   const text =
-    observations.length === 0 && weights.length === 0
+    observationsCount === 0 && weightsCount === 0
       ? 'No weights or observations listed yet.'
       : 'Noticed a change in weight or behaviour?';
 

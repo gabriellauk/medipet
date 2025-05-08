@@ -1,4 +1,4 @@
-import { GenericApiResponse } from './types/CommonTypes';
+import { GenericApiResponse } from './types/GenericTypes';
 
 const BASE_API_URL = import.meta.env.VITE_REACT_APP_BASE_API_URL;
 

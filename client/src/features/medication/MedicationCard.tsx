@@ -1,7 +1,6 @@
 import EntityCard from '../../components/EntityCard';
 import { Medication } from '../../types/MedicationTypes';
-import { transformMedication } from '../../utils/medicationUtils';
-import { formatDate } from '../../utils/dateUtils';
+import { buildMedicationScheduleDescription } from '../../utils/medicationUtils';
 
 export default function MedicationCard({
   medication,
@@ -14,19 +13,11 @@ export default function MedicationCard({
   deleteMedication: (animalId: number, medicationId: number) => void;
   onEditClick: () => void;
 }) {
-  const schedule = transformMedication(medication);
+  const scheduleDescription = buildMedicationScheduleDescription(medication);
 
   const bodyContent = (
     <>
-      {medication.isRecurring
-        ? `From ${formatDate(medication.startDate)}: ${schedule}`
-        : `On ${formatDate(medication.startDate)} (one-off)`}
-      {medication.timesPerDay && (
-        <>
-          <br />
-          {medication.timesPerDay} time(s) a day
-        </>
-      )}
+      {scheduleDescription}
       {medication.notes && (
         <>
           <br />

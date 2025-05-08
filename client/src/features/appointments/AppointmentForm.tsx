@@ -10,7 +10,7 @@ import {
   AppointmentFormData,
   AppointmentFormProps,
 } from '../../types/AppointmentTypes';
-import { GenericApiResponse } from '../../types/CommonTypes';
+import { GenericApiResponse } from '../../types/GenericTypes';
 import { FormField } from '../../components/FormField';
 
 export function AppointmentForm({

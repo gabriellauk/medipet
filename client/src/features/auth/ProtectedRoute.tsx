@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { useAnimals } from '../contexts/AnimalsContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { useAnimals } from '../../contexts/AnimalsContext';
 import { Loader } from '@mantine/core';
 
 export default function ProtectedRoute() {

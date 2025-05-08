@@ -3,7 +3,7 @@ import { IconPill } from '@tabler/icons-react';
 import { useAnimals } from '../../../contexts/AnimalsContext';
 import { Medication } from '../../../types/MedicationTypes';
 import { useNavigate } from 'react-router-dom';
-import { transformMedication } from '../../../utils/medicationUtils';
+import { buildConciseMedicationScheduleDescription } from '../../../utils/medicationUtils';
 
 export default function MedicationSummary({
   medication,
@@ -41,7 +41,7 @@ export default function MedicationSummary({
         <List>
           {medication.map((med) => (
             <List.Item key={med.id}>
-              {med.name} {transformMedication(med)}
+              {med.name} {buildConciseMedicationScheduleDescription(med)}
             </List.Item>
           ))}
         </List>

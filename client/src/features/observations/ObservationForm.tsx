@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { useApi } from '../../contexts/ApiContext';
 import ErrorArea from '../../components/ErrorArea';
 import { useAnimals } from '../../contexts/AnimalsContext';
-import { GenericApiResponse } from '../../types/CommonTypes';
+import { GenericApiResponse } from '../../types/GenericTypes';
 import { useState } from 'react';
 import {
   Observation,

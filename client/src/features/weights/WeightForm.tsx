@@ -10,7 +10,7 @@ import {
   WeightFormData,
   WeightFormProps,
 } from '../../types/WeightTypes';
-import { GenericApiResponse } from '../../types/CommonTypes';
+import { GenericApiResponse } from '../../types/GenericTypes';
 import { FormField } from '../../components/FormField';
 
 export function WeightForm({

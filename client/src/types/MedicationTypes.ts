@@ -1,4 +1,4 @@
-import { FormProps } from './CommonTypes';
+import { FormProps } from './GenericTypes';
 
 export type TimeUnit = 'day' | 'week' | 'month' | 'year';
 

@@ -1,10 +1,4 @@
-import {
-  Controller,
-  Control,
-  FieldValues,
-  Path,
-  RegisterOptions,
-} from 'react-hook-form';
+import { Controller, FieldValues } from 'react-hook-form';
 import {
   TextInput,
   Textarea,
@@ -13,19 +7,7 @@ import {
   Radio,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-
-interface FormFieldProps<T extends FieldValues> {
-  name: Path<T>;
-  control: Control<T>;
-  rules?: RegisterOptions<T, Path<T>>;
-  label: string;
-  placeholder?: string;
-  description?: string;
-  error?: string;
-  type: 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'date';
-  options?: { value: string; label: string }[];
-  suffix?: string;
-}
+import { FormFieldProps } from '../types/GenericTypes';
 
 export function FormField<T extends FieldValues>({
   name,

@@ -18,19 +18,44 @@ export const filterCurrentMedication = (
   });
 };
 
-export const transformMedication = (medication: Medication) => {
-  let frequencyAndDuration = '';
-  if (medication.isRecurring === false) return `(one-off)`;
+export const buildConciseMedicationScheduleDescription = (
+  medication: Medication
+) => {
+  let scheduleDescription = '';
+  if (!medication.isRecurring) return `(one-off)`;
   if (medication.frequencyNumber === 1) {
-    if (medication.frequencyUnit === 'day') frequencyAndDuration += 'daily';
+    if (medication.frequencyUnit === 'day') scheduleDescription += 'daily';
     if (medication.frequencyUnit !== 'day')
-      frequencyAndDuration += `${medication.frequencyUnit}ly`;
+      scheduleDescription += `${medication.frequencyUnit}ly`;
   } else if (medication.frequencyNumber && medication.frequencyNumber > 1) {
-    frequencyAndDuration += `every ${medication.frequencyNumber} ${medication.frequencyUnit}s`;
+    scheduleDescription += `every ${medication.frequencyNumber} ${medication.frequencyUnit}s`;
   }
   if (medication.isRecurring && medication.endDate) {
     const endDate = formatDate(medication.endDate);
-    frequencyAndDuration += ` until ${endDate}`;
+    scheduleDescription += ` until ${endDate}`;
   }
-  return `${frequencyAndDuration}`;
+  return `${scheduleDescription}`;
+};
+
+export const buildMedicationScheduleDescription = (medication: Medication) => {
+  let scheduleDescription = '';
+  if (medication.timesPerDay === 1) {
+    scheduleDescription = 'One dose';
+  } else {
+    scheduleDescription = `${medication.timesPerDay} doses`;
+  }
+  if (!medication.isRecurring) {
+    return `${scheduleDescription} on ${formatDate(medication.startDate)}`;
+  } else {
+    if (medication.frequencyNumber! === 1) {
+      scheduleDescription += ` every ${medication.frequencyUnit}`;
+    } else {
+      scheduleDescription += ` every ${medication.frequencyNumber} ${medication.frequencyUnit}s`;
+    }
+    scheduleDescription += ` from ${formatDate(medication.startDate)}`;
+    if (medication.endDate) {
+      scheduleDescription += ` until ${formatDate(medication.endDate)}`;
+    }
+  }
+  return scheduleDescription;
 };
