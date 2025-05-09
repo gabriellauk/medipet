@@ -39,23 +39,24 @@ export const buildConciseMedicationScheduleDescription = (
 
 export const buildMedicationScheduleDescription = (medication: Medication) => {
   let scheduleDescription = '';
+  if (!medication.isRecurring) {
+    return `Once on ${formatDate(medication.startDate)}`;
+  }
   if (medication.timesPerDay === 1) {
     scheduleDescription = 'One dose';
   } else {
     scheduleDescription = `${medication.timesPerDay} doses`;
   }
-  if (!medication.isRecurring) {
-    return `${scheduleDescription} on ${formatDate(medication.startDate)}`;
+  if (medication.frequencyNumber! === 1) {
+    scheduleDescription += ` every ${medication.frequencyUnit}`;
   } else {
-    if (medication.frequencyNumber! === 1) {
-      scheduleDescription += ` every ${medication.frequencyUnit}`;
-    } else {
-      scheduleDescription += ` every ${medication.frequencyNumber} ${medication.frequencyUnit}s`;
-    }
-    scheduleDescription += ` from ${formatDate(medication.startDate)}`;
-    if (medication.endDate) {
-      scheduleDescription += ` until ${formatDate(medication.endDate)}`;
-    }
+    scheduleDescription += ` every ${medication.frequencyNumber} ${medication.frequencyUnit}s`;
+  }
+  scheduleDescription += ` from ${formatDate(medication.startDate)}`;
+  if (medication.endDate) {
+    scheduleDescription += ` until ${formatDate(medication.endDate)}`;
+  } else {
+    scheduleDescription += ' (ongoing)';
   }
   return scheduleDescription;
 };

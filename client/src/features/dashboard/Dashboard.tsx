@@ -22,6 +22,7 @@ import { Observation } from '../../types/ObservationTypes';
 import { ObservationForm } from '../observations/ObservationForm';
 import { Appointment } from '../../types/AppointmentTypes';
 import { AppointmentForm } from '../appointments/AppointmentForm';
+import { filterAppointments } from '../../utils/appointmentUtils';
 
 export default function Dashboard() {
   const { animal } = useAnimals();
@@ -55,8 +56,9 @@ export default function Dashboard() {
     openCreateMode: openApppointmentDrawer,
   } = useEntityManager<Appointment>();
 
+  const futureAppointments = filterAppointments(appointments, false);
   const upcomingAppointment =
-    appointments.length > 0 ? appointments.slice(-1)[0] : null;
+    futureAppointments.length > 0 ? futureAppointments.slice(-1)[0] : null;
 
   const sortedWeights = [...weights].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
