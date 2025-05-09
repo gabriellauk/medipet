@@ -186,11 +186,6 @@ export function MedicationForm({
             <FormField
               name="durationNumber"
               control={control}
-              rules={{
-                required: isRecurringWatch
-                  ? 'Duration number must be provided.'
-                  : false,
-              }}
               label="For how long should this medication be given?"
               type="number"
               error={errors.durationNumber?.message}
@@ -199,11 +194,6 @@ export function MedicationForm({
             <FormField
               name="durationUnit"
               control={control}
-              rules={{
-                required: isRecurringWatch
-                  ? 'Duration unit must be provided.'
-                  : false,
-              }}
               label="Duration unit"
               type="select"
               options={[
