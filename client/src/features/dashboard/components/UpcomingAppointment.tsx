@@ -2,18 +2,18 @@ import { Blockquote, Button, Group, Text } from '@mantine/core';
 import { useAnimals } from '../../../contexts/AnimalsContext';
 import { IconCalendar } from '@tabler/icons-react';
 import { Appointment } from '../../../types/AppointmentTypes';
-import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../../../utils/dateUtils';
 
 export default function UpcomingAppointment({
   appointment,
   error,
+  onAddApppointment,
 }: {
   appointment: Appointment | null;
   error: string | null;
+  onAddApppointment: () => void;
 }) {
   const { animal } = useAnimals();
-  const navigate = useNavigate();
 
   let formattedDate = null;
   if (appointment?.date) formattedDate = formatDate(appointment.date);
@@ -46,9 +46,7 @@ export default function UpcomingAppointment({
         <>
           No upcoming appointments.
           <p></p>
-          <Button onClick={() => navigate('/appointments-calendar')}>
-            Record appointment
-          </Button>
+          <Button onClick={onAddApppointment}>Record appointment</Button>
         </>
       )}
     </Blockquote>

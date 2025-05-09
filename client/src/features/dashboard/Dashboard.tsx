@@ -14,15 +14,46 @@ import CallToActionBanner from './CallToActionBanner';
 import { KeyStatsGrid } from './KeyStatsGrid';
 import { WeightChart } from './WeightChart';
 import { MedicationAndObservations } from './MedicationAndObservations';
+import { useEntityManager } from '../../hooks/useEntityManager';
+import { Weight } from '../../types/WeightTypes';
+import EntityDrawer from '../../components/EntityDrawer';
+import { WeightForm } from '../weights/WeightForm';
+import { Observation } from '../../types/ObservationTypes';
+import { ObservationForm } from '../observations/ObservationForm';
+import { Appointment } from '../../types/AppointmentTypes';
+import { AppointmentForm } from '../appointments/AppointmentForm';
 
 export default function Dashboard() {
   const { animal } = useAnimals();
-  const { weights, weightsLoading } = useWeights();
-  const { appointments, appointmentsLoading, appointmentsError } =
-    useAppointments();
+  const { weights, weightsLoading, refetchWeights } = useWeights();
+  const {
+    appointments,
+    appointmentsLoading,
+    appointmentsError,
+    refetchAppointments,
+  } = useAppointments();
   const { medication, medicationLoading, medicationError } = useMedication();
   const filteredMedication = filterCurrentMedication(medication);
-  const { observations, observationsLoading } = useObservations();
+  const { observations, observationsLoading, refetchObservations } =
+    useObservations();
+
+  const {
+    opened: openedWeightDrawer,
+    close: closeWeightDrawer,
+    openCreateMode: openWeightDrawer,
+  } = useEntityManager<Weight>();
+
+  const {
+    opened: openedObservationDrawer,
+    close: closeObservationDrawer,
+    openCreateMode: openObservationDrawer,
+  } = useEntityManager<Observation>();
+
+  const {
+    opened: openedAppointmentDrawer,
+    close: closeAppointmentDrawer,
+    openCreateMode: openApppointmentDrawer,
+  } = useEntityManager<Appointment>();
 
   const upcomingAppointment =
     appointments.length > 0 ? appointments.slice(-1)[0] : null;
@@ -61,6 +92,7 @@ export default function Dashboard() {
           <UpcomingAppointment
             appointment={upcomingAppointment}
             error={appointmentsError}
+            onAddApppointment={openApppointmentDrawer}
           />
         </Grid.Col>
       </Grid>
@@ -90,6 +122,8 @@ export default function Dashboard() {
         <CallToActionBanner
           observationsCount={observations.length}
           weightsCount={weights.length}
+          onAddWeight={openWeightDrawer}
+          onAddObservation={openObservationDrawer}
         />
       </Grid>
 
@@ -98,6 +132,39 @@ export default function Dashboard() {
         medicationError={medicationError}
         observations={observations}
       />
+
+      <EntityDrawer opened={openedWeightDrawer} onClose={closeWeightDrawer}>
+        <WeightForm
+          close={closeWeightDrawer}
+          mode="create"
+          item={null}
+          refetchItems={refetchWeights}
+        />
+      </EntityDrawer>
+
+      <EntityDrawer
+        opened={openedObservationDrawer}
+        onClose={closeObservationDrawer}
+      >
+        <ObservationForm
+          close={closeObservationDrawer}
+          mode="create"
+          item={null}
+          refetchItems={refetchObservations}
+        />
+      </EntityDrawer>
+
+      <EntityDrawer
+        opened={openedAppointmentDrawer}
+        onClose={closeAppointmentDrawer}
+      >
+        <AppointmentForm
+          close={closeAppointmentDrawer}
+          mode="create"
+          item={null}
+          refetchItems={refetchAppointments}
+        />
+      </EntityDrawer>
     </>
   );
 }

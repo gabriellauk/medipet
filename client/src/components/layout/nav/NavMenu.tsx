@@ -33,7 +33,7 @@ const options = [
   },
 ];
 
-export default function NavMenu() {
+export default function NavMenu({ onLinkClick }: { onLinkClick: () => void }) {
   const [active, setActive] = useState('Home');
   const { logout } = useAuth();
   const { animal } = useAnimals();
@@ -46,6 +46,7 @@ export default function NavMenu() {
       key={item.label}
       onClick={() => {
         setActive(item.label);
+        onLinkClick();
       }}
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />

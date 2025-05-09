@@ -29,7 +29,7 @@ function LoggedInLayout() {
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
-        <NavMenu />
+        <NavMenu onLinkClick={toggle} />
       </AppShell.Navbar>
 
       <AppShell.Main>
