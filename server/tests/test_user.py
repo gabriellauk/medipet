@@ -30,6 +30,6 @@ def test_create_demo_account(client: FlaskClient) -> None:
     assert animals[0].name == "Horatio"
 
     assert db.session.query(models.Symptom).count() == 7
-    assert db.session.query(models.Appointment).count() == 10
+    assert db.session.query(models.Appointment).count() == 12
     assert db.session.query(models.Medication).count() == 4
     assert db.session.query(models.Weight).count() == 6
