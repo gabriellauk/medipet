@@ -1,1 +1,1 @@
-FLASK_APP=purrfecthealth.py
+FLASK_APP=medipet.py
