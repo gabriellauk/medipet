@@ -1,17 +1,15 @@
 import { Button, Title } from '@mantine/core';
 import { useForm } from 'react-hook-form';
-import dayjs from 'dayjs';
-import { useApi } from '../../contexts/ApiContext';
-import { useAnimals } from '../../contexts/AnimalsContext';
 import ErrorArea from '../../components/ErrorArea';
-import { useState } from 'react';
 import {
   Weight,
+  WeightFormApiData,
   WeightFormData,
   WeightFormProps,
 } from '../../types/WeightTypes';
-import { GenericApiResponse } from '../../types/GenericTypes';
 import { FormField } from '../../components/FormField';
+import { formatApiDate } from '../../utils/dateUtils';
+import { useEntityForm } from '../../hooks/useEntityForm';
 
 export function WeightForm({
   close,
@@ -19,10 +17,6 @@ export function WeightForm({
   item,
   refetchItems,
 }: WeightFormProps) {
-  const api = useApi();
-  const { animal } = useAnimals();
-  const [submissionError, setSubmissionError] = useState('');
-
   const {
     control,
     handleSubmit,
@@ -34,38 +28,23 @@ export function WeightForm({
     },
   });
 
-  const onSubmit = async (data: WeightFormData) => {
-    const weightInGrams = Math.round(data.weight * 1000);
-    const formattedDate = data.date
-      ? dayjs(data.date).format('YYYY-MM-DD')
-      : '';
+  const { submitEntity, submissionError } = useEntityForm<
+    Weight,
+    WeightFormApiData
+  >({
+    mode,
+    item,
+    endpoint: 'weight',
+    refetchItems,
+    close,
+  });
 
-    let apiResponse: GenericApiResponse<Weight>;
-
-    if (mode === 'create') {
-      const formData = { weight: weightInGrams, date: formattedDate };
-      apiResponse = await api.post(`/animal/${animal!.id}/weight`, formData);
-    } else {
-      const changedFields: Partial<{ weight: number; date: string }> = {};
-      if (data.weight !== item.weight) changedFields.weight = weightInGrams;
-      if (formattedDate !== item.date) changedFields.date = formattedDate;
-
-      if (Object.keys(changedFields).length === 0) {
-        return;
-      }
-
-      apiResponse = await api.patch(
-        `/animal/${animal!.id}/weight/${item.id}`,
-        changedFields
-      );
-    }
-
-    if (apiResponse.ok) {
-      refetchItems();
-      close();
-    } else {
-      setSubmissionError('An error occurred. Please try again later.');
-    }
+  const onSubmit = (data: WeightFormData) => {
+    const formData = {
+      weight: Math.round(data.weight * 1000),
+      date: data.date ? formatApiDate(data.date) : '',
+    };
+    submitEntity(formData);
   };
 
   return (

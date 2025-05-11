@@ -7,7 +7,7 @@ import UpcomingAppointment from './components/UpcomingAppointment';
 import { useAnimals } from '../../contexts/AnimalsContext';
 import { useAppointments } from '../../hooks/useAppointments';
 import { useMedication } from '../../hooks/useMedication';
-import { filterCurrentMedication } from '../../utils/medicationUtils';
+import { filterForCurrentMedication } from '../../utils/medicationUtils';
 import { useObservations } from '../../hooks/useObservations';
 import { getObservationsFromPastThreeMonths } from '../../utils/observationsUtils';
 import CallToActionBanner from './CallToActionBanner';
@@ -34,7 +34,7 @@ export default function Dashboard() {
     refetchAppointments,
   } = useAppointments();
   const { medication, medicationLoading, medicationError } = useMedication();
-  const filteredMedication = filterCurrentMedication(medication);
+  const filteredMedication = filterForCurrentMedication(medication);
   const { observations, observationsLoading, refetchObservations } =
     useObservations();
 
@@ -56,23 +56,30 @@ export default function Dashboard() {
     openCreateMode: openApppointmentDrawer,
   } = useEntityManager<Appointment>();
 
-  const futureAppointments = filterAppointments(appointments, false);
-  const upcomingAppointment =
-    futureAppointments.length > 0 ? futureAppointments.slice(-1)[0] : null;
+  const futureAppointments = filterAppointments(appointments, 'future');
+  const upcomingAppointment = futureAppointments.length
+    ? futureAppointments[futureAppointments.length - 1]
+    : null;
 
-  const sortedWeights = [...weights].sort(
+  const weightsOldestToNewest = [...weights].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
-  const mostRecentWeight =
-    sortedWeights.length > 0 ? sortedWeights[sortedWeights.length - 1] : null;
+  const mostRecentWeight = weightsOldestToNewest.length
+    ? weightsOldestToNewest[weightsOldestToNewest.length - 1]
+    : null;
 
-  const weightChange =
-    sortedWeights.length >= 2
-      ? (sortedWeights[sortedWeights.length - 1].weight -
-          sortedWeights[sortedWeights.length - 2].weight) /
-        1000
+  const weightChangeKg =
+    weightsOldestToNewest.length >= 2
+      ? Math.round(
+          (weightsOldestToNewest[weightsOldestToNewest.length - 1].weight -
+            weightsOldestToNewest[weightsOldestToNewest.length - 2].weight) /
+            1000
+        )
       : null;
+
+  const recentObservations =
+    getObservationsFromPastThreeMonths(observations).length;
 
   const isLoading =
     weightsLoading ||
@@ -102,17 +109,15 @@ export default function Dashboard() {
       <Grid align="stretch" gutter="md" mt="md">
         <Grid.Col span={{ base: 12, xs: 12 }}>
           <KeyStatsGrid
-            observationsCount={
-              getObservationsFromPastThreeMonths(observations).length
-            }
+            observationsCount={recentObservations}
             mostRecentWeight={mostRecentWeight}
-            weightChange={weightChange}
+            weightChange={weightChangeKg}
             filteredMedicationCount={filteredMedication.length}
           />
         </Grid.Col>
       </Grid>
 
-      {weights.length > 0 && (
+      {weights.length && (
         <Grid align="stretch" gutter="md" mt="md">
           <Grid.Col span={{ base: 12, xs: 12 }}>
             <WeightChart weights={weights} animalName={animal!.name} />

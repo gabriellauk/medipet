@@ -1,42 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useApi } from '../contexts/ApiContext';
-import { useAnimals } from '../contexts/AnimalsContext';
 import { Weight } from '../types/WeightTypes';
+import { useEntityData } from './useEntityData';
 
 export function useWeights() {
-  const api = useApi();
-  const { animal } = useAnimals();
-  const [weights, setWeights] = useState<Weight[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchWeights = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    const response = await api.get<{ data: Weight[] }>(
-      `/animal/${animal!.id}/weight`
-    );
-    if (response.ok) {
-      const convertedWeights = response.body.data.map((weight) => ({
-        ...weight,
-        weight: weight.weight,
-      }));
-      setWeights(convertedWeights);
-    } else {
-      setError('Failed to fetch weights');
-    }
-    setLoading(false);
-  }, [animal, api]);
-
-  useEffect(() => {
-    fetchWeights();
-  }, [fetchWeights]);
+  const { data, loading, error, refetchData } = useEntityData<Weight>('weight');
 
   return {
-    weights,
+    weights: data,
     weightsLoading: loading,
     weightsError: error,
-    refetchWeights: fetchWeights,
+    refetchWeights: refetchData,
   };
 }

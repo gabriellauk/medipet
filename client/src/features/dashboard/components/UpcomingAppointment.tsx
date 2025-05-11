@@ -2,7 +2,7 @@ import { Blockquote, Button, Group, Text } from '@mantine/core';
 import { useAnimals } from '../../../contexts/AnimalsContext';
 import { IconCalendar } from '@tabler/icons-react';
 import { Appointment } from '../../../types/AppointmentTypes';
-import { formatDate } from '../../../utils/dateUtils';
+import { formatLongDate } from '../../../utils/dateUtils';
 
 export default function UpcomingAppointment({
   appointment,
@@ -15,8 +15,9 @@ export default function UpcomingAppointment({
 }) {
   const { animal } = useAnimals();
 
-  let formattedDate = null;
-  if (appointment?.date) formattedDate = formatDate(appointment.date);
+  const formattedDate = appointment?.date
+    ? formatLongDate(appointment.date)
+    : null;
 
   return (
     <Blockquote

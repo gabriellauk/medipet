@@ -73,7 +73,7 @@ export function Hero() {
                 className={classes.control}
                 type="submit"
               >
-                Log in to demo
+                View demo
               </Button>
             </form>
           </Group>

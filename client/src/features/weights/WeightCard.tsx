@@ -1,4 +1,4 @@
-import { formatDate } from '../../utils/dateUtils';
+import { formatLongDate } from '../../utils/dateUtils';
 import { Weight } from '../../types/WeightTypes';
 import EntityCard from '../../components/EntityCard';
 
@@ -15,8 +15,8 @@ export default function WeightCard({
 }) {
   return (
     <EntityCard
-      title={formatDate(weight.date)}
-      bodyContent={<>{weight.weight / 1000} kg</>}
+      title={formatLongDate(weight.date)}
+      bodyContent={`${weight.weight / 1000} kg`}
       onEditClick={onEditClick}
       onDeleteClick={() => deleteWeight(animalId, weight.id)}
     />

@@ -14,3 +14,7 @@ export type AppointmentFormData = {
   description: string;
   notes?: string;
 };
+
+export type AppointmentFormApiData = Omit<AppointmentFormData, 'date'> & {
+  date: string;
+};

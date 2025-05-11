@@ -1,15 +1,16 @@
 import { Button, Title } from '@mantine/core';
 import { useForm } from 'react-hook-form';
-import dayjs from 'dayjs';
-import { useApi } from '../../contexts/ApiContext';
-import { useAnimals } from '../../contexts/AnimalsContext';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import ErrorArea from '../../components/ErrorArea';
 import {
+  Medication,
+  MedicationFormApiData,
   MedicationFormData,
   MedicationFormProps,
 } from '../../types/MedicationTypes';
 import { FormField } from '../../components/FormField';
+import { formatApiDate } from '../../utils/dateUtils';
+import { useEntityForm } from '../../hooks/useEntityForm';
 
 export function MedicationForm({
   close,
@@ -17,10 +18,6 @@ export function MedicationForm({
   item,
   refetchItems,
 }: MedicationFormProps) {
-  const api = useApi();
-  const { animal } = useAnimals();
-  const [submissionError, setSubmissionError] = useState('');
-
   const {
     control,
     handleSubmit,
@@ -56,39 +53,23 @@ export function MedicationForm({
     }
   }, [isRecurringWatch, clearErrors]);
 
-  const onSubmit = async (data: MedicationFormData) => {
+  const { submitEntity, submissionError } = useEntityForm<
+    Medication,
+    MedicationFormApiData
+  >({
+    mode,
+    item,
+    endpoint: 'medication',
+    refetchItems,
+    close,
+  });
+
+  const onSubmit = (data: MedicationFormData) => {
     const formData = {
       ...data,
-      startDate: data.startDate
-        ? dayjs(data.startDate).format('YYYY-MM-DD')
-        : '',
+      startDate: data.startDate ? formatApiDate(data.startDate) : '',
     };
-
-    let apiResponse;
-    if (mode === 'create') {
-      apiResponse = await api.post(
-        `/animal/${animal!.id}/medication`,
-        formData
-      );
-    } else {
-      const changedFields: Partial<MedicationFormData> = {};
-      if (formData.name !== item!.name) changedFields.name = formData.name;
-      if (formData.notes !== item!.notes) changedFields.notes = formData.notes;
-      if (Object.keys(changedFields).length === 0) {
-        return;
-      }
-      apiResponse = await api.patch(
-        `/animal/${animal!.id}/medication/${item!.id}`,
-        changedFields
-      );
-    }
-
-    if (apiResponse.ok) {
-      refetchItems();
-      close();
-    } else {
-      setSubmissionError('An error occurred. Please try again later.');
-    }
+    submitEntity(formData);
   };
 
   return (

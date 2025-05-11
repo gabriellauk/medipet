@@ -29,3 +29,7 @@ export type MedicationFormData = {
   startDate: Date | null;
   notes?: string;
 };
+
+export type MedicationFormApiData = Omit<MedicationFormData, 'startDate'> & {
+  startDate: string;
+};

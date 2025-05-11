@@ -9,10 +9,6 @@ export function WeightChart({
   weights: Weight[];
   animalName: string;
 }) {
-  const sortedWeights = [...weights].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
-
   return (
     <>
       <Title order={2} size="h3">
@@ -21,7 +17,7 @@ export function WeightChart({
       <Space h="xl" />
       <LineChart
         h={300}
-        data={sortedWeights.map(({ date, weight }) => ({ date, weight }))}
+        data={weights.map(({ date, weight }) => ({ date, weight }))}
         dataKey="date"
         series={[{ name: 'weight', color: 'indigo.6' }]}
         curveType="linear"

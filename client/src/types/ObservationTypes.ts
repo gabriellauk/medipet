@@ -12,3 +12,7 @@ export type ObservationFormData = {
   date: Date | null;
   description: string;
 };
+
+export type ObservationFormApiData = Omit<ObservationFormData, 'date'> & {
+  date: string;
+};

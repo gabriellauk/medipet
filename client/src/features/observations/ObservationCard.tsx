@@ -1,6 +1,6 @@
 import { Observation } from '../../types/ObservationTypes';
 import EntityCard from '../../components/EntityCard';
-import { formatDate } from '../../utils/dateUtils';
+import { formatLongDate } from '../../utils/dateUtils';
 
 export default function ObservationCard({
   observation,
@@ -15,7 +15,7 @@ export default function ObservationCard({
 }) {
   return (
     <EntityCard
-      title={formatDate(observation.date)}
+      title={formatLongDate(observation.date)}
       bodyContent={observation.description}
       onEditClick={onEditClick}
       onDeleteClick={() => deleteObservation(animalId, observation.id)}

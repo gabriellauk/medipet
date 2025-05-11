@@ -1,17 +1,15 @@
 import { Button, Title } from '@mantine/core';
 import { useForm } from 'react-hook-form';
-import dayjs from 'dayjs';
-import { useApi } from '../../contexts/ApiContext';
 import ErrorArea from '../../components/ErrorArea';
-import { useAnimals } from '../../contexts/AnimalsContext';
-import { useState } from 'react';
 import {
   Appointment,
+  AppointmentFormApiData,
   AppointmentFormData,
   AppointmentFormProps,
 } from '../../types/AppointmentTypes';
-import { GenericApiResponse } from '../../types/GenericTypes';
 import { FormField } from '../../components/FormField';
+import { formatApiDate } from '../../utils/dateUtils';
+import { useEntityForm } from '../../hooks/useEntityForm';
 
 export function AppointmentForm({
   close,
@@ -19,10 +17,6 @@ export function AppointmentForm({
   item,
   refetchItems,
 }: AppointmentFormProps) {
-  const api = useApi();
-  const { animal } = useAnimals();
-  const [submissionError, setSubmissionError] = useState('');
-
   const {
     control,
     handleSubmit,
@@ -35,52 +29,23 @@ export function AppointmentForm({
     },
   });
 
-  const onSubmit = async (data: AppointmentFormData) => {
-    const formattedDate = data.date
-      ? dayjs(data.date).format('YYYY-MM-DD')
-      : '';
+  const { submitEntity, submissionError } = useEntityForm<
+    Appointment,
+    AppointmentFormApiData
+  >({
+    mode,
+    item,
+    endpoint: 'appointment',
+    refetchItems,
+    close,
+  });
 
-    let apiResponse: GenericApiResponse<Appointment>;
-
-    if (mode === 'create') {
-      const formData = {
-        description: data.description,
-        date: formattedDate,
-        notes: data.notes,
-      };
-      apiResponse = await api.post(
-        `/animal/${animal!.id}/appointment`,
-        formData
-      );
-    } else {
-      const changedFields: Partial<{
-        description: string;
-        date: string;
-        notes: string;
-      }> = {};
-      if (data.description !== item.description)
-        changedFields.description = data.description;
-      if (formattedDate !== item.date) changedFields.date = formattedDate;
-      if (data.notes !== item.notes) changedFields.notes = data.notes;
-
-      if (Object.keys(changedFields).length === 0) {
-        return;
-      }
-
-      apiResponse = await api.patch(
-        `/animal/${animal!.id}/appointment/${item.id}`,
-        changedFields
-      );
-    }
-
-    if (apiResponse.ok) {
-      refetchItems();
-      close();
-    } else {
-      setSubmissionError('An error occurred. Please try again later.');
-    }
-
-    close();
+  const onSubmit = (data: AppointmentFormData) => {
+    const formData = {
+      ...data,
+      date: data.date ? formatApiDate(data.date) : '',
+    };
+    submitEntity(formData);
   };
 
   return (

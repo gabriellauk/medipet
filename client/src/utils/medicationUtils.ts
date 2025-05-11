@@ -1,7 +1,7 @@
 import { Medication } from '../types/MedicationTypes';
-import { formatDate } from './dateUtils';
+import { formatLongDate } from './dateUtils';
 
-export const filterCurrentMedication = (
+export const filterForCurrentMedication = (
   medications: Medication[]
 ): Medication[] => {
   const today = new Date().setHours(0, 0, 0, 0);
@@ -22,41 +22,52 @@ export const buildConciseMedicationScheduleDescription = (
   medication: Medication
 ) => {
   let scheduleDescription = '';
-  if (!medication.isRecurring) return `(one-off)`;
+  if (!medication.isRecurring || !medication.frequencyNumber)
+    return '(one-off)';
+
   if (medication.frequencyNumber === 1) {
     if (medication.frequencyUnit === 'day') scheduleDescription += 'daily';
-    if (medication.frequencyUnit !== 'day')
+    else {
       scheduleDescription += `${medication.frequencyUnit}ly`;
-  } else if (medication.frequencyNumber && medication.frequencyNumber > 1) {
+    }
+  } else if (medication.frequencyNumber > 1) {
     scheduleDescription += `every ${medication.frequencyNumber} ${medication.frequencyUnit}s`;
   }
-  if (medication.isRecurring && medication.endDate) {
-    const endDate = formatDate(medication.endDate);
+
+  if (medication.endDate) {
+    const endDate = formatLongDate(medication.endDate);
     scheduleDescription += ` until ${endDate}`;
   }
-  return `${scheduleDescription}`;
+
+  return scheduleDescription;
 };
 
 export const buildMedicationScheduleDescription = (medication: Medication) => {
   let scheduleDescription = '';
-  if (!medication.isRecurring) {
-    return `Once on ${formatDate(medication.startDate)}`;
+
+  if (!medication.isRecurring || !medication.frequencyNumber) {
+    return `Once on ${formatLongDate(medication.startDate)}`;
   }
+
   if (medication.timesPerDay === 1) {
     scheduleDescription = 'One dose';
   } else {
     scheduleDescription = `${medication.timesPerDay} doses`;
   }
-  if (medication.frequencyNumber! === 1) {
+
+  if (medication.frequencyNumber === 1) {
     scheduleDescription += ` every ${medication.frequencyUnit}`;
   } else {
     scheduleDescription += ` every ${medication.frequencyNumber} ${medication.frequencyUnit}s`;
   }
-  scheduleDescription += ` from ${formatDate(medication.startDate)}`;
+
+  scheduleDescription += ` from ${formatLongDate(medication.startDate)}`;
+
   if (medication.endDate) {
-    scheduleDescription += ` until ${formatDate(medication.endDate)}`;
+    scheduleDescription += ` until ${formatLongDate(medication.endDate)}`;
   } else {
     scheduleDescription += ' (ongoing)';
   }
+
   return scheduleDescription;
 };

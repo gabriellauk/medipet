@@ -1,7 +1,7 @@
 import { Timeline, Text } from '@mantine/core';
 import { IconNotes } from '@tabler/icons-react';
 import { Observation } from '../../../types/ObservationTypes';
-import { formatDate, getRelativeTime } from '../../../utils/dateUtils';
+import { formatLongDate, getRelativeTime } from '../../../utils/dateUtils';
 
 export default function TimelineItem({
   observation,
@@ -11,7 +11,7 @@ export default function TimelineItem({
   return (
     <Timeline.Item
       bullet={<IconNotes size={12} />}
-      title={formatDate(observation.date)}
+      title={formatLongDate(observation.date)}
     >
       <Text c="dimmed" size="sm">
         {observation.description}

@@ -1,4 +1,6 @@
-export const formatDate = (inputDate: string) => {
+import dayjs from 'dayjs';
+
+export const formatLongDate = (inputDate: string) => {
   const date = new Date(inputDate);
 
   return new Intl.DateTimeFormat('en-GB', {
@@ -6,6 +8,10 @@ export const formatDate = (inputDate: string) => {
     month: 'long',
     year: 'numeric',
   }).format(date);
+};
+
+export const formatApiDate = (date: Date) => {
+  return dayjs(date).format('YYYY-MM-DD');
 };
 
 export const getRelativeTime = (date: string): string => {
@@ -22,7 +28,7 @@ export const getRelativeTime = (date: string): string => {
   if (differenceInDays === 0) {
     return 'today';
   } else if (differenceInDays === 1) {
-    return '1 day ago';
+    return 'yesterday';
   } else if (differenceInDays > 1) {
     return `${differenceInDays} days ago`;
   } else if (differenceInDays === -1) {

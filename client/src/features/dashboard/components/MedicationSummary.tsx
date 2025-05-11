@@ -37,11 +37,11 @@ export default function MedicationSummary({
 
       {error ? (
         error
-      ) : medication.length > 0 ? (
+      ) : medication.length ? (
         <List>
           {medication.map((med) => (
             <List.Item key={med.id}>
-              {med.name} {buildConciseMedicationScheduleDescription(med)}
+              {med.name}, {buildConciseMedicationScheduleDescription(med)}
             </List.Item>
           ))}
         </List>

@@ -1,17 +1,15 @@
 import { Button, Title } from '@mantine/core';
 import { useForm } from 'react-hook-form';
-import dayjs from 'dayjs';
-import { useApi } from '../../contexts/ApiContext';
 import ErrorArea from '../../components/ErrorArea';
-import { useAnimals } from '../../contexts/AnimalsContext';
-import { GenericApiResponse } from '../../types/GenericTypes';
-import { useState } from 'react';
 import {
   Observation,
+  ObservationFormApiData,
   ObservationFormData,
   ObservationFormProps,
 } from '../../types/ObservationTypes';
 import { FormField } from '../../components/FormField';
+import { formatApiDate } from '../../utils/dateUtils';
+import { useEntityForm } from '../../hooks/useEntityForm';
 
 export function ObservationForm({
   close,
@@ -19,10 +17,6 @@ export function ObservationForm({
   item,
   refetchItems,
 }: ObservationFormProps) {
-  const api = useApi();
-  const { animal } = useAnimals();
-  const [submissionError, setSubmissionError] = useState('');
-
   const {
     control,
     handleSubmit,
@@ -34,37 +28,23 @@ export function ObservationForm({
     },
   });
 
-  const onSubmit = async (data: ObservationFormData) => {
-    const formattedDate = data.date
-      ? dayjs(data.date).format('YYYY-MM-DD')
-      : '';
+  const { submitEntity, submissionError } = useEntityForm<
+    Observation,
+    ObservationFormApiData
+  >({
+    mode,
+    item,
+    endpoint: 'symptom',
+    refetchItems,
+    close,
+  });
 
-    let apiResponse: GenericApiResponse<Observation>;
-    if (mode === 'create') {
-      const formData = { description: data.description, date: formattedDate };
-      apiResponse = await api.post(`/animal/${animal!.id}/symptom`, formData);
-    } else {
-      const changedFields: Partial<{ description: string; date: string }> = {};
-      if (data.description !== item!.description)
-        changedFields.description = data.description;
-      if (formattedDate != item.date) changedFields.date = formattedDate;
-
-      if (Object.keys(changedFields).length === 0) {
-        return;
-      }
-      apiResponse = await api.patch(
-        `/animal/${animal!.id}/symptom/${item!.id}`,
-        changedFields
-      );
-    }
-
-    if (apiResponse.ok) {
-      refetchItems();
-      close();
-    } else {
-      setSubmissionError('An error occurred. Please try again later.');
-      return;
-    }
+  const onSubmit = (data: ObservationFormData) => {
+    const formData = {
+      ...data,
+      date: data.date ? formatApiDate(data.date) : '',
+    };
+    submitEntity(formData);
   };
 
   return (

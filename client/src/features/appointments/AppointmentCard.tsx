@@ -1,4 +1,4 @@
-import { formatDate } from '../../utils/dateUtils';
+import { formatLongDate } from '../../utils/dateUtils';
 import { Appointment } from '../../types/AppointmentTypes';
 import EntityCard from '../../components/EntityCard';
 
@@ -27,7 +27,7 @@ export default function AppointmentCard({
 
   return (
     <EntityCard
-      title={formatDate(appointment.date)}
+      title={formatLongDate(appointment.date)}
       bodyContent={bodyContent}
       onEditClick={onEditClick}
       onDeleteClick={() => deleteAppointment(animalId, appointment.id)}
