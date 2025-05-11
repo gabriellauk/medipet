@@ -40,7 +40,7 @@ export function KeyStatsGrid({
         Icon={weightDecrease ? IconArrowDownRight : IconArrowUpRight}
       />
       <KeyStat
-        label="Current medication"
+        label="Current medications"
         stat={filteredMedicationCount}
         Icon={IconPill}
       />

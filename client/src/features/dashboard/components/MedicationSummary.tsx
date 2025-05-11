@@ -30,7 +30,7 @@ export default function MedicationSummary({
       <Group>
         <IconPill />
         <Text size="md">
-          <b>{animal!.name}'s current medication</b>
+          <b>{animal!.name}'s current medications</b>
         </Text>
       </Group>
       <p></p>
@@ -46,7 +46,7 @@ export default function MedicationSummary({
           ))}
         </List>
       ) : (
-        'No current medication to display.'
+        'No current medications to display.'
       )}
       <p></p>
 

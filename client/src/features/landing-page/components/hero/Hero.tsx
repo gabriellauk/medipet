@@ -45,8 +45,8 @@ export function Hero() {
               view details of upcoming ones.
             </List.Item>
             <List.Item>
-              <b>Medication</b> – Keep a record of your pet's regular and
-              one-off medication.
+              <b>Medications</b> – Keep a record of your pet's regular and
+              one-off medications.
             </List.Item>
             <List.Item>
               <b>Observations</b> – Monitor changes to behaviour or symptoms

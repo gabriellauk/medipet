@@ -74,8 +74,8 @@ export default function Dashboard() {
       ? Math.round(
           (weightsOldestToNewest[weightsOldestToNewest.length - 1].weight -
             weightsOldestToNewest[weightsOldestToNewest.length - 2].weight) /
-            1000
-        )
+            10
+        ) / 100
       : null;
 
   const recentObservations =
@@ -120,7 +120,10 @@ export default function Dashboard() {
       {weights.length && (
         <Grid align="stretch" gutter="md" mt="md">
           <Grid.Col span={{ base: 12, xs: 12 }}>
-            <WeightChart weights={weights} animalName={animal!.name} />
+            <WeightChart
+              weights={weightsOldestToNewest}
+              animalName={animal!.name}
+            />
           </Grid.Col>
         </Grid>
       )}

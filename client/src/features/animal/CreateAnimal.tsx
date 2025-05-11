@@ -69,7 +69,7 @@ export function CreateAnimal() {
       <Text c="dimmed" fz="sm" ta="center">
         <p>
           MediPet gives you a place to store a health record for your pet -
-          helping you remember appointments, keep track of any medication and
+          helping you remember appointments, keep track of any medications and
           monitor changes to symptoms.
         </p>
         <p>

@@ -15,11 +15,16 @@ export default function DemoDisclaimer() {
       icon={<IconInfoCircle />}
     >
       <form action={loginUrl} method="POST">
-        <UnstyledButton type="submit" fz="sm">
-          This account has been auto-populated with sample data for a fictional{' '}
-          {AnimalTypeId[animal!.animalTypeId].toLowerCase()} named{' '}
-          {animal!.name} to give you a feel for how MediPet works. To set up a
-          real account, start by signing in with your Google account.
+        This account has been auto-populated with sample data for a fictional{' '}
+        {AnimalTypeId[animal!.animalTypeId].toLowerCase()} named {animal!.name}{' '}
+        to give you a feel for how MediPet works. To set up a real account,
+        start by{' '}
+        <UnstyledButton
+          type="submit"
+          fz="sm"
+          style={{ display: 'inline', textDecoration: 'underline' }}
+        >
+          signing in with your Google account.
         </UnstyledButton>
       </form>
     </Alert>

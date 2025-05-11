@@ -11,7 +11,7 @@ A basic CRUD web app, MediPet gives users a place to store their pet's medical d
 * Authenticate with OAuth via your Google account or instantly access a demo account populated with sample data
 * Get an at-a-glance view of key data via the dashboard
 * Keep track of upcoming vet appointments
-* Record regular and one-off medication
+* Record regular and one-off medications
 * Log any changes in your pet's behaviour, weight or other symptoms
 * Access your account via your desktop or a mobile device
 
