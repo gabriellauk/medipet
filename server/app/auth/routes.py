@@ -11,7 +11,6 @@ from werkzeug.exceptions import Unauthorized
 
 @auth.route("/api/login", methods=["POST"])
 def login():
-    session.clear()
     redirect_uri = url_for("auth.authenticate", _external=True)
     return oauth.google.authorize_redirect(redirect_uri)
 

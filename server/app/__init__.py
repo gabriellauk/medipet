@@ -29,7 +29,7 @@ def create_app(app_config=None):
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or "something-secret"
+    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
     app.config["GOOGLE_CLIENT_ID"] = os.environ.get("GOOGLE_CLIENT_ID", None)
     app.config["GOOGLE_CLIENT_SECRET"] = os.environ.get("GOOGLE_CLIENT_SECRET", None)
     app.config["CORS_ORIGINS"] = os.environ.get("CORS_ORIGINS")
