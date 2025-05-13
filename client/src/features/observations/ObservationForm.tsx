@@ -71,6 +71,7 @@ export function ObservationForm({
           rules={{ required: 'Date must be provided.' }}
           label="Date recorded"
           placeholder="Pick a date"
+          maxDate={new Date()}
           error={errors.date?.message}
           type="date"
         />

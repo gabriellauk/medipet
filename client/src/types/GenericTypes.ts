@@ -41,4 +41,5 @@ export type FormFieldProps<T extends FieldValues> = {
   type: 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'date';
   options?: { value: string; label: string }[];
   suffix?: string;
+  maxDate?: Date;
 };

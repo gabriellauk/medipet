@@ -50,6 +50,9 @@ def get_animals() -> schemas.Animal:
 def create_symptom(
     user: models.User, animal: models.Animal, animal_id: int, data: schemas.CreateSymptom
 ) -> schemas.Symptom:
+    if data.date > date.today():
+        raise BadRequest("Date cannot be in the future")
+
     symptom = store.create_symptom(data, animal)
 
     return schemas.Symptom.model_validate(symptom)
@@ -67,6 +70,9 @@ def delete_symptom(user: models.User, animal: models.Animal, animal_id: int, sym
 def update_symptom(
     user: models.User, animal: models.Animal, animal_id: int, symptom_id: int, data: schemas.UpdateSymptom
 ) -> schemas.Symptom:
+    if data.date and data.date > date.today():
+        raise BadRequest("Date cannot be in the future")
+
     if (symptom := store.get_symptom(symptom_id)) is None or symptom.animal != animal:
         raise BadRequest(f"Symptom {symptom_id} not found for animal {animal_id}")
 
@@ -94,6 +100,9 @@ def get_symptom(user: models.User, animal: models.Animal, animal_id: int, sympto
 def create_weight(
     user: models.User, animal: models.Animal, animal_id: int, data: schemas.CreateWeight
 ) -> schemas.Weight:
+    if data.date > date.today():
+        raise BadRequest("Date cannot be in the future")
+
     weight = store.create_weight(data, animal)
 
     return schemas.Weight.model_validate(weight)
@@ -121,6 +130,9 @@ def update_weight(
 ) -> schemas.Weight:
     if (weight := store.get_weight(weight_id)) is None or weight.animal != animal:
         raise BadRequest(f"Weight {weight_id} not found for animal {animal_id}")
+
+    if data.date and data.date > date.today():
+        raise BadRequest("Date cannot be in the future")
 
     weight = store.update_weight(weight, data)
 

@@ -20,6 +20,7 @@ export function FormField<T extends FieldValues>({
   type,
   options = [],
   suffix,
+  maxDate,
 }: FormFieldProps<T>) {
   return (
     <Controller
@@ -95,6 +96,7 @@ export function FormField<T extends FieldValues>({
                 label={label}
                 placeholder={placeholder}
                 description={description}
+                {...(maxDate ? { maxDate } : {})}
                 error={error}
               />
             );
