@@ -117,7 +117,7 @@ export default function Dashboard() {
         </Grid.Col>
       </Grid>
 
-      {weights.length && (
+      {weightsOldestToNewest.length > 0 && (
         <Grid align="stretch" gutter="md" mt="md">
           <Grid.Col span={{ base: 12, xs: 12 }}>
             <WeightChart
