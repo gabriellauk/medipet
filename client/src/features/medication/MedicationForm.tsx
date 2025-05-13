@@ -118,74 +118,78 @@ export function MedicationForm({
               error={errors.isRecurring?.message}
             />
 
-            <FormField
-              name="timesPerDay"
-              control={control}
-              rules={{
-                required: isRecurringWatch
-                  ? 'Times per day must be provided.'
-                  : false,
-              }}
-              label="How many doses a day are required?"
-              type="number"
-              error={errors.timesPerDay?.message}
-            />
+            {isRecurringWatch && (
+              <>
+                <FormField
+                  name="timesPerDay"
+                  control={control}
+                  rules={{
+                    required: isRecurringWatch
+                      ? 'Times per day must be provided.'
+                      : false,
+                  }}
+                  label="How many doses a day are required?"
+                  type="number"
+                  error={errors.timesPerDay?.message}
+                />
 
-            <FormField
-              name="frequencyNumber"
-              control={control}
-              rules={{
-                required: isRecurringWatch
-                  ? 'Frequency number must be provided.'
-                  : false,
-              }}
-              label="How frequently does this medication need to be given?"
-              type="number"
-              error={errors.frequencyNumber?.message}
-            />
+                <FormField
+                  name="frequencyNumber"
+                  control={control}
+                  rules={{
+                    required: isRecurringWatch
+                      ? 'Frequency number must be provided.'
+                      : false,
+                  }}
+                  label="How frequently does this medication need to be given?"
+                  type="number"
+                  error={errors.frequencyNumber?.message}
+                />
 
-            <FormField
-              name="frequencyUnit"
-              control={control}
-              rules={{
-                required: isRecurringWatch
-                  ? 'Frequency unit must be provided.'
-                  : false,
-              }}
-              label="Frequency unit"
-              type="select"
-              options={[
-                { value: '', label: 'Select a unit of time' },
-                { value: 'day', label: 'day(s)' },
-                { value: 'week', label: 'week(s)' },
-                { value: 'month', label: 'month(s)' },
-                { value: 'year', label: 'year(s)' },
-              ]}
-              error={errors.frequencyUnit?.message}
-            />
+                <FormField
+                  name="frequencyUnit"
+                  control={control}
+                  rules={{
+                    required: isRecurringWatch
+                      ? 'Frequency unit must be provided.'
+                      : false,
+                  }}
+                  label="Frequency unit"
+                  type="select"
+                  options={[
+                    { value: '', label: 'Select a unit of time' },
+                    { value: 'day', label: 'day(s)' },
+                    { value: 'week', label: 'week(s)' },
+                    { value: 'month', label: 'month(s)' },
+                    { value: 'year', label: 'year(s)' },
+                  ]}
+                  error={errors.frequencyUnit?.message}
+                />
 
-            <FormField
-              name="durationNumber"
-              control={control}
-              label="For how long should this medication be given?"
-              type="number"
-              error={errors.durationNumber?.message}
-            />
+                <FormField
+                  name="durationNumber"
+                  control={control}
+                  label="For how long should this medication be given?"
+                  type="number"
+                  error={errors.durationNumber?.message}
+                />
 
-            <FormField
-              name="durationUnit"
-              control={control}
-              label="Duration unit"
-              type="select"
-              options={[
-                { value: '', label: 'Select a unit of time' },
-                { value: 'day', label: 'day(s)' },
-                { value: 'week', label: 'week(s)' },
-                { value: 'month', label: 'month(s)' },
-                { value: 'year', label: 'year(s)' },
-              ]}
-              error={errors.durationUnit?.message}
-            />
+                <FormField
+                  name="durationUnit"
+                  control={control}
+                  label="Duration unit"
+                  type="select"
+                  options={[
+                    { value: '', label: 'Select a unit of time' },
+                    { value: 'day', label: 'day(s)' },
+                    { value: 'week', label: 'week(s)' },
+                    { value: 'month', label: 'month(s)' },
+                    { value: 'year', label: 'year(s)' },
+                  ]}
+                  error={errors.durationUnit?.message}
+                />
+              </>
+            )}
           </>
         )}
 
