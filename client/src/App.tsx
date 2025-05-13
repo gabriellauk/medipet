@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/charts/styles.css';
+import ROUTES from './routes';
 import AuthRedirect from './features/auth/AuthRedirect.tsx';
 import SplashPage from './features/landing-page/SplashPage.tsx';
 import ProtectedRoute from './features/auth/ProtectedRoute.tsx';
@@ -19,23 +20,29 @@ function App() {
     <BrowserRouter>
       <Providers>
         <Routes>
-          <Route path="/" element={<AuthRedirect />} />
-          <Route path="/login" element={<SplashPage />} />
-          <Route path="/complete-signup" element={<CreateAnimal />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path={ROUTES.ROOT} element={<AuthRedirect />} />
+          <Route path={ROUTES.LOGIN} element={<SplashPage />} />
+          <Route path={ROUTES.COMPLETE_SIGNUP} element={<CreateAnimal />} />
+          <Route
+            path={ROUTES.NOT_FOUND}
+            element={<Navigate to={ROUTES.ROOT} />}
+          />
           <Route element={<ProtectedRoute />}>
             <Route element={<LoggedInLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/weight-tracker" element={<WeightTracker />} />
+              <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+              <Route path={ROUTES.WEIGHT_TRACKER} element={<WeightTracker />} />
               <Route
-                path="/medication-schedule"
+                path={ROUTES.MEDICATION_SCHEDULE}
                 element={<MedicationSchedule />}
               />
               <Route
-                path="/appointments-calendar"
+                path={ROUTES.APPOINTMENTS_CALENDAR}
                 element={<AppointmentsCalendar />}
               />
-              <Route path="/observation-diary" element={<ObservationDiary />} />
+              <Route
+                path={ROUTES.OBSERVATION_DIARY}
+                element={<ObservationDiary />}
+              />
             </Route>
           </Route>
         </Routes>

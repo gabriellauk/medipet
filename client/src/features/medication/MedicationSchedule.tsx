@@ -33,7 +33,7 @@ export default function MedicationSchedule() {
   return (
     <>
       <h1>Medication schedule</h1>
-      <p>Record {animal!.name}'s regular and one-off medication here.</p>
+      <p>Record {animal!.name}'s regular and one-off medications here.</p>
 
       <EntityList<Medication>
         name="medication"
