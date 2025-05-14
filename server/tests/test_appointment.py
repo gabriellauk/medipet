@@ -6,14 +6,11 @@ from app.extensions import db
 from flask.testing import FlaskClient
 
 import pytest
+from helpers import create_animal
 
 
 def test_create_appointment(logged_in_client: FlaskClient) -> None:
-    user = db.session.query(models.User).one()
-    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
-    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
-    db.session.add(animal)
-    db.session.commit()
+    animal = create_animal()
 
     data = {"description": "Appt description", "date": "2025-01-06"}
 
@@ -56,9 +53,7 @@ def test_create_appointment_fails_user_cant_access_animal(logged_in_client: Flas
 
 
 def test_get_appointment(logged_in_client: FlaskClient) -> None:
-    user = db.session.query(models.User).one()
-    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
-    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    animal = create_animal()
     appointment = models.Appointment(
         description="Appt description", notes="Some notes", date=date(2024, 12, 10), animal=animal
     )
@@ -74,9 +69,7 @@ def test_get_appointment(logged_in_client: FlaskClient) -> None:
 
 
 def test_get_appointments_for_animal(logged_in_client: FlaskClient) -> None:
-    user = db.session.query(models.User).one()
-    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
-    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    animal = create_animal()
     appointments = [
         models.Appointment(description="Desc 1", notes="Notes 1", date=date(2024, 12, 10), animal=animal),
         models.Appointment(description="Desc 2", notes=None, date=date(2024, 12, 15), animal=animal),
@@ -98,11 +91,7 @@ def test_get_appointments_for_animal(logged_in_client: FlaskClient) -> None:
 
 
 def test_get_appointments_for_animal_empty_list(logged_in_client: FlaskClient) -> None:
-    user = db.session.query(models.User).one()
-    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
-    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
-    db.session.add(animal)
-    db.session.commit()
+    animal = create_animal()
 
     response = logged_in_client.get(f"api/animal/{animal.id}/appointment")
 
@@ -134,9 +123,7 @@ def test_get_appointments_for_animal_fails_user_cant_access_animal(logged_in_cli
 
 
 def test_delete_appointment(logged_in_client: FlaskClient) -> None:
-    user = db.session.query(models.User).one()
-    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
-    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    animal = create_animal()
     appointment = models.Appointment(description="Appt description", date=date(2024, 12, 10), animal=animal)
     db.session.add(appointment)
     db.session.commit()
@@ -173,12 +160,7 @@ def test_delete_appointment_fails_user_cant_access_animal(logged_in_client: Flas
 
 
 def test_delete_appointment_fails_appointment_not_found(logged_in_client: FlaskClient) -> None:
-    user = db.session.query(models.User).one()
-
-    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
-    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
-    db.session.add(animal)
-    db.session.commit()
+    animal = create_animal()
 
     response = logged_in_client.delete(f"api/animal/{animal.id}/appointment/4")
 
@@ -187,9 +169,7 @@ def test_delete_appointment_fails_appointment_not_found(logged_in_client: FlaskC
 
 
 def test_update_appointment(logged_in_client: FlaskClient) -> None:
-    user = db.session.query(models.User).one()
-    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
-    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    animal = create_animal()
     appointment = models.Appointment(
         description="Appt description", notes="Some notes", date=date(2024, 12, 10), animal=animal
     )
@@ -208,9 +188,7 @@ def test_update_appointment(logged_in_client: FlaskClient) -> None:
 
 @pytest.mark.parametrize("field_to_update", ["description", "notes", "date"])
 def test_update_appointment_partially(logged_in_client: FlaskClient, field_to_update: str) -> None:
-    user = db.session.query(models.User).one()
-    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
-    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    animal = create_animal()
     appointment = models.Appointment(description="Appt description", notes=None, date=date(2024, 12, 10), animal=animal)
     db.session.add(appointment)
     db.session.commit()
@@ -241,9 +219,7 @@ def test_update_appointment_partially(logged_in_client: FlaskClient, field_to_up
 
 
 def test_update_appointment_no_notes(logged_in_client: FlaskClient) -> None:
-    user = db.session.query(models.User).one()
-    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
-    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
+    animal = create_animal()
     appointment = models.Appointment(
         description="Appt description", notes="Some notes", date=date(2024, 12, 10), animal=animal
     )

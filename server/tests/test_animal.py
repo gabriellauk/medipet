@@ -9,6 +9,8 @@ from typing import Literal
 
 from flask.testing import FlaskClient
 
+from helpers import create_animal
+
 
 def test_create_animal(logged_in_client: FlaskClient) -> None:
     data = {"name": "Fluffy", "animalTypeId": 2}
@@ -60,11 +62,7 @@ def test_create_animal_fails_empty_string(logged_in_client: FlaskClient) -> None
 
 
 def test_get_animal(logged_in_client: FlaskClient) -> None:
-    user = db.session.query(models.User).one()
-    animal_type = db.session.query(models.AnimalType).filter(models.AnimalType.id == 2).one()
-    animal = models.Animal(name="Fluffy", animal_type=animal_type, user=user)
-    db.session.add(animal)
-    db.session.commit()
+    animal = create_animal()
 
     response = logged_in_client.get(f"api/animal/{animal.id}")
 
