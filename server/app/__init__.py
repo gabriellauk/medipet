@@ -60,7 +60,7 @@ def create_app(app_config: dict[str, str] | None = None) -> Flask:
     return app
 
 
-from app import models as models
+from app import models as models  # noqa: E402
 
 if __name__ == "__main__":
     app = create_app()

@@ -1,5 +1,6 @@
 import os
-from typing import Any, Generator, Iterator
+from collections.abc import Generator, Iterator
+from typing import Any
 
 import pytest
 from flask import Flask

@@ -1,6 +1,5 @@
 import time
 from datetime import date
-from typing import List
 
 import sqlalchemy as sa
 from dateutil.relativedelta import relativedelta
@@ -19,7 +18,7 @@ def create_user(email: str) -> None:
     db.session.commit()
 
 
-def get_animal_types() -> List[models.AnimalType]:
+def get_animal_types() -> list[models.AnimalType]:
     return models.AnimalType.query.order_by("name").all()
 
 
@@ -43,7 +42,7 @@ def get_animal(animal_id: int) -> models.Animal | None:
     return models.Animal.query.filter(models.Animal.id == animal_id).one_or_none()
 
 
-def get_animals_for_user(user: models.User) -> List[models.Animal]:
+def get_animals_for_user(user: models.User) -> list[models.Animal]:
     return models.Animal.query.filter(models.Animal.user == user).all()
 
 
@@ -75,7 +74,7 @@ def update_symptom(symptom: models.Symptom, data: schemas.UpdateSymptom) -> mode
     return symptom
 
 
-def get_symptoms_for_animal(animal: models.Animal) -> List[models.Symptom]:
+def get_symptoms_for_animal(animal: models.Animal) -> list[models.Symptom]:
     return models.Symptom.query.filter(models.Symptom.animal == animal).order_by(models.Symptom.date.desc()).all()
 
 
@@ -91,7 +90,7 @@ def get_weight(weight_id: int) -> models.Weight | None:
     return models.Weight.query.filter(models.Weight.id == weight_id).one_or_none()
 
 
-def get_weights_for_animal(animal: models.Animal) -> List[models.Weight]:
+def get_weights_for_animal(animal: models.Animal) -> list[models.Weight]:
     return models.Weight.query.filter(models.Weight.animal == animal).order_by(models.Weight.date.desc()).all()
 
 
@@ -123,7 +122,7 @@ def get_appointment(appointment_id: int) -> models.Appointment | None:
     return models.Appointment.query.filter(models.Appointment.id == appointment_id).one_or_none()
 
 
-def get_appointments_for_animal(animal: models.Animal) -> List[models.Appointment]:
+def get_appointments_for_animal(animal: models.Animal) -> list[models.Appointment]:
     return (
         models.Appointment.query.filter(models.Appointment.animal == animal)
         .order_by(models.Appointment.date.desc())
@@ -173,7 +172,7 @@ def get_medication(medication_id: int) -> models.Medication | None:
     return models.Medication.query.filter(models.Medication.id == medication_id).one_or_none()
 
 
-def get_medications(animal: models.Animal) -> List[models.Medication]:
+def get_medications(animal: models.Animal) -> list[models.Medication]:
     return (
         models.Medication.query.filter(models.Medication.animal == animal)
         .order_by(models.Medication.start_date.desc())

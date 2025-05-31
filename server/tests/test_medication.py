@@ -153,7 +153,8 @@ def test_create_medication_one_off_error_extra_fields(logged_in_client: FlaskCli
     assert response.status_code == 400
     assert (
         response.json["error"]
-        == "400 Bad Request: If a medication is not recurring, times per day, frequency details and duration info should not be provided."
+        == "400 Bad Request: If a medication is not recurring, times per day, frequency details and duration info "
+        "should not be provided."
     )
 
 

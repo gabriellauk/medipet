@@ -1,5 +1,4 @@
 from datetime import date
-from typing import List
 
 from dateutil.relativedelta import relativedelta
 from flask import session
@@ -79,7 +78,7 @@ def update_symptom(
 
 
 @requires_animal_permission
-def get_symptoms_for_animal(user: models.User, animal: models.Animal, animal_id: int) -> List[schemas.Symptom]:
+def get_symptoms_for_animal(user: models.User, animal: models.Animal, animal_id: int) -> list[schemas.Symptom]:
     symptoms = store.get_symptoms_for_animal(animal)
 
     return [schemas.Symptom.model_validate(symptom) for symptom in symptoms]
@@ -137,7 +136,7 @@ def update_weight(
 
 
 @requires_animal_permission
-def get_weights_for_animal(user: models.User, animal: models.Animal, animal_id: int) -> List[schemas.Weight]:
+def get_weights_for_animal(user: models.User, animal: models.Animal, animal_id: int) -> list[schemas.Weight]:
     weights = store.get_weights_for_animal(animal)
 
     return [schemas.Weight.model_validate(weight) for weight in weights]
@@ -181,7 +180,7 @@ def update_appointment(
 
 
 @requires_animal_permission
-def get_appointments_for_animal(user: models.User, animal: models.Animal, animal_id: int) -> List[schemas.Appointment]:
+def get_appointments_for_animal(user: models.User, animal: models.Animal, animal_id: int) -> list[schemas.Appointment]:
     appointments = store.get_appointments_for_animal(animal)
 
     return [schemas.Appointment.model_validate(appointment) for appointment in appointments]
@@ -243,7 +242,8 @@ def _validate_data_for_one_off_medication(data: schemas.CreateMedication) -> dat
     for field in fields_not_required_if_not_recurring:
         if field:
             raise BadRequest(
-                "If a medication is not recurring, times per day, frequency details and duration info should not be provided."
+                "If a medication is not recurring, times per day, frequency details and "
+                "duration info should not be provided."
             )
 
     end_date = data.start_date
@@ -260,7 +260,7 @@ def delete_medication(user: models.User, animal: models.Animal, animal_id: int, 
 
 
 @requires_animal_permission
-def get_medications_for_animal(user: models.User, animal: models.Animal, animal_id: int) -> List[schemas.Medication]:
+def get_medications_for_animal(user: models.User, animal: models.Animal, animal_id: int) -> list[schemas.Medication]:
     medications = store.get_medications(animal)
 
     return [schemas.Medication.model_validate(appointment) for appointment in medications]

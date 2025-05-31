@@ -1,6 +1,6 @@
 from datetime import date as date_type
 from enum import Enum
-from typing import Any, List
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, field_serializer, field_validator
 from pydantic.alias_generators import to_camel
@@ -30,7 +30,7 @@ class AnimalType(BaseSchema):
 
 
 class AnimalTypes(BaseSchema):
-    data: List[AnimalType]
+    data: list[AnimalType]
 
 
 class Animal(BaseSchema):
@@ -40,7 +40,7 @@ class Animal(BaseSchema):
 
 
 class Animals(BaseSchema):
-    data: List[Animal]
+    data: list[Animal]
 
 
 class CreateAnimal(BaseSchema):
@@ -76,7 +76,7 @@ class Symptom(SymptomFields):
 
 
 class Symptoms(BaseSchema):
-    data: List[Symptom]
+    data: list[Symptom]
 
 
 class CreateSymptom(SymptomFields): ...
@@ -101,7 +101,7 @@ class Weight(WeightFields):
 
 
 class Weights(BaseSchema):
-    data: List[Weight]
+    data: list[Weight]
 
 
 class CreateWeight(WeightFields): ...
@@ -134,7 +134,7 @@ class Appointment(AppointmentFields):
 
 
 class Appointments(BaseSchema):
-    data: List[Appointment]
+    data: list[Appointment]
 
 
 class CreateAppointment(AppointmentFields): ...
@@ -190,7 +190,7 @@ class Medication(MedicationFields):
 
 
 class Medications(BaseSchema):
-    data: List[Medication]
+    data: list[Medication]
 
 
 class CreateMedication(MedicationFields): ...
