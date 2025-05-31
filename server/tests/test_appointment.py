@@ -1,12 +1,11 @@
 from datetime import date
-from app import models
-
-from app.extensions import db
-
-from flask.testing import FlaskClient
 
 import pytest
+from flask.testing import FlaskClient
 from helpers import create_animal
+
+from app import models
+from app.extensions import db
 
 
 def test_create_appointment(logged_in_client: FlaskClient) -> None:

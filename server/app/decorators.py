@@ -1,24 +1,18 @@
 import inspect
+from functools import wraps
 from typing import Any, Callable, Concatenate, ParamSpec, TypeAlias, TypeVar, cast
 from uuid import UUID
+
 from flask import session
-from functools import wraps
+from werkzeug.exceptions import BadRequest, Forbidden, Unauthorized
 
-from werkzeug.exceptions import Unauthorized, BadRequest, Forbidden
-
-from app import store, models
+from app import models, store
 
 P = ParamSpec("P")
 R = TypeVar("R")
 
 CallableToWrap: TypeAlias = Callable[Concatenate[models.Animal, models.User, P], R]
 WrappedCallable: TypeAlias = Callable[P, R]
-
-
-class AuthError(Exception):
-    def __init__(self, error, status_code):
-        self.error = error
-        self.status_code = status_code
 
 
 def requires_animal_permission(func: CallableToWrap[P, R]) -> WrappedCallable[P, R]:

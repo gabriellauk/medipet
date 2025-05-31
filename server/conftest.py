@@ -1,13 +1,18 @@
 import os
+from typing import Any, Generator, Iterator
 
 import pytest
+from flask import Flask
+from flask.testing import FlaskClient
+from sqlalchemy.orm import Session, scoped_session
+
 from app import create_app
 from app.extensions import db
 from app.models import AnimalType, User
 
 
 @pytest.fixture(scope="session")
-def app():
+def app() -> Iterator[Flask]:
     basedir = os.path.abspath(os.path.dirname(__file__))
 
     test_config = {"SQLALCHEMY_DATABASE_URI": "sqlite:///" + os.path.join(basedir, "test.db")}
@@ -18,7 +23,7 @@ def app():
 
 
 @pytest.fixture(scope="function")
-def session(app):
+def session(app: Flask) -> Generator[scoped_session[Session], Any, None]:
     with app.app_context():
         db.create_all()
         yield db.session
@@ -27,7 +32,7 @@ def session(app):
 
 
 @pytest.fixture(scope="function")
-def client(app, session):
+def client(app: Flask, session: scoped_session[Session]) -> Generator[FlaskClient, Any, None]:
     with app.app_context():
         try:
             session.add_all([AnimalType(name="Cat"), AnimalType(name="Dog"), AnimalType(name="Rabbit")])
@@ -42,7 +47,7 @@ def client(app, session):
 
 
 @pytest.fixture
-def logged_in_client(app, session, client):
+def logged_in_client(app: Flask, session: scoped_session[Session], client: FlaskClient) -> FlaskClient:
     with app.app_context():
         try:
             session.add(User(email="test@test.com"))

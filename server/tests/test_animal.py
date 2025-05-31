@@ -1,15 +1,11 @@
-import pytest
-
-
-from app import models
-
-from app.extensions import db
-
 from typing import Literal
 
+import pytest
 from flask.testing import FlaskClient
-
 from helpers import create_animal
+
+from app import models
+from app.extensions import db
 
 
 def test_create_animal(logged_in_client: FlaskClient) -> None:

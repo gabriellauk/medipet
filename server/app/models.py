@@ -1,13 +1,15 @@
-from datetime import date as date_type, datetime
+from datetime import date as date_type
+from datetime import datetime
+from enum import Enum
+
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-from sqlalchemy.sql import expression
-from sqlalchemy.orm import relationship
 from flask_login import UserMixin
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import expression
 
 from app.extensions import db
-
-from enum import Enum
+from app.schemas import TimeUnit
 
 
 class User(UserMixin, db.Model):
@@ -17,9 +19,6 @@ class User(UserMixin, db.Model):
     created_at: so.Mapped[datetime] = so.mapped_column(
         sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False
     )
-
-    def __repr__(self):
-        return "<User {}>".format(self.email)
 
 
 class AnimalType(db.Model):
@@ -65,14 +64,7 @@ class Appointment(db.Model):
     animal = relationship("Animal")
 
 
-class TimeUnit(Enum):
-    DAY = "day"
-    WEEK = "week"
-    MONTH = "month"
-    YEAR = "year"
-
-
-def get_enum_values(enum_class):
+def get_enum_values(enum_class: type[Enum]) -> list[str]:
     return [member.value for member in enum_class]
 
 

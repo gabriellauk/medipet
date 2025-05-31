@@ -1,21 +1,19 @@
-from datetime import date
 import time
+from datetime import date
 from typing import List
 
-from app import models, schemas
-
 import sqlalchemy as sa
-
-from app.extensions import db
-
 from dateutil.relativedelta import relativedelta
 
+from app import models, schemas
+from app.extensions import db
 
-def check_user_exists(email):
-    return db.session.scalar(sa.select(models.User).where(models.User.email == email))
+
+def check_user_exists(email: str) -> bool:
+    return bool(db.session.scalar(sa.select(models.User).where(models.User.email == email)))
 
 
-def create_user(email) -> None:
+def create_user(email: str) -> None:
     new_user = models.User(email=email)
     db.session.add(new_user)
     db.session.commit()
@@ -57,7 +55,7 @@ def create_symptom(data: schemas.CreateSymptom, animal: models.Animal) -> models
     return symptom
 
 
-def get_symptom(symptom_id) -> models.Symptom | None:
+def get_symptom(symptom_id: int) -> models.Symptom | None:
     return models.Symptom.query.filter(models.Symptom.id == symptom_id).one_or_none()
 
 
@@ -89,7 +87,7 @@ def create_weight(data: schemas.CreateWeight, animal: models.Animal) -> models.W
     return weight
 
 
-def get_weight(weight_id) -> models.Weight | None:
+def get_weight(weight_id: int) -> models.Weight | None:
     return models.Weight.query.filter(models.Weight.id == weight_id).one_or_none()
 
 
@@ -121,7 +119,7 @@ def create_appointment(data: schemas.CreateAppointment, animal: models.Animal) -
     return appointment
 
 
-def get_appointment(appointment_id) -> models.Appointment | None:
+def get_appointment(appointment_id: int) -> models.Appointment | None:
     return models.Appointment.query.filter(models.Appointment.id == appointment_id).one_or_none()
 
 
@@ -171,7 +169,7 @@ def create_medication(data: schemas.CreateMedication, animal: models.Animal, end
     return medication
 
 
-def get_medication(medication_id) -> models.Medication | None:
+def get_medication(medication_id: int) -> models.Medication | None:
     return models.Medication.query.filter(models.Medication.id == medication_id).one_or_none()
 
 

@@ -1,7 +1,7 @@
 from flask.testing import FlaskClient
 
-from app.extensions import db
 from app import models
+from app.extensions import db
 
 
 def test_get_user(logged_in_client: FlaskClient) -> None:

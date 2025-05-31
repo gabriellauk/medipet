@@ -1,12 +1,9 @@
-from flask import redirect, session, url_for, current_app, jsonify
-
-from . import controller
-
-from . import auth
+from flask import current_app, jsonify, redirect, session, url_for
+from werkzeug.exceptions import Unauthorized
 
 from app.extensions import oauth
 
-from werkzeug.exceptions import Unauthorized
+from . import auth, controller
 
 
 @auth.route("/api/login", methods=["POST"])

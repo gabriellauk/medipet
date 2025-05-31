@@ -4,3 +4,10 @@ exclude = [
     "migrations"
     ]
     
+[tool.ruff.lint]
+select = ["ANN"]
+
+[tool.ruff.lint.per-file-ignores]
+"routes.py" = ["ANN"]
+"__init__.py" = ["ANN"]
+"medipet.py" = ["ANN"]

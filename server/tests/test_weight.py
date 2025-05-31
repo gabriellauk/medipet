@@ -1,14 +1,12 @@
 from datetime import date
-from app import models
-
-from app.extensions import db
-
-from flask.testing import FlaskClient
-
-from dateutil.relativedelta import relativedelta
 
 import pytest
+from dateutil.relativedelta import relativedelta
+from flask.testing import FlaskClient
 from helpers import create_animal
+
+from app import models
+from app.extensions import db
 
 
 def test_create_weight(logged_in_client: FlaskClient) -> None:

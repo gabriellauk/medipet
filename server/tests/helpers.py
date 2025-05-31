@@ -1,6 +1,7 @@
 from datetime import date
-from app.extensions import db
+
 from app import models
+from app.extensions import db
 
 
 def create_animal() -> models.Animal:

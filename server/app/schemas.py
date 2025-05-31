@@ -1,11 +1,9 @@
 from datetime import date as date_type
-from typing import List
+from enum import Enum
+from typing import Any, List
 
-
-from pydantic import BaseModel, ConfigDict, field_validator, field_serializer
+from pydantic import BaseModel, ConfigDict, field_serializer, field_validator
 from pydantic.alias_generators import to_camel
-
-from app.models import TimeUnit
 
 
 class BaseSchema(BaseModel):
@@ -15,7 +13,7 @@ class BaseSchema(BaseModel):
         from_attributes=True,
     )
 
-    def model_dump(self, **kwargs):
+    def model_dump(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         kwargs.setdefault("by_alias", True)
         return super().model_dump(**kwargs)
 
@@ -69,7 +67,7 @@ class SymptomFields(BaseSchema):
         return v
 
     @field_serializer("date")
-    def serialize_date(self, dt: date_type, _info):
+    def serialize_date(self, dt: date_type) -> str:
         return dt.strftime("%Y-%m-%d")
 
 
@@ -94,7 +92,7 @@ class WeightFields(BaseSchema):
     date: date_type
 
     @field_serializer("date")
-    def serialize_date(self, dt: date_type, _info):
+    def serialize_date(self, dt: date_type) -> str:
         return dt.strftime("%Y-%m-%d")
 
 
@@ -120,7 +118,7 @@ class AppointmentFields(BaseSchema):
     notes: str | None = None
 
     @field_serializer("date")
-    def serialize_date(self, dt: date_type, _info):
+    def serialize_date(self, dt: date_type) -> str:
         return dt.strftime("%Y-%m-%d")
 
     @field_validator("description", "notes", mode="before")
@@ -148,6 +146,13 @@ class UpdateAppointment(BaseSchema):
     notes: str | None = None
 
 
+class TimeUnit(Enum):
+    DAY = "day"
+    WEEK = "week"
+    MONTH = "month"
+    YEAR = "year"
+
+
 class MedicationFields(BaseSchema):
     name: str
     is_recurring: bool
@@ -162,7 +167,7 @@ class MedicationFields(BaseSchema):
     model_config = ConfigDict(use_enum_values=True)
 
     @field_serializer("start_date")
-    def serialize_date(self, dt: date_type, _info):
+    def serialize_date(self, dt: date_type) -> str:
         return dt.strftime("%Y-%m-%d")
 
     @field_validator("name", "notes", "frequency_unit", "duration_unit", mode="before")
@@ -178,7 +183,7 @@ class Medication(MedicationFields):
     end_date: date_type | None
 
     @field_serializer("start_date", "end_date")
-    def serialize_date(self, dt: date_type, _info):
+    def serialize_date(self, dt: date_type) -> str | None:
         if dt:
             return dt.strftime("%Y-%m-%d")
         return dt

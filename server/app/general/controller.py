@@ -1,15 +1,12 @@
 from datetime import date
 from typing import List
 
+from dateutil.relativedelta import relativedelta
 from flask import session
-from app.decorators import requires_animal_permission
-from app import store, schemas
-
 from werkzeug.exceptions import BadRequest, Unauthorized
 
-from dateutil.relativedelta import relativedelta
-
-from app import models
+from app import models, schemas, store
+from app.decorators import requires_animal_permission
 
 
 def get_animal_types() -> list[schemas.AnimalType]:
@@ -36,7 +33,7 @@ def get_animal(user: models.User, animal: models.Animal, animal_id: id) -> schem
     return schemas.Animal.model_validate(animal)
 
 
-def get_animals() -> schemas.Animal:
+def get_animals() -> list[schemas.Animal]:
     user_session = session.get("user")
     if user_session is None or (user := store.get_user_by_email(user_session["email"])) is None:
         raise Unauthorized("No user logged in")

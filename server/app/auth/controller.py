@@ -1,14 +1,11 @@
 from flask import session
-
-from app import store
-
-from app.extensions import oauth
-from app import schemas
-
 from werkzeug.exceptions import Unauthorized
 
+from app import schemas, store
+from app.extensions import oauth
 
-def authenticate():
+
+def authenticate() -> None:
     token = oauth.google.authorize_access_token()
     session["user"] = token["userinfo"]
     user = session.get("user")
@@ -28,6 +25,6 @@ def get_user() -> schemas.User:
     return schemas.User(first_name=first_name, last_name=last_name, is_demo_account=user.is_demo_account)
 
 
-def create_demo_account():
+def create_demo_account() -> None:
     user = store.create_demo_account()
     session["user"] = {"given_name": "Demo", "family_name": "Account", "email": user.email}

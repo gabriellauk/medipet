@@ -1,18 +1,18 @@
+import os
+
+from dotenv import load_dotenv
 from flask import Flask, jsonify
 from flask_cors import CORS
 from werkzeug.exceptions import BadRequest, Forbidden
 from werkzeug.middleware.proxy_fix import ProxyFix
-from dotenv import load_dotenv
-import os
+
+from app.extensions import db, migrate, oauth
 
 from .auth import auth
 from .general import general
 
 
-from app.extensions import db, oauth, migrate
-
-
-def create_app(app_config=None):
+def create_app(app_config: dict[str, str] | None = None) -> Flask:
     load_dotenv()
 
     basedir = os.path.abspath(os.path.dirname(__file__))
@@ -21,12 +21,12 @@ def create_app(app_config=None):
 
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_port=1)
 
-    DATABASE_URI = os.getenv("DATABASE_URI") or "sqlite:///" + os.path.join(basedir, "app.db")
-
     if app_config:
         app.config.update(app_config)
     else:
-        app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI") or "sqlite:///" + os.path.join(
+            basedir, "app.db"
+        )
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
@@ -61,7 +61,6 @@ def create_app(app_config=None):
 
 
 from app import models as models
-
 
 if __name__ == "__main__":
     app = create_app()

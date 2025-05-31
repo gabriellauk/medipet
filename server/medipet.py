@@ -1,9 +1,9 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-from app import create_app
 
+from app import create_app
 from app.extensions import db
-from app.models import User, Animal, AnimalType
+from app.models import Animal, AnimalType, User
 
 app = create_app()
 

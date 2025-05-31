@@ -1,10 +1,9 @@
 from flask import jsonify, request
-
-from . import controller
+from pydantic import ValidationError
 
 from app.schemas import (
-    AnimalTypes,
     Animals,
+    AnimalTypes,
     Appointments,
     CreateAnimal,
     CreateAppointment,
@@ -20,9 +19,7 @@ from app.schemas import (
     Weights,
 )
 
-from pydantic import ValidationError
-
-from . import general
+from . import controller, general
 
 
 @general.route("/api/animal-type", methods=["GET"])
