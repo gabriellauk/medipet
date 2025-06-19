@@ -25,7 +25,7 @@ export function KeyStatsGrid({
   const weightDecrease = weightChange && weightChange < 0 ? true : false;
 
   return (
-    <SimpleGrid cols={{ base: 1, sm: 4 }}>
+    <SimpleGrid cols={{ base: 1, md: 2, xl: 4 }}>
       <KeyStat
         label="Recent observations"
         stat={observationsCount}

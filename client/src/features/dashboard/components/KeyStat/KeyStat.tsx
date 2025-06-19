@@ -1,4 +1,4 @@
-import { Center, Group, Paper, Text } from '@mantine/core';
+import { Group, Paper, Text } from '@mantine/core';
 import styles from './KeyStat.module.css';
 import { Icon, IconProps } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
@@ -18,9 +18,7 @@ export default function KeyStat({
     <Link to={path} style={{ textDecoration: 'none', color: 'inherit' }}>
       <Paper withBorder radius="md" p="xs" className={styles.keyStat}>
         <Group>
-          <Center>
-            <Icon size={40} stroke={1.5} />
-          </Center>
+          <Icon size={40} stroke={1.5} />
           <div>
             <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
               {label}
