@@ -5,6 +5,7 @@ import {
   NumberInput,
   NativeSelect,
   Radio,
+  Group,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { FormFieldProps } from '../types/GenericTypes';
@@ -58,7 +59,7 @@ export function FormField<T extends FieldValues>({
                 description={description}
                 error={error}
                 step={1}
-                min={0}
+                min={1}
                 rightSection={suffix ? <span>{suffix}</span> : undefined}
               />
             );
@@ -80,13 +81,15 @@ export function FormField<T extends FieldValues>({
                 description={description}
                 error={error}
               >
-                {options.map((option) => (
-                  <Radio
-                    key={option.value}
-                    value={option.value}
-                    label={option.label}
-                  />
-                ))}
+                <Group>
+                  {options.map((option) => (
+                    <Radio
+                      key={option.value}
+                      value={option.value}
+                      label={option.label}
+                    />
+                  ))}
+                </Group>
               </Radio.Group>
             );
           case 'date':

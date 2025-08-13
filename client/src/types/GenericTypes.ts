@@ -34,7 +34,7 @@ export type FormFieldProps<T extends FieldValues> = {
   name: Path<T>;
   control: Control<T>;
   rules?: RegisterOptions<T, Path<T>>;
-  label: string;
+  label?: string;
   placeholder?: string;
   description?: string;
   error?: string;

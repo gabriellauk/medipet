@@ -1,4 +1,4 @@
-import { Button, Title } from '@mantine/core';
+import { Button, Group, Title, Input } from '@mantine/core';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 import ErrorArea from '../../components/ErrorArea';
@@ -29,10 +29,10 @@ export function MedicationForm({
       name: mode === 'update' ? item!.name : '',
       isRecurring: mode === 'update' ? item!.isRecurring.toString() : undefined,
       timesPerDay: mode === 'update' ? item!.timesPerDay : undefined,
-      frequencyNumber: mode === 'update' ? item!.frequencyNumber : undefined,
-      frequencyUnit: mode === 'update' ? item!.frequencyUnit : undefined,
-      durationNumber: mode === 'update' ? item!.durationNumber : undefined,
-      durationUnit: mode === 'update' ? item!.durationUnit : undefined,
+      frequencyNumber: mode === 'update' ? item!.frequencyNumber : 1,
+      frequencyUnit: mode === 'update' ? item!.frequencyUnit : 'day',
+      durationNumber: mode === 'update' ? item!.durationNumber : 1,
+      durationUnit: mode === 'update' ? item!.durationUnit : 'week',
       startDate: mode === 'update' ? new Date(item!.startDate) : null,
       notes: mode === 'update' ? item!.notes : '',
     },
@@ -125,69 +125,102 @@ export function MedicationForm({
                   control={control}
                   rules={{
                     required: isRecurringWatch
-                      ? 'Times per day must be provided.'
+                      ? 'Number of doses per day must be provided.'
                       : false,
                   }}
-                  label="How many doses a day are required?"
+                  label="Number of doses per day"
                   type="number"
                   error={errors.timesPerDay?.message}
                 />
 
-                <FormField
-                  name="frequencyNumber"
-                  control={control}
-                  rules={{
-                    required: isRecurringWatch
-                      ? 'Frequency number must be provided.'
-                      : false,
-                  }}
-                  label="How frequently does this medication need to be given?"
-                  type="number"
-                  error={errors.frequencyNumber?.message}
-                />
+                <div style={{ width: '100%' }}>
+                  <Input.Label>
+                    This medication needs to be given every...
+                  </Input.Label>
+                  <Group grow>
+                    <FormField
+                      name="frequencyNumber"
+                      control={control}
+                      rules={{
+                        required: isRecurringWatch
+                          ? 'Frequency number must be provided.'
+                          : false,
+                      }}
+                      type="number"
+                      error={errors.frequencyNumber?.message ? ' ' : undefined}
+                    />
 
-                <FormField
-                  name="frequencyUnit"
-                  control={control}
-                  rules={{
-                    required: isRecurringWatch
-                      ? 'Frequency unit must be provided.'
-                      : false,
-                  }}
-                  label="Frequency unit"
-                  type="select"
-                  options={[
-                    { value: '', label: 'Select a unit of time' },
-                    { value: 'day', label: 'day(s)' },
-                    { value: 'week', label: 'week(s)' },
-                    { value: 'month', label: 'month(s)' },
-                    { value: 'year', label: 'year(s)' },
-                  ]}
-                  error={errors.frequencyUnit?.message}
-                />
+                    <FormField
+                      name="frequencyUnit"
+                      control={control}
+                      rules={{
+                        required: isRecurringWatch
+                          ? 'Frequency unit must be provided.'
+                          : false,
+                      }}
+                      type="select"
+                      options={[
+                        { value: 'day', label: 'day(s)' },
+                        { value: 'week', label: 'week(s)' },
+                        { value: 'month', label: 'month(s)' },
+                        { value: 'year', label: 'year(s)' },
+                      ]}
+                      error={errors.frequencyUnit?.message ? ' ' : undefined}
+                    />
+                  </Group>
+                  {errors.frequencyNumber?.message && (
+                    <Input.Error mt={4}>
+                      {errors.frequencyNumber?.message}
+                    </Input.Error>
+                  )}
+                  {errors.frequencyUnit?.message && (
+                    <Input.Error mt={4}>
+                      {errors.frequencyUnit?.message}
+                    </Input.Error>
+                  )}
+                </div>
 
-                <FormField
-                  name="durationNumber"
-                  control={control}
-                  label="For how long should this medication be given?"
-                  type="number"
-                  error={errors.durationNumber?.message}
-                />
+                <div>
+                  <Input.Label>
+                    This medication needs to be taken for...
+                  </Input.Label>
+                  <Group grow>
+                    <FormField
+                      name="durationNumber"
+                      control={control}
+                      type="number"
+                      rules={{
+                        required: isRecurringWatch
+                          ? 'Duration number must be provided.'
+                          : false,
+                      }}
+                      error={errors.durationNumber?.message ? ' ' : undefined}
+                    />
 
-                <FormField
-                  name="durationUnit"
-                  control={control}
-                  label="Duration unit"
-                  type="select"
-                  options={[
-                    { value: '', label: 'Select a unit of time' },
-                    { value: 'day', label: 'day(s)' },
-                    { value: 'week', label: 'week(s)' },
-                    { value: 'month', label: 'month(s)' },
-                    { value: 'year', label: 'year(s)' },
-                  ]}
-                  error={errors.durationUnit?.message}
-                />
+                    <FormField
+                      name="durationUnit"
+                      control={control}
+                      type="select"
+                      options={[
+                        { value: 'day', label: 'day(s)' },
+                        { value: 'week', label: 'week(s)' },
+                        { value: 'month', label: 'month(s)' },
+                        { value: 'year', label: 'year(s)' },
+                      ]}
+                      error={errors.durationUnit?.message ? ' ' : undefined}
+                    />
+                  </Group>
+                  {errors.durationNumber?.message && (
+                    <Input.Error mt={4}>
+                      {errors.durationNumber?.message}
+                    </Input.Error>
+                  )}
+                  {errors.durationUnit?.message && (
+                    <Input.Error mt={4}>
+                      {errors.durationUnit?.message}
+                    </Input.Error>
+                  )}
+                </div>
               </>
             )}
           </>
