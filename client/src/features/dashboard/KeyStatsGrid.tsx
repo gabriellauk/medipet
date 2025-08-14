@@ -10,6 +10,7 @@ import KeyStat from './components/KeyStat/KeyStat';
 import { Weight } from '../../types/WeightTypes';
 
 import ROUTES from '../../routes';
+import { formatShortDate } from '../../utils/dateUtils';
 
 export function KeyStatsGrid({
   observationsCount,
@@ -34,7 +35,7 @@ export function KeyStatsGrid({
       />
       <KeyStat
         label="Last weighed"
-        stat={mostRecentWeight ? mostRecentWeight.date : 'N/A'}
+        stat={mostRecentWeight ? formatShortDate(mostRecentWeight.date) : 'N/A'}
         Icon={IconScaleOutline}
         path={ROUTES.WEIGHT_TRACKER}
       />

@@ -10,6 +10,11 @@ export const formatLongDate = (inputDate: string) => {
   }).format(date);
 };
 
+export const formatShortDate = (inputDate: string): string => {
+  const date = dayjs(inputDate);
+  return date.format('D MMM YYYY');
+};
+
 export const formatApiDate = (date: Date) => {
   return dayjs(date).format('YYYY-MM-DD');
 };
