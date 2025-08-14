@@ -37,7 +37,7 @@ export default function ObservationDiary() {
 
   return (
     <>
-      <h1>Observation Diary</h1>
+      <h1>Observation diary</h1>
       <p>
         Here's where you can keep track of any changes to behaviour or anything
         else you may want to make a note of ahead of {animal!.name}'s next

@@ -1,4 +1,4 @@
-import { Blockquote, Group, List, Text } from '@mantine/core';
+import { Blockquote, Button, Group, List, Text } from '@mantine/core';
 import { IconPill } from '@tabler/icons-react';
 import { useAnimals } from '../../../contexts/AnimalsContext';
 import { Medication } from '../../../types/MedicationTypes';
@@ -50,14 +50,13 @@ export default function MedicationSummary({
       )}
       <p></p>
 
-      <Text
-        variant="link"
-        component="a"
+      <Button
+        variant="filled"
+        color="blue"
         onClick={() => navigate('/medication-schedule')}
-        style={{ cursor: 'pointer' }}
       >
-        <b>→ Update schedule</b>
-      </Text>
+        Update schedule
+      </Button>
     </Blockquote>
   );
 }

@@ -9,9 +9,9 @@ import {
   IconScaleOutline,
 } from '@tabler/icons-react';
 import classes from './NavMenu.module.css';
-import { useState } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useAnimals } from '../../../contexts/AnimalsContext';
+import { useLocation } from 'react-router-dom';
 
 const options = [
   { link: '/', label: 'Home', icon: IconHome2 },
@@ -34,18 +34,20 @@ const options = [
 ];
 
 export default function NavMenu({ onLinkClick }: { onLinkClick: () => void }) {
-  const [active, setActive] = useState('Home');
+  const location = useLocation();
   const { logout } = useAuth();
   const { animal } = useAnimals();
+
+  const activeLabel =
+    options.find((item) => item.link === location.pathname)?.label || 'Home';
 
   const links = options.map((item) => (
     <RouterNavLink
       className={classes.link}
-      data-active={item.label === active || undefined}
+      data-active={item.label === activeLabel || undefined}
       to={item.link}
       key={item.label}
       onClick={() => {
-        setActive(item.label);
         onLinkClick();
       }}
     >
