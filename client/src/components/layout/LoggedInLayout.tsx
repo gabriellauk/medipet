@@ -24,7 +24,13 @@ function LoggedInLayout() {
       <AppShell.Header className={classes.header}>
         <Group h="100%" px="md">
           <Logo />
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" ml="auto" />
+          <Burger
+            opened={opened}
+            onClick={toggle}
+            hiddenFrom="sm"
+            size="sm"
+            ml="auto"
+          />
         </Group>
       </AppShell.Header>
 
