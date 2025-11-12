@@ -33,6 +33,8 @@ def create_app(app_config: dict[str, str] | None = None) -> Flask:
     app.config["GOOGLE_CLIENT_ID"] = os.environ.get("GOOGLE_CLIENT_ID", None)
     app.config["GOOGLE_CLIENT_SECRET"] = os.environ.get("GOOGLE_CLIENT_SECRET", None)
     app.config["CORS_ORIGINS"] = os.environ.get("CORS_ORIGINS")
+    app.config["SESSION_COOKIE_SAMESITE"] = os.environ.get("SESSION_COOKIE_SAMESITE", "None")
+    app.config["SESSION_COOKIE_SECURE"] = os.environ.get("SESSION_COOKIE_SECURE", True)
 
     db.init_app(app)
     migrate.init_app(app, db)
