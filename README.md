@@ -1,12 +1,10 @@
-# MediPet
+# MediPet - A place to store your pet's medical data
 
-MediPet is a small project I've been working on in my spare time to develop my frontend skills. It uses React on the frontend and a simple Flask backend.
+MediPet is a small project I created to develop my frontend skills. It uses React and TypeScript on the frontend, with a simple Flask (Python) backend.
 
-Live demo: https://medipet.up.railway.app
+Live demo: https://medipet.gbprojects.work
 
 ## Features
-
-A basic CRUD web app, MediPet gives users a place to store their pet's medical data.
 
 * Authenticate with OAuth via your Google account or instantly access a demo account populated with sample data
 * Get an at-a-glance view of key data via the dashboard
@@ -19,13 +17,14 @@ A basic CRUD web app, MediPet gives users a place to store their pet's medical d
 
 * React
 * TypeScript
-* Flask
+* Vitest
+* Flask / Python
 * SQLAlchemy
 * Alembic
+* Pytest
+* Ruff
 
-## Future developments
-
-Additional features I intend to add include:
+## How this could be extended
 
 * Support for multiple pets
 * Sharing pets between accounts
